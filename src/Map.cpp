@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by Paul on 13/05/2019.
 //
@@ -26,4 +28,23 @@ int Map::getPopulation() const {
 
 void Map::setPopulation(int population) {
     Map::_population = population;
+}
+
+std::vector<std::vector<Square>>& Map::getGrid() {
+    return _grid;
+}
+
+void Map::setGrid(std::vector<std::vector<Square>>& grid) {
+    _grid = grid;
+}
+
+bool Map::setSquareTypeFromString(const char *key, Square &square) {
+    auto it = __key_SquareType_map.find(key);
+
+    if (it == __key_SquareType_map.end()) {
+        return false;
+    }
+
+    square.type = it->second;
+    return true;
 }

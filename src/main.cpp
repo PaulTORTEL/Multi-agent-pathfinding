@@ -5,7 +5,7 @@
 int main() {
     std::cout << "Hello, World!" << std::endl;
 
-    Map map = XmlParser::BuildMapFromXml("../maps/map_1.xml");
+    Map map = XmlParser::buildMapFromXml("../maps/map_1.xml");
     std::cout << map << std::endl;
 
 

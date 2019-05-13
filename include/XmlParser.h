@@ -30,7 +30,7 @@ private:
 
 public:
 
-    static Map BuildMapFromXml(const char* file);
+    static Map buildMapFromXml(const char *file);
 };
 
 
