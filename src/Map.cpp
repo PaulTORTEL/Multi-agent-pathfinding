@@ -1,8 +1,8 @@
-#include <utility>
+//
+// Created by Paul Tortel on 13/05/2019.
+//
 
-//
-// Created by Paul on 13/05/2019.
-//
+#include <utility>
 
 #include "../include/Map.h"
 
@@ -20,14 +20,6 @@ int Map::getHeight() const {
 
 void Map::setHeight(int height) {
     Map::_height = height;
-}
-
-int Map::getPopulation() const {
-    return _population;
-}
-
-void Map::setPopulation(int population) {
-    Map::_population = population;
 }
 
 std::vector<std::vector<Square>>& Map::getGrid() {
@@ -50,4 +42,8 @@ bool Map::setSquareTypeFromString(const char *key, Square &square) {
     // We set up the type for the square
     square.type = it->second;
     return true;
+}
+
+std::map<int, Agent> &Map::getAgents() {
+    return _agents;
 }

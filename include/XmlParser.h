@@ -1,5 +1,5 @@
 //
-// Created by Paul on 13/05/2019.
+// Created by Paul Tortel on 13/05/2019.
 //
 
 #ifndef PATHFINDING_PROJECT_XMLPARSER_H
@@ -38,9 +38,10 @@ public:
     /**
      * Create, populate the map with an XML file, and return the map
      * @param file : the path to the XML file
+     * @param name : the name of the Map
      * @return the newly created map
      */
-    static Map buildMapFromXml(const char *file);
+    static Map buildMapFromXml(const char *file, const char* name);
 };
 
 

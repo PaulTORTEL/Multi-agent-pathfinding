@@ -3,11 +3,8 @@
 #include "../include/XmlParser.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-
-    Map map = XmlParser::buildMapFromXml("../maps/map_1.xml");
+    Map map = XmlParser::buildMapFromXml("../maps/map_1.xml", "map_1");
     std::cout << map << std::endl;
-
 
     return 0;
 }

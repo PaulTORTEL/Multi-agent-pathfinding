@@ -1,5 +1,5 @@
 //
-// Created by Paul on 13/05/2019.
+// Created by Paul Tortel on 13/05/2019.
 //
 
 #ifndef PATHFINDING_PROJECT_MAP_H
@@ -9,6 +9,7 @@
 #include <ostream>
 #include <vector>
 #include <map>
+#include <string>
 #include "Agent.h"
 
 /**
@@ -29,10 +30,6 @@ typedef struct {
      * Indicates the level of the square (if 0, the square is at sea-level)
      */
     int level = 0;
-    /**
-     * A pointer to the agent currently occupying the square
-     */
-    Agent* agent = nullptr; //TODO: smart pointer? (weak)
 } Square;
 
 /**
@@ -40,13 +37,14 @@ typedef struct {
  */
 class Map {
 private:
+    std::string _name;
     int _width;
     int _height;
 
     /**
-     * The number of agents in the world
+     * The agents in the world
      */
-    int _population;
+    std::map<int, Agent> _agents;
 
     /**
      * The actual world/map representation
@@ -60,7 +58,7 @@ private:
     std::map<std::string, SquareType> __key_SquareType_map;
 
 public:
-    Map(int width = 0, int height = 0, int population = 0) : _width(width), _height(height), _population(population) {
+    Map(std::string name, int width = 0, int height = 0) : _name(name), _width(width), _height(height) {
         __key_SquareType_map["NONE"] = SquareType::NONE;
         __key_SquareType_map["WALL"] = SquareType::WALL;
         __key_SquareType_map["SWAMP"] = SquareType::SWAMP;
@@ -74,16 +72,12 @@ public:
 
     void setHeight(int height);
 
-    int getPopulation() const;
-
-    void setPopulation(int population);
-
     std::vector<std::vector<Square>>& getGrid();
 
     void setGrid(std::vector<std::vector<Square>>& grid);
 
     friend std::ostream &operator<<(std::ostream &os, const Map &map) {
-        os << "Width: " << map._width << "; Height: " << map._height << "; Population: " << map._population << std::endl;
+        os << "MAP [" << map._name << "] = Width: " << map._width << "; Height: " << map._height << "; Agents: " << map._agents.size() << std::endl;
         return os;
     }
 
@@ -94,6 +88,8 @@ public:
      * @return FALSE if the given type is unknown from the SquareType enum
      */
     bool setSquareTypeFromString(const char* key, Square& square);
+
+    std::map<int, Agent> &getAgents();
 };
 
 

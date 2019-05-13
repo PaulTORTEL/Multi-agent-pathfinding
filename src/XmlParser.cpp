@@ -1,17 +1,17 @@
 //
-// Created by Paul on 13/05/2019.
+// Created by Paul Tortel on 13/05/2019.
 //
 
 #include <iostream>
 #include "../include/XmlParser.h"
 #include "../libs/xml-parser/tinyxml2.h"
 
-Map XmlParser::buildMapFromXml(const char *file) {
+Map XmlParser::buildMapFromXml(const char *file, const char* name) {
     tinyxml2::XMLDocument doc;
     doc.LoadFile(file);
 
     // We define our map with default values
-    Map map;
+    Map map(name);
     tinyxml2::XMLElement* mapElement = doc.FirstChildElement("map");
 
     XmlParser::parseProperties(mapElement, map);
@@ -39,10 +39,29 @@ void XmlParser::parseProperties(tinyxml2::XMLElement* mapElement, Map& map) {
 
 void XmlParser::parsePopulation(tinyxml2::XMLElement* properties, Map& map) {
     tinyxml2::XMLElement* population = properties->FirstChildElement("population");
+    tinyxml2::XMLElement* agents = population->FirstChildElement("agents");
 
-    // We get the number of agents on the map and we save it into the "Population" field
-    int pop = strtol(population->FirstChildElement("number")->GetText(), nullptr, 10);
-    map.setPopulation(pop);
+    auto* agent = agents->FirstChildElement("agent");
+
+    while (agent != nullptr) {
+        // We get the ID of the agent
+        int id = strtol(agent->FindAttribute("id")->Value(), nullptr, 10);
+
+        // We get his start and goal coordinates
+        auto* start_coord = agent->FirstChildElement("start")->FirstChildElement("coordinates");
+        const int start_x = strtol(start_coord->FindAttribute("x")->Value(), nullptr, 10);
+        const int start_y = strtol(start_coord->FindAttribute("y")->Value(), nullptr, 10);
+
+        auto* goal_coord = agent->FirstChildElement("goal")->FirstChildElement("coordinates");
+        const int goal_x = strtol(goal_coord->FindAttribute("x")->Value(), nullptr, 10);
+        const int goal_y = strtol(goal_coord->FindAttribute("y")->Value(), nullptr, 10);
+
+        // We save the information about the agent
+        map.getAgents()[id] = Agent(id, start_x, start_y, goal_x, goal_y);;
+
+        // We move on to the next agent tage (if doesn't exist, then agent == nullptr)
+        agent = agent->NextSiblingElement("agent");
+    }
 }
 
 void XmlParser::parseTopology(tinyxml2::XMLElement* mapElement, Map& map) {
