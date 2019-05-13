@@ -11,33 +11,52 @@
 #include <map>
 #include "Agent.h"
 
-// Enumeration of the different types that can have a square
+/**
+ * Enumeration of the different types that can have a square
+ */
 typedef enum {
     NONE,
     WALL,
     SWAMP
 } SquareType;
 
-// Structure gathering all the properties and information about a Square (a place in the environment)
+/**
+ * Structure gathering all the properties and information about a Square (a place in the environment)
+ */
 typedef struct {
     SquareType type = NONE;
-    // Indicates the level of the square (if 0, the square is at sea-level)
+    /**
+     * Indicates the level of the square (if 0, the square is at sea-level)
+     */
     int level = 0;
-    // A pointer to the agent currently occupying the square
+    /**
+     * A pointer to the agent currently occupying the square
+     */
     Agent* agent = nullptr; //TODO: smart pointer? (weak)
 } Square;
 
-// Map class gathering all the necessary information and the _grid itself
+/**
+ * Map class gathering all the necessary information and the _grid itself
+ */
 class Map {
 private:
     int _width;
     int _height;
+
+    /**
+     * The number of agents in the world
+     */
     int _population;
 
+    /**
+     * The actual world/map representation
+     */
     std::vector<std::vector<Square>> _grid;
 
-    // Associate a key with the corresponding SquareType value
-    // Do not use it outside this class
+    /**
+     *  Associate a key with the corresponding SquareType value.
+     *  Do not use it outside this class!
+     */
     std::map<std::string, SquareType> __key_SquareType_map;
 
 public:
@@ -68,6 +87,12 @@ public:
         return os;
     }
 
+    /**
+     * Set the square's type from a given string
+     * @param key : the square's type
+     * @param square : the actual square
+     * @return FALSE if the given type is unknown from the SquareType enum
+     */
     bool setSquareTypeFromString(const char* key, Square& square);
 };
 

@@ -49,19 +49,27 @@ void XmlParser::parseTopology(tinyxml2::XMLElement* mapElement, Map& map) {
     tinyxml2::XMLElement* topology = mapElement->FirstChildElement("topology");
     auto* square = topology->FirstChildElement("square");
 
+    // While we have square tags to process
     while (square != nullptr) {
         auto* coord = square->FirstChildElement("coordinates");
+
+        // We get the coordinates from the attributes of the tag "coordinates"
         const int x = strtol(coord->FindAttribute("x")->Value(), nullptr, 10);
         const int y = strtol(coord->FindAttribute("y")->Value(), nullptr, 10);
 
         const char* type = square->FirstChildElement("type")->GetText();
         const int level = strtol(square->FirstChildElement("level")->GetText(), nullptr, 10);
 
+        // We assign the level
         map.getGrid()[x][y].level = level;
+
+        // We assign the type to the square and check if something goes wrong
         if (!map.setSquareTypeFromString(type, map.getGrid()[x][y])) {
+            // If here, the SquareType written in the XML for this square is unknown
             std::cerr << "Error: square at [" << x << "," << y << "] has an unknown SquareType" << std::endl;
         }
 
+        // We move on to the next square tag (if doesn't exit, then square == nullptr)
         square = square->NextSiblingElement("square");
     }
 }

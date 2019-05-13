@@ -39,12 +39,15 @@ void Map::setGrid(std::vector<std::vector<Square>>& grid) {
 }
 
 bool Map::setSquareTypeFromString(const char *key, Square &square) {
+    // We get an iterator on the value from the key
     auto it = __key_SquareType_map.find(key);
 
+    // True if the type has not been found
     if (it == __key_SquareType_map.end()) {
         return false;
     }
 
+    // We set up the type for the square
     square.type = it->second;
     return true;
 }
