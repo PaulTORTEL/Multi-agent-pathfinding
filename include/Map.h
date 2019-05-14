@@ -15,22 +15,22 @@
 /**
  * Enumeration of the different types that can have a square
  */
-typedef enum {
+enum SquareType {
     NONE,
     WALL,
     SWAMP
-} SquareType;
+};
 
 /**
  * Structure gathering all the properties and information about a Square (a place in the environment)
  */
-typedef struct {
+struct Square {
     SquareType type = NONE;
     /**
      * Indicates the level of the square (if 0, the square is at sea-level)
      */
     int level = 0;
-} Square;
+};
 
 /**
  * Map class gathering all the necessary information and the _grid itself

@@ -3,11 +3,3 @@
 //
 
 #include "../include/Agent.h"
-
-const std::pair<int, int> &Agent::getStartCoord() const {
-    return start_coord;
-}
-
-const std::pair<int, int> &Agent::getGoalCoord() const {
-    return goal_coord;
-}
