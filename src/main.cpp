@@ -3,12 +3,13 @@
 #include "../include/XmlParser.h"
 #include "../include/State.h"
 #include "../include/solver/Solver.h"
+#include "../include/solver/SimpleSequentialSolver.h"
 
 int main() {
     Map map = XmlParser::buildMapFromXml("../maps/map_1.xml", "map_1");
     std::cout << map << std::endl;
 
-    Solver solver(map);
+    SimpleSequentialSolver solver(map);
 
 
     State s;
@@ -21,7 +22,7 @@ int main() {
 
     std::cout << "Res: " << std::to_string(s != s2) << std::endl;
 
-    std::cout << solver.heuristic(Position(10,54), Position(103,7)) << std::endl;
+    solver.solve();
 
     return 0;
 }

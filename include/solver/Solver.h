@@ -14,9 +14,6 @@ class Solver {
 
 private:
 
-    //TODO: Chebyshev distance, Manhattan distance ?
-
-
     /**
      * Possible status of a solver
      */
@@ -41,6 +38,16 @@ private:
         }
     };
 
+    /**
+     * The Chebyshev distance is used instead of the Manhattan distance since we allow diagonal moves
+     * @param p1 : a position
+     * @param p2 : another position
+     * @return the value of the Chebyshev distance
+     */
+    static float chebyshevDistance(const Position p1, const Position p2);
+
+protected:
+
     Status _status = OK;
 
     State init_state;
@@ -55,8 +62,6 @@ private:
      * Keep a const. ref. of the map it is working on
      */
     const Map map;
-
-    static float chebyshevDistance(const Position p1, const Position p2);
 
 
 public:
@@ -77,7 +82,19 @@ public:
      */
     void setStatus(Status status, const std::string& msg);
 
-    float heuristic(const Position current, const Position goal);
+    /**
+     * Returns the value of the heuristic function
+     * @param current : the current agent's position
+     * @param goal : the agent's goal
+     * @return the computed value of the estimated distance between the current position and the goal position
+     */
+    static float heuristic(const Position current, const Position goal);
+
+    /**
+     * Virtual pure function that child classes have to override in order to start solving the problem
+     * @return
+     */
+    virtual const std::vector<State>& solve() = 0;
 };
 
 
