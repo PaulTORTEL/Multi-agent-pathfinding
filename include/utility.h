@@ -12,6 +12,15 @@ struct Position {
         this->x = x;
         this->y = y;
     }
+
+    bool operator==(const Position &rhs) const {
+        return x == rhs.x &&
+               y == rhs.y;
+    }
+
+    bool operator!=(const Position &rhs) const {
+        return !(rhs == *this);
+    }
 };
 
 #endif //PATHFINDING_PROJECT_UTILITY_H
