@@ -14,13 +14,16 @@ class Solver {
 
 private:
 
+    //TODO: Chebyshev distance, Manhattan distance ?
+
+
     /**
      * Possible status of a solver
      */
     enum Status {
         OK,
         ERROR,
-        NO_SOLUTION,
+        NO_SOLUTION
     };
 
     /**
@@ -53,6 +56,8 @@ private:
      */
     const Map map;
 
+    static float chebyshevDistance(const Position p1, const Position p2);
+
 
 public:
     Solver(Map &map);
@@ -71,6 +76,8 @@ public:
      * @param msg : the optional message
      */
     void setStatus(Status status, const std::string& msg);
+
+    float heuristic(const Position current, const Position goal);
 };
 
 

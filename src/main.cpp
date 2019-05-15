@@ -21,5 +21,7 @@ int main() {
 
     std::cout << "Res: " << std::to_string(s != s2) << std::endl;
 
+    std::cout << solver.heuristic(Position(10,54), Position(103,7)) << std::endl;
+
     return 0;
 }

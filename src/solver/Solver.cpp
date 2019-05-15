@@ -5,6 +5,7 @@
 #include "../../include/solver/Solver.h"
 #include <set>
 #include <iostream>
+#include <algorithm>
 
 Solver::Solver(Map &map) : map(map) {
 
@@ -82,4 +83,16 @@ void Solver::setStatus(Status status, const std::string& msg) {
         std::string error = "A Solver Error has occured (" + msg + ")";
         throw SolverException(error);
     }
+}
+
+float Solver::heuristic(const Position current, const Position goal) {
+    return chebyshevDistance(current, goal);
+}
+
+float Solver::chebyshevDistance(const Position p1, const Position p2) {
+
+    int dist_x = abs(p1.x - p2.x);
+    int dist_y = abs(p1.y - p2.y);
+
+    return std::max(dist_x, dist_y);
 }
