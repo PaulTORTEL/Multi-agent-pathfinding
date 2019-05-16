@@ -23,4 +23,44 @@ struct Position {
     }
 };
 
+enum Direction {
+    NORTH,
+    SOUTH,
+    EAST,
+    WEST,
+
+    NE,
+    NW,
+    SE,
+    SW,
+
+    NO_DIRECTION
+};
+
+Direction inline extractDirection(const Position& p1, const Position& p2) {
+    int diff_x = p1.x - p2.x;
+    int diff_y = p1.y - p2.y;
+
+    if (diff_x < 0 && diff_y < 0) {
+        return SW;
+    } else if (diff_x < 0 && diff_y == 0) {
+        return WEST;
+    } else if (diff_x < 0 && diff_y > 0) {
+        return NW;
+    } else if (diff_x == 0 && diff_y < 0) {
+        return SOUTH;
+    } else if (diff_x == 0 && diff_y == 0) {
+        return NO_DIRECTION;
+    } else if (diff_x == 0 && diff_y > 0) {
+        return NORTH;
+    } else if (diff_x > 0 && diff_y < 0) {
+        return SE;
+    } else if (diff_x > 0 && diff_y == 0) {
+        return EAST;
+    } else if (diff_x > 0 && diff_y > 0) {
+        return NE;
+    }
+
+    return NO_DIRECTION;
+}
 #endif //PATHFINDING_PROJECT_UTILITY_H

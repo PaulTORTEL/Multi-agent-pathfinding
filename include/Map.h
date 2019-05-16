@@ -72,7 +72,7 @@ public:
 
     void setHeight(int height);
 
-    std::vector<std::vector<Square>>& getGrid();
+    const std::vector<std::vector<Square>>& getGrid() const;
 
     void setGrid(std::vector<std::vector<Square>>& grid);
 
@@ -84,12 +84,16 @@ public:
     /**
      * Set the square's type from a given string
      * @param key : the square's type
-     * @param square : the actual square
+     * @param x : the actual square
      * @return FALSE if the given type is unknown from the SquareType enum
      */
-    bool setSquareTypeFromString(const char* key, Square& square);
+    bool setSquareTypeFromString(const char *key, const int &x, const int &y);
 
-    std::map<int, Agent> &getAgents();
+    const std::map<int, Agent>& getAgents() const;
+
+    void addAgent(const Agent& agent);
+
+    void setLevelForSquare(const int& x, const int& y, const int& level);
 };
 
 

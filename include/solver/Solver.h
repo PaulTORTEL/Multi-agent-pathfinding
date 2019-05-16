@@ -15,15 +15,6 @@ class Solver {
 private:
 
     /**
-     * Possible status of a solver
-     */
-    enum Status {
-        OK,
-        ERROR,
-        NO_SOLUTION
-    };
-
-    /**
      * Exception used to explain why the solver' status is now set on ERROR
      */
     struct SolverException : public std::exception
@@ -46,7 +37,26 @@ private:
      */
     static float chebyshevDistance(const Position p1, const Position p2);
 
+    /**
+     * Returns the value of the heuristic function
+     * @param current : the current agent's position
+     * @param goal : the agent's goal
+     * @return the computed value of the estimated distance between the current position and the goal position
+     */
+    static float heuristic(const Position current, const Position goal);
+
+    virtual float movement_cost(const Position current, const Position next);
+
 protected:
+
+    /**
+     * Possible status of a solver
+     */
+    enum Status {
+        OK,
+        ERROR,
+        NO_SOLUTION
+    };
 
     Status _status = OK;
 
@@ -63,6 +73,7 @@ protected:
      */
     const Map map;
 
+    const float total_movement_cost(const Position &current, const Position &next, const Position &goal);
 
 public:
     Solver(Map &map);
@@ -81,14 +92,6 @@ public:
      * @param msg : the optional message
      */
     void setStatus(Status status, const std::string& msg);
-
-    /**
-     * Returns the value of the heuristic function
-     * @param current : the current agent's position
-     * @param goal : the agent's goal
-     * @return the computed value of the estimated distance between the current position and the goal position
-     */
-    static float heuristic(const Position current, const Position goal);
 
     /**
      * Virtual pure function that child classes have to override in order to start solving the problem

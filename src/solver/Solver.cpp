@@ -96,3 +96,29 @@ float Solver::chebyshevDistance(const Position p1, const Position p2) {
 
     return std::max(dist_x, dist_y);
 }
+
+float Solver::movement_cost(const Position current, const Position next) {
+
+    Direction move_direction = extractDirection(current, next);
+    const float straight = 1.;
+    const float diagonal = 1.414;
+
+    switch (move_direction) {
+
+        case NORTH: case SOUTH: case WEST: case EAST:
+            return straight;
+
+        case NE: case NW: case SE: case SW:
+            return diagonal;
+
+        case NO_DIRECTION:
+            return 0.;
+
+        default:
+            return 0.;
+    }
+}
+
+const float Solver::total_movement_cost(const Position &current, const Position &next, const Position &goal) {
+    return movement_cost(current, next) + heuristic(current, goal);
+}

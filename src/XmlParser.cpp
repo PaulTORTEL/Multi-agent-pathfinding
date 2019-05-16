@@ -57,7 +57,7 @@ void XmlParser::parsePopulation(tinyxml2::XMLElement* properties, Map& map) {
         const int goal_y = strtol(goal_coord->FindAttribute("y")->Value(), nullptr, 10);
 
         // We save the information about the agent
-        map.getAgents()[id] = Agent(id, start_x, start_y, goal_x, goal_y);;
+        map.addAgent(Agent(id, start_x, start_y, goal_x, goal_y));
 
         // We move on to the next agent tage (if doesn't exist, then agent == nullptr)
         agent = agent->NextSiblingElement("agent");
@@ -80,10 +80,10 @@ void XmlParser::parseTopology(tinyxml2::XMLElement* mapElement, Map& map) {
         const int level = strtol(square->FirstChildElement("level")->GetText(), nullptr, 10);
 
         // We assign the level
-        map.getGrid()[x][y].level = level;
+        map.setLevelForSquare(x, y, level);
 
         // We assign the type to the square and check if something goes wrong
-        if (!map.setSquareTypeFromString(type, map.getGrid()[x][y])) {
+        if (!map.setSquareTypeFromString(type, x, y)) {
             // If here, the SquareType written in the XML for this square is unknown
             std::cerr << "Error: square at [" << x << "," << y << "] has an unknown SquareType" << std::endl;
         }

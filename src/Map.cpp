@@ -22,7 +22,7 @@ void Map::setHeight(int height) {
     Map::_height = height;
 }
 
-std::vector<std::vector<Square>>& Map::getGrid() {
+const std::vector<std::vector<Square>>& Map::getGrid() const {
     return _grid;
 }
 
@@ -30,7 +30,7 @@ void Map::setGrid(std::vector<std::vector<Square>>& grid) {
     _grid = grid;
 }
 
-bool Map::setSquareTypeFromString(const char *key, Square &square) {
+bool Map::setSquareTypeFromString(const char *key, const int &x, const int &y) {
     // We get an iterator on the value from the key
     auto it = __key_SquareType_map.find(key);
 
@@ -40,10 +40,18 @@ bool Map::setSquareTypeFromString(const char *key, Square &square) {
     }
 
     // We set up the type for the square
-    square.type = it->second;
+    _grid[x][y].type = it->second;
     return true;
 }
 
-std::map<int, Agent> &Map::getAgents() {
+const std::map<int, Agent>& Map::getAgents() const {
     return _agents;
+}
+
+void Map::addAgent(const Agent &agent) {
+    _agents[agent.getId()] = agent;
+}
+
+void Map::setLevelForSquare(const int &x, const int &y, const int &level) {
+    _grid[x][y].level = level;
 }

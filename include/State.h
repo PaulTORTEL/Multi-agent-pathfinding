@@ -42,5 +42,14 @@ struct State {
     bool operator!=(const State &rhs) const {
         return !(rhs == *this);
     }
+
+    const std::map<int, Position>::iterator findAgentAtPosition(const Position& position) {
+        for (auto it = positions.begin(); it != positions.end(); ++it) {
+            if (it->second == position) {
+                return it;
+            }
+        }
+        return positions.end();
+    }
 };
 #endif //PATHFINDING_PROJECT_STATE_H
