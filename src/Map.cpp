@@ -22,11 +22,11 @@ void Map::setHeight(int height) {
     Map::_height = height;
 }
 
-const std::vector<std::vector<Square>>& Map::getGrid() const {
+const std::vector<std::vector<MapSquare>>& Map::getGrid() const {
     return _grid;
 }
 
-void Map::setGrid(std::vector<std::vector<Square>>& grid) {
+void Map::setGrid(std::vector<std::vector<MapSquare>>& grid) {
     _grid = grid;
 }
 
@@ -54,4 +54,8 @@ void Map::addAgent(const Agent &agent) {
 
 void Map::setLevelForSquare(const int &x, const int &y, const int &level) {
     _grid[x][y].level = level;
+}
+
+const MapSquare & Map::getMapSquare(Position &position) const {
+    return _grid[position.x][position.y];
 }

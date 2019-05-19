@@ -24,7 +24,7 @@ enum SquareType {
 /**
  * Structure gathering all the properties and information about a Square (a place in the environment)
  */
-struct Square {
+struct MapSquare {
     SquareType type = NONE;
     /**
      * Indicates the level of the square (if 0, the square is at sea-level)
@@ -49,7 +49,7 @@ private:
     /**
      * The actual world/map representation
      */
-    std::vector<std::vector<Square>> _grid;
+    std::vector<std::vector<MapSquare>> _grid;
 
     /**
      *  Associate a key with the corresponding SquareType value.
@@ -72,9 +72,9 @@ public:
 
     void setHeight(int height);
 
-    const std::vector<std::vector<Square>>& getGrid() const;
+    const std::vector<std::vector<MapSquare>>& getGrid() const;
 
-    void setGrid(std::vector<std::vector<Square>>& grid);
+    void setGrid(std::vector<std::vector<MapSquare>>& grid);
 
     friend std::ostream &operator<<(std::ostream &os, const Map &map) {
         os << "MAP [" << map._name << "] = Width: " << map._width << "; Height: " << map._height << "; Agents: " << map._agents.size() << std::endl;
@@ -94,6 +94,8 @@ public:
     void addAgent(const Agent& agent);
 
     void setLevelForSquare(const int& x, const int& y, const int& level);
+
+    const MapSquare & getMapSquare(Position &position) const;
 };
 
 

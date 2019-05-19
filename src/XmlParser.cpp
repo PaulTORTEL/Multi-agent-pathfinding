@@ -31,7 +31,7 @@ void XmlParser::parseProperties(tinyxml2::XMLElement* mapElement, Map& map) {
     map.setHeight(height);
 
     // We create an empty grid
-    std::vector<std::vector<Square>> grid(width, std::vector<Square>(height));
+    std::vector<std::vector<MapSquare>> grid(width, std::vector<MapSquare>(height));
     map.setGrid(grid);
 
     XmlParser::parsePopulation(properties, map);

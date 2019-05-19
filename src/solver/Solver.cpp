@@ -45,7 +45,7 @@ Solver::Solver(Map &map) : map(map) {
     }
 }
 
-bool Solver::checkStateValidity(const State &state, const std::vector<std::vector<Square>> &grid) {
+bool Solver::checkStateValidity(const State &state, const std::vector<std::vector<MapSquare>> &grid) {
 
     std::set<std::string> known_pos;
 
@@ -85,11 +85,11 @@ void Solver::setStatus(Status status, const std::string& msg) {
     }
 }
 
-float Solver::heuristic(const Position current, const Position goal) {
+float Solver::heuristic_cost(const Position &current, const Position &goal) {
     return chebyshevDistance(current, goal);
 }
 
-float Solver::chebyshevDistance(const Position p1, const Position p2) {
+float Solver::chebyshevDistance(const Position &p1, const Position &p2) {
 
     int dist_x = abs(p1.x - p2.x);
     int dist_y = abs(p1.y - p2.y);
@@ -97,19 +97,19 @@ float Solver::chebyshevDistance(const Position p1, const Position p2) {
     return std::max(dist_x, dist_y);
 }
 
-float Solver::movement_cost(const Position current, const Position next) {
+float Solver::movement_cost(const SearchSquare &current, const Position &next) {
 
-    Direction move_direction = extractDirection(current, next);
+    Direction move_direction = extractDirection(current.position, next);
     const float straight = 1.;
     const float diagonal = 1.414;
 
     switch (move_direction) {
 
         case NORTH: case SOUTH: case WEST: case EAST:
-            return straight;
+            return straight + current.cost_movement;
 
         case NE: case NW: case SE: case SW:
-            return diagonal;
+            return diagonal + current.cost_movement;
 
         case NO_DIRECTION:
             return 0.;
@@ -119,6 +119,6 @@ float Solver::movement_cost(const Position current, const Position next) {
     }
 }
 
-const float Solver::total_movement_cost(const Position &current, const Position &next, const Position &goal) {
-    return movement_cost(current, next) + heuristic(current, goal);
+const float Solver::total_movement_cost(const SearchSquare &current, const Position &next, const Position &goal) {
+    return movement_cost(current, next) + heuristic_cost(next, goal);
 }

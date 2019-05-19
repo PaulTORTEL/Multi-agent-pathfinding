@@ -35,17 +35,7 @@ private:
      * @param p2 : another position
      * @return the value of the Chebyshev distance
      */
-    static float chebyshevDistance(const Position p1, const Position p2);
-
-    /**
-     * Returns the value of the heuristic function
-     * @param current : the current agent's position
-     * @param goal : the agent's goal
-     * @return the computed value of the estimated distance between the current position and the goal position
-     */
-    static float heuristic(const Position current, const Position goal);
-
-    virtual float movement_cost(const Position current, const Position next);
+    static float chebyshevDistance(const Position &p1, const Position &p2);
 
 protected:
 
@@ -61,19 +51,27 @@ protected:
     Status _status = OK;
 
     State init_state;
+
     State goal_state;
 
-    /**
-     * Store the paths that each agent must take to reach its goal
-     */
-    std::vector<State> solution;
+    StateDictionary state_dictionary;
 
     /**
      * Keep a const. ref. of the map it is working on
      */
     const Map map;
 
-    const float total_movement_cost(const Position &current, const Position &next, const Position &goal);
+    const float total_movement_cost(const SearchSquare &current, const Position &next, const Position &goal);
+
+    virtual float movement_cost(const SearchSquare &current, const Position &next);
+
+    /**
+     * Returns the value of the heuristic function
+     * @param current : the current agent's position
+     * @param goal : the agent's goal
+     * @return the computed value of the estimated distance between the current position and the goal position
+     */
+    static float heuristic_cost(const Position &current, const Position &goal);
 
 public:
     Solver(Map &map);
@@ -84,7 +82,7 @@ public:
      * @param grid : the world
      * @return True if the state is valid
      */
-    static bool checkStateValidity(const State &state, const std::vector<std::vector<Square>> &grid);
+    static bool checkStateValidity(const State &state, const std::vector<std::vector<MapSquare>> &grid);
 
     /**
      * Set the status of the solver
