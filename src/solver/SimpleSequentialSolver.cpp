@@ -10,14 +10,15 @@ SimpleSequentialSolver::SimpleSequentialSolver(Map &map) : Solver(map) {}
 
 const std::vector<State> &SimpleSequentialSolver::solve() {
 
-    for (auto& agent_it : map.getAgents()) {
-        if (_status == OK) {
-            computeShortestPathPossible(agent_it.second);
+    if (_status != OK) { return std::vector<State>(); }
 
-            if (_status == NO_SOLUTION) {
-                std::cout << "NO SOLUTION FOR AGENT " << agent_it.first << std::endl;
-                break;
-            }
+    for (auto& agent_it : map.getAgents()) {
+
+        computeShortestPathPossible(agent_it.second);
+
+        if (_status == NO_SOLUTION) {
+            std::cout << "NO SOLUTION FOR AGENT " << agent_it.first << std::endl;
+            break;
         }
     }
 
@@ -25,43 +26,36 @@ const std::vector<State> &SimpleSequentialSolver::solve() {
 }
 
 void SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
-    const int& agent_id = agent.getId();
     //TODO: level ? type du square? occupée ou pas par un autre agent à ce moment
     //TODO: wait action possible ??
 
+    const int& agent_id = agent.getId();
     Multimap open_list;
     std::set<std::string> closed_list;
 
-    std::shared_ptr<State> current_state = std::make_shared<State>();
-    *current_state.get() = init_state;
-
-    SearchSquare current_search_square = SearchSquare(current_state.get()->positions[agent_id], nullptr, current_state);
+    SearchSquare current_search_square = SearchSquare(init_state.positions[agent_id], nullptr);
     open_list.insert({current_search_square.cost(), current_search_square});
 
-
-
     do {
-        const auto& it = open_list.begin();
-        current_search_square = it->second;
+        const auto& it_open_list = open_list.begin();
+        current_search_square = it_open_list->second;
 
         std::string pos_coord = std::to_string(current_search_square.position.x) + ";" + std::to_string(current_search_square.position.y);
         closed_list.insert(pos_coord);
 
-        open_list.erase(it);
+        open_list.erase(it_open_list);
 
         std::map<int, State> &dictionary = state_dictionary.dictionary;
 
         if (current_search_square.time_step < dictionary.size()) {
             std::shared_ptr<State> new_current_state = std::make_shared<State>();
-            *new_current_state.get() = dictionary[current_search_square.time_step];
-            current_search_square.state = new_current_state;
+            *new_current_state = dictionary[current_search_square.time_step];
 
         } else if (dictionary.empty()) {
             // prendre init
         } else {
             std::shared_ptr<State> new_current_state = std::make_shared<State>();
-            *new_current_state.get() = dictionary[dictionary.size() - 1];
-            current_search_square.state = new_current_state;
+            *new_current_state = dictionary[dictionary.size() - 1];
         }
 
         populateOpenList(open_list, closed_list, agent, current_search_square);
@@ -72,19 +66,14 @@ void SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
     } while (current_search_square.position != agent.getGoalCoord() && _status == OK);
 
 
-    //TODO: remplir states_recorded
-    //setStateFromTimeStep(state, time_step, agent_id, current_search_square);
-
-
-    //TODO: REMOVE THIS TEST
     SearchSquare* square = &current_search_square;
-    //TODO: remplir les states
+
     if (_status == 2) {
         return;
     }
     std::cout << "agent " << agent_id << ": ";
     do {
-        state_dictionary.addOrUpdateState(*square->state.get(), square->time_step, agent_id, square->position);
+        state_dictionary.addOrUpdateState(init_state, square->time_step, agent_id, square->position);
         std::cout << square->position << " <= ";
         square = square->parent.get();
     } while (square != nullptr);
@@ -142,7 +131,11 @@ void SimpleSequentialSolver::tryInsertInOpenList(Multimap &open_list, const std:
     if (time_step + 1 < dictionary.size()) {
         state_to_evaluate = &dictionary[time_step+1];
     } else {
-        state_to_evaluate = current_agent_position.state.get();
+        if (dictionary.empty()) {
+            state_to_evaluate = &init_state;
+        } else {
+            state_to_evaluate = &dictionary[dictionary.size() - 1];
+        }
     }
 
     //TODO: if water..., add it here
@@ -168,21 +161,12 @@ void SimpleSequentialSolver::tryInsertInOpenList(Multimap &open_list, const std:
                     SearchSquare& searchSquare = it->second;
                     searchSquare.cost_movement = move_cost;
                     searchSquare.parent = current_agent_position.parent;
-                    //TODO: update the state too?
                 }
                 return;
             } else {
                 std::shared_ptr<SearchSquare> parent = std::make_shared<SearchSquare>();
-                *parent.get() = current_agent_position;
-
-                const int next_time_step = current_agent_position.time_step + 1;
-                if (dictionary.find(next_time_step) != dictionary.end()) {
-                    std::shared_ptr<State> next_state = std::make_shared<State>();
-                    *next_state.get() = dictionary[next_time_step];
-                    open_list.insert({cost, SearchSquare(analyzed_pos, parent, next_state, move_cost, heuristic)});
-                } else {
-                    open_list.insert({cost, SearchSquare(analyzed_pos, parent, current_agent_position.state, move_cost, heuristic)});
-                }
+                *parent = current_agent_position;
+                open_list.insert({cost, SearchSquare(analyzed_pos, parent, move_cost, heuristic)});
             }
         }
     }

@@ -57,14 +57,14 @@ struct State {
 struct StateDictionary {
     std::map<int, State> dictionary;
 
-    void addOrUpdateState(const State& current_state, const int time_step, const int agent_id, const Position& new_position) {
+    void addOrUpdateState(const State& init_state, const int time_step, const int agent_id, const Position& new_position) {
         if (dictionary.find(time_step) != dictionary.end()) {
             // Not new
             dictionary[time_step].positions[agent_id] = new_position;
 
         } else {
             // New
-            State new_state = current_state;
+            State new_state = init_state;
             new_state.positions[agent_id] = new_position;
             dictionary[time_step] = new_state;
         }
