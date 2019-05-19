@@ -33,23 +33,23 @@ void SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
     Multimap open_list;
     std::set<std::string> closed_list;
 
-    SearchSquare current_search_square = SearchSquare(init_state.positions[agent_id], nullptr);
-    open_list.insert({current_search_square.cost(), current_search_square});
+    std::shared_ptr<SearchSquare> current_search_square = std::make_shared<SearchSquare>(init_state.positions[agent_id], nullptr);
+    open_list.insert({current_search_square->cost(), current_search_square});
 
     do {
         const auto& it_open_list = open_list.begin();
         current_search_square = it_open_list->second;
 
-        std::string pos_coord = std::to_string(current_search_square.position.x) + ";" + std::to_string(current_search_square.position.y);
+        std::string pos_coord = std::to_string(current_search_square->position.x) + ";" + std::to_string(current_search_square->position.y);
         closed_list.insert(pos_coord);
 
         open_list.erase(it_open_list);
 
         std::map<int, State> &dictionary = state_dictionary.dictionary;
 
-        if (current_search_square.time_step < dictionary.size()) {
+        if (current_search_square->time_step < dictionary.size()) {
             std::shared_ptr<State> new_current_state = std::make_shared<State>();
-            *new_current_state = dictionary[current_search_square.time_step];
+            *new_current_state = dictionary[current_search_square->time_step];
 
         } else if (dictionary.empty()) {
             // prendre init
@@ -63,10 +63,10 @@ void SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
         if (open_list.empty()) {
             _status = NO_SOLUTION;
         }
-    } while (current_search_square.position != agent.getGoalCoord() && _status == OK);
+    } while (current_search_square->position != agent.getGoalCoord() && _status == OK);
 
 
-    SearchSquare* square = &current_search_square;
+    SearchSquare* square = current_search_square.get();
 
     if (_status == 2) {
         return;
@@ -81,10 +81,10 @@ void SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
 }
 
 void SimpleSequentialSolver::populateOpenList(Multimap &open_list, const std::set<std::string> &closed_list,
-                                              const Agent &agent, SearchSquare current_agent_position) {
+                                              const Agent &agent, std::shared_ptr<SearchSquare> &current_agent_position) {
 
-    const int x = current_agent_position.position.x;
-    const int y = current_agent_position.position.y;
+    const int x = current_agent_position->position.x;
+    const int y = current_agent_position->position.y;
 
     const int max_xy = map.getGrid().size() - 1;
 
@@ -118,14 +118,16 @@ void SimpleSequentialSolver::populateOpenList(Multimap &open_list, const std::se
         Position right_down_pos = Position(x+1, y-1);
         tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, right_down_pos);
     }
+    std::cout << "shared count :"  << current_agent_position.use_count() << std::endl;
 }
 
 void SimpleSequentialSolver::tryInsertInOpenList(Multimap &open_list, const std::set<std::string> &closed_list,
-                                                 const Agent &agent, SearchSquare &current_agent_position,
+                                                 const Agent &agent,
+                                                 std::shared_ptr<SearchSquare> &current_agent_position,
                                                  Position &analyzed_pos) {
 
     std::map<int, State> &dictionary = state_dictionary.dictionary;
-    const int& time_step = current_agent_position.time_step;
+    const int& time_step = current_agent_position->time_step;
     State *state_to_evaluate = nullptr;
 
     if (time_step + 1 < dictionary.size()) {
@@ -149,7 +151,7 @@ void SimpleSequentialSolver::tryInsertInOpenList(Multimap &open_list, const std:
                 return;
             }
 
-            const float move_cost = movement_cost(current_agent_position, analyzed_pos);
+            const float move_cost = movement_cost(*current_agent_position, analyzed_pos);
             const float heuristic = heuristic_cost(analyzed_pos, agent.getGoalCoord());
 
             const float cost = move_cost + heuristic;
@@ -157,16 +159,13 @@ void SimpleSequentialSolver::tryInsertInOpenList(Multimap &open_list, const std:
             const auto& it = findPositionInOpenList(analyzed_pos, open_list);
 
             if (it != open_list.end()) {
-                if (it->second.cost() > cost) {
-                    SearchSquare& searchSquare = it->second;
-                    searchSquare.cost_movement = move_cost;
-                    searchSquare.parent = current_agent_position.parent;
+                if (it->second->cost() > cost) {
+                    it->second->cost_movement = move_cost;
+                    it->second->parent = current_agent_position->parent;
                 }
-                return;
             } else {
-                std::shared_ptr<SearchSquare> parent = std::make_shared<SearchSquare>();
-                *parent = current_agent_position;
-                open_list.insert({cost, SearchSquare(analyzed_pos, parent, move_cost, heuristic)});
+                std::shared_ptr<SearchSquare> new_search_square = std::make_shared<SearchSquare>(analyzed_pos, current_agent_position, move_cost, heuristic);
+                open_list.insert({cost, new_search_square});
             }
         }
     }
@@ -177,7 +176,7 @@ SimpleSequentialSolver::Multimap::iterator SimpleSequentialSolver::findPositionI
         Multimap &open_list) {
 
     for (auto it = open_list.begin(); it != open_list.end(); ++it) {
-        if (it->second.position == pos) {
+        if (it->second->position == pos) {
             return it;
         }
     }
