@@ -47,17 +47,6 @@ void SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
 
         std::map<int, State> &dictionary = state_dictionary.dictionary;
 
-        if (current_search_square->time_step < dictionary.size()) {
-            std::shared_ptr<State> new_current_state = std::make_shared<State>();
-            *new_current_state = dictionary[current_search_square->time_step];
-
-        } else if (dictionary.empty()) {
-            // prendre init
-        } else {
-            std::shared_ptr<State> new_current_state = std::make_shared<State>();
-            *new_current_state = dictionary[dictionary.size() - 1];
-        }
-
         populateOpenList(open_list, closed_list, agent, current_search_square);
 
         if (open_list.empty()) {
@@ -118,7 +107,6 @@ void SimpleSequentialSolver::populateOpenList(Multimap &open_list, const std::se
         Position right_down_pos = Position(x+1, y-1);
         tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, right_down_pos);
     }
-    std::cout << "shared count :"  << current_agent_position.use_count() << std::endl;
 }
 
 void SimpleSequentialSolver::tryInsertInOpenList(Multimap &open_list, const std::set<std::string> &closed_list,
@@ -144,7 +132,9 @@ void SimpleSequentialSolver::tryInsertInOpenList(Multimap &open_list, const std:
     //TODO: check if the agent and the square are on the same level or that the agent can climb/use "staircases"
     //TODO: if we do not allow agents to exchange their position (cross the same edge simultaneously in both direction, add to check if next state.pos = current agent pos
     if (map.getMapSquare(analyzed_pos).type != WALL) {
-        if (state_to_evaluate->findAgentAtPosition(analyzed_pos) == state_to_evaluate->positions.end()) {
+        auto& it_agent_searched = state_to_evaluate->findAgentAtPosition(analyzed_pos);
+        const bool isAgentThere = it_agent_searched != state_to_evaluate->positions.end();
+        if (!isAgentThere || it_agent_searched->first == agent.getId()) {
 
             std::string pos_coord = std::to_string(analyzed_pos.x) + ";" + std::to_string(analyzed_pos.y);
             if (closed_list.find(pos_coord) != closed_list.end()) {
@@ -161,7 +151,7 @@ void SimpleSequentialSolver::tryInsertInOpenList(Multimap &open_list, const std:
             if (it != open_list.end()) {
                 if (it->second->cost() > cost) {
                     it->second->cost_movement = move_cost;
-                    it->second->parent = current_agent_position->parent;
+                    it->second->parent = current_agent_position;
                 }
             } else {
                 std::shared_ptr<SearchSquare> new_search_square = std::make_shared<SearchSquare>(analyzed_pos, current_agent_position, move_cost, heuristic);
