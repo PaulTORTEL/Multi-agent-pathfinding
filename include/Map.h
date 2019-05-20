@@ -93,8 +93,19 @@ public:
 
     void addAgent(const Agent& agent);
 
+    /**
+     * Set the level for a MapSquare
+     * @param x : the X position of the square
+     * @param y : the Y position of the square
+     * @param level : the level of the square
+     */
     void setLevelForSquare(const int& x, const int& y, const int& level);
 
+    /**
+     * Get a MapSquare from a given position
+     * @param position : the position that we want to get
+     * @return a const reference on the MapSquare
+     */
     const MapSquare & getMapSquare(Position &position) const;
 };
 

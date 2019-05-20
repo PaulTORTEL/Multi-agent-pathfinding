@@ -13,10 +13,24 @@
 struct State;
 
 struct SearchSquare {
+    /**
+     * The position related to the search square
+     */
     Position position;
+
+    /**
+     * The cost of the movement and of the heuristic
+     */
     float cost_movement, cost_heuristic;
+
+    /**
+     * The time step from which the search square has been created
+     */
     int time_step;
 
+    /**
+     * A shared pointer on the parent (which is a search square as well)
+     */
     std::shared_ptr<SearchSquare> parent;
 
     explicit SearchSquare(Position position, std::shared_ptr<SearchSquare> parent = nullptr,

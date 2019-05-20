@@ -8,9 +8,9 @@
 
 SimpleSequentialSolver::SimpleSequentialSolver(Map &map) : Solver(map) {}
 
-const std::vector<State> &SimpleSequentialSolver::solve() {
+void SimpleSequentialSolver::solve() {
 
-    if (_status != OK) { return std::vector<State>(); }
+    if (_status != OK) { return; }
 
     for (auto& agent_it : map.getAgents()) {
 
@@ -21,8 +21,6 @@ const std::vector<State> &SimpleSequentialSolver::solve() {
             break;
         }
     }
-
-    return std::vector<State>();
 }
 
 void SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {

@@ -8,6 +8,8 @@
 
 #include "../State.h"
 #include "../Map.h"
+#include "../StateDictionary.h"
+#include "../SearchSquare.h"
 #include <vector>
 
 class Solver {
@@ -54,6 +56,9 @@ protected:
 
     State goal_state;
 
+    /**
+     * The dictionary gathering all the known states in the problem solving
+     */
     StateDictionary state_dictionary;
 
     /**
@@ -61,8 +66,21 @@ protected:
      */
     const Map map;
 
+    /**
+     * Return the total movement cost (heuristic + move)
+     * @param current : the current search square
+     * @param next : the position that we are computing
+     * @param goal : the position of the agent's goal
+     * @return the total movement cost
+     */
     const float total_movement_cost(const SearchSquare &current, const Position &next, const Position &goal);
 
+    /**
+     * Return the movement cost
+     * @param current : the current search square
+     * @param next : the position that we are computing
+     * @return the movement cost
+     */
     virtual float movement_cost(const SearchSquare &current, const Position &next);
 
     /**
@@ -95,7 +113,7 @@ public:
      * Virtual pure function that child classes have to override in order to start solving the problem
      * @return
      */
-    virtual const std::vector<State>& solve() = 0;
+    virtual void solve() = 0;
 };
 
 

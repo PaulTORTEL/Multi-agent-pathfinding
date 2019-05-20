@@ -6,7 +6,6 @@
 #define PATHFINDING_PROJECT_STATE_H
 
 #include "utility.h"
-#include "SearchSquare.h"
 #include <map>
 
 struct State {
@@ -44,6 +43,11 @@ struct State {
         return !(rhs == *this);
     }
 
+    /**
+     * Find an agent at a given position
+     * @param position : the position to look for
+     * @return an iterator on the found agent
+     */
     const std::map<int, Position>::iterator findAgentAtPosition(const Position &position) {
         for (auto it = positions.begin(); it != positions.end(); ++it) {
             if (it->second == position) {
@@ -54,21 +58,4 @@ struct State {
     }
 };
 
-struct StateDictionary {
-    std::map<int, State> dictionary;
-
-    void addOrUpdateState(const State& init_state, const int time_step, const int agent_id, const Position& new_position) {
-        if (dictionary.find(time_step) != dictionary.end()) {
-            // Not new
-            dictionary[time_step].positions[agent_id] = new_position;
-
-        } else {
-            // New
-            State new_state = init_state;
-            new_state.positions[agent_id] = new_position;
-            dictionary[time_step] = new_state;
-        }
-    }
-
-};
 #endif //PATHFINDING_PROJECT_STATE_H

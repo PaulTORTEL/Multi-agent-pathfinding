@@ -99,6 +99,7 @@ float Solver::chebyshevDistance(const Position &p1, const Position &p2) {
 
 float Solver::movement_cost(const SearchSquare &current, const Position &next) {
 
+    // We get the direction (North, South, etc.)
     Direction move_direction = extractDirection(current.position, next);
     const float straight = 1.;
     const float diagonal = 1.414;
