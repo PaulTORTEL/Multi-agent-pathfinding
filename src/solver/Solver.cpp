@@ -123,3 +123,22 @@ float Solver::movement_cost(const SearchSquare &current, const Position &next) {
 const float Solver::total_movement_cost(const SearchSquare &current, const Position &next, const Position &goal) {
     return movement_cost(current, next) + heuristic_cost(next, goal);
 }
+
+const bool Solver::areMovementsColliding(const Position& start_pos1, const Position& end_pos1,
+        const Position& start_pos2, const Position& end_pos2) {
+
+    Direction d1 = extractDirection(start_pos1, end_pos1);
+    Direction d2 = extractDirection(start_pos2, end_pos2);
+
+    if (d1 == NW && d2 == NE) {
+        return true;
+    } else if (d1 == NE && d2 == NW) {
+        return true;
+    } else if (d1 == SW && d2 == SE) {
+        return true;
+    } else if (d1 == SE && d2 == SW) {
+        return true;
+    }
+    //TODO: d1 == W && d2 == E ? etc
+    return false;
+}

@@ -41,12 +41,6 @@ private:
     static SimpleSequentialSolver::Multimap::iterator findPositionInOpenList(const Position &pos, Multimap &open_list);
 
 
-public:
-
-    SimpleSequentialSolver(Map &map);
-
-    void solve() override;
-
     /**
      * Try to insert an element in the open list depending on the agents coordinates at the corresponding time step, the environment topology (walls...) etc.
      * @param open_list : the open list
@@ -56,8 +50,28 @@ public:
      * @param analyzed_pos : the new position that we can reach from the currently analyzed position
      */
     void tryInsertInOpenList(Multimap &open_list, const std::set<std::string> &closed_list,
-                             const Agent &agent, std::shared_ptr<SearchSquare> &current_agent_position,
-                             Position &analyzed_pos);
+                             const Agent &agent,
+                             std::shared_ptr<SearchSquare> &current_agent_position,
+                             Position &analyzed_pos, const Direction &direction);
+
+    State *getStateToEvaluateFromTimeStep(const int &time_step);
+
+    void recordStatesFromPath(const int &agent_id, const std::shared_ptr<SearchSquare> &current_search_square);
+
+public:
+
+    SimpleSequentialSolver(Map &map);
+
+    void solve() override;
+
+    const bool willCollideWithOtherAgents(const Position &current_position, Position &next_position,
+                                          const Direction &direction,
+                                          const int &time_step);
+
+    const bool
+    isCollidingWithNeighbour(const Position &current_position, const Position &next_position,
+                             const int &time_step, State &current_state,
+                             const Position &current_position_neighbour);
 };
 
 

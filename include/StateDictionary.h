@@ -33,6 +33,15 @@ struct StateDictionary {
         }
     }
 
+    State * getStateFromTimeStep(const int &time_step) {
+
+        if (dictionary.find(time_step) != dictionary.end()) {
+            return &dictionary[time_step];
+        }
+
+        return dictionary.empty() ? nullptr : &dictionary[dictionary.size() - 1];
+    }
+
 };
 
 #endif //PATHFINDING_PROJECT_STATEDICTIONARY_H
