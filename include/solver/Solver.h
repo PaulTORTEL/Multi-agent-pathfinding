@@ -91,7 +91,7 @@ protected:
      */
     static float heuristic_cost(const Position &current, const Position &goal);
 
-    const bool areMovementsColliding(const Position &start_pos1, const Position &end_pos1, const Position &start_pos2,
+    static const bool areMovementsColliding(const Position &start_pos1, const Position &end_pos1, const Position &start_pos2,
                                      const Position &end_pos2);
 public:
 

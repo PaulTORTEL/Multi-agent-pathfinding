@@ -138,7 +138,23 @@ const bool Solver::areMovementsColliding(const Position& start_pos1, const Posit
         return true;
     } else if (d1 == SE && d2 == SW) {
         return true;
+    } else if (d1 == NE && d2 == SW) {
+        return true;
+    } else if (d1 == NW && d2 == SE) {
+        return true;
+    } else if (d1 == SW && d2 == NE) {
+        return true;
+    } else if (d1 == SE && d2 == NW) {
+        return true;
+    } else if (d1 == WEST && d2 == EAST) {
+        return true;
+    } else if (d1 == EAST && d2 == WEST) {
+        return true;
+    } else if (d1 == NORTH && d2 == SOUTH) {
+        return true;
+    } else if (d1 == SOUTH && d2 == NORTH) {
+        return true;
     }
-    //TODO: d1 == W && d2 == E ? etc
+
     return false;
 }

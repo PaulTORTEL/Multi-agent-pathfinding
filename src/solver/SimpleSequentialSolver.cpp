@@ -198,6 +198,7 @@ const bool SimpleSequentialSolver::willCollideWithOtherAgents(const Position &cu
     Position pos_up = Position(current_position.x, current_position.y+1);
     Position pos_left = Position(current_position.x-1, current_position.y);
     Position pos_down = Position(current_position.x, current_position.y-1);
+    Position pos_down_left = Position(current_position.x-1, current_position.y-1);
 
     switch(direction) {
 
@@ -230,12 +231,16 @@ const bool SimpleSequentialSolver::willCollideWithOtherAgents(const Position &cu
             if (isCollidingWithNeighbour(current_position, next_position, time_step, *current_state, pos_down)) {
                 return true;
             }
+            //TODO: add the rest
             break;
         case SW:
             if (isCollidingWithNeighbour(current_position, next_position, time_step, *current_state, pos_left)) {
                 return true;
             }
             if (isCollidingWithNeighbour(current_position, next_position, time_step, *current_state, pos_down)) {
+                return true;
+            }
+            if (isCollidingWithNeighbour(current_position, next_position, time_step, *current_state, pos_down_left)) {
                 return true;
             }
             break;

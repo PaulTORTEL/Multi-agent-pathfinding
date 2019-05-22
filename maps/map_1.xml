@@ -12,15 +12,23 @@
                         <coordinates x="0" y="0"/>
                     </start>
                     <goal>
-                        <coordinates x="1" y="1"/>
+                        <coordinates x="0" y="4"/>
                     </goal>
                 </agent>
                 <agent id="2">
                     <start>
-                        <coordinates x="1" y="0"/>
+                        <coordinates x="2" y="2"/>
                     </start>
                     <goal>
-                        <coordinates x="0" y="1"/>
+                        <coordinates x="0" y="0"/>
+                    </goal>
+                </agent>
+                <agent id="3">
+                    <start>
+                        <coordinates x="3" y="4"/>
+                    </start>
+                    <goal>
+                        <coordinates x="1" y="0"/>
                     </goal>
                 </agent>
             </agents>
