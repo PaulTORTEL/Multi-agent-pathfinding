@@ -91,6 +91,15 @@ protected:
      */
     static float heuristic_cost(const Position &current, const Position &goal);
 
+    /**
+     * WARNING: ONLY CALL THIS FUNCTION WITH ADJACENT POSITIONS (pos1 & pos2)
+     * Return whether the directions of the movements would result to a collision
+     * @param start_pos1 : the starting position 1
+     * @param end_pos1 : the ending position 1
+     * @param start_pos2 : the starting position 2
+     * @param end_pos2 : the ending position 2
+     * @return true if the movements should collide
+     */
     static const bool areMovementsColliding(const Position &start_pos1, const Position &end_pos1, const Position &start_pos2,
                                      const Position &end_pos2);
 public:

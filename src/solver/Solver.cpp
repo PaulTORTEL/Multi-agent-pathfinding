@@ -127,6 +127,7 @@ const float Solver::total_movement_cost(const SearchSquare &current, const Posit
 const bool Solver::areMovementsColliding(const Position& start_pos1, const Position& end_pos1,
         const Position& start_pos2, const Position& end_pos2) {
 
+    // We assume that the pos1 & pos2 are adjacent, we are only interested in determining whether their movements are colliding
     Direction d1 = extractDirection(start_pos1, end_pos1);
     Direction d2 = extractDirection(start_pos2, end_pos2);
 

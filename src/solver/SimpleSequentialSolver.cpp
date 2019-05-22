@@ -146,6 +146,7 @@ void SimpleSequentialSolver::tryInsertInOpenList(Multimap &open_list, const std:
         // If there is no agent at the position or if the agent that is there is the agent we are currently processing
         if (!isAgentThere || it_agent_searched->first == agent.getId()) {
 
+            // If the agent will collide with other agents if it does this move
             if (willCollideWithOtherAgents(current_agent_position->position, analyzed_pos, direction, time_step)) {
                 return;
             }
@@ -199,6 +200,9 @@ const bool SimpleSequentialSolver::willCollideWithOtherAgents(const Position &cu
     Position pos_left = Position(current_position.x-1, current_position.y);
     Position pos_down = Position(current_position.x, current_position.y-1);
     Position pos_down_left = Position(current_position.x-1, current_position.y-1);
+    Position pos_down_right = Position(current_position.x+1, current_position.y-1);
+    Position pos_up_left = Position(current_position.x-1, current_position.y+1);
+    Position pos_up_right = Position(current_position.x+1, current_position.y+1);
 
     switch(direction) {
 
@@ -206,12 +210,18 @@ const bool SimpleSequentialSolver::willCollideWithOtherAgents(const Position &cu
         case SOUTH:break;
         case EAST:break;
         case WEST:break;
+        case NO_DIRECTION:break;
 
         case NE:
+            // In the case our current agent plans to go north-east, the only positions that could have other agents and that could result to a collision
+            // are the position at the right, top right, and top
             if (isCollidingWithNeighbour(current_position, next_position, time_step, *current_state, pos_right)) {
                 return true;
             }
             if (isCollidingWithNeighbour(current_position, next_position, time_step, *current_state, pos_up)) {
+                return true;
+            }
+            if (isCollidingWithNeighbour(current_position, next_position, time_step, *current_state, pos_up_right)) {
                 return true;
             }
             break;
@@ -223,6 +233,9 @@ const bool SimpleSequentialSolver::willCollideWithOtherAgents(const Position &cu
             if (isCollidingWithNeighbour(current_position, next_position, time_step, *current_state, pos_up)) {
                 return true;
             }
+            if (isCollidingWithNeighbour(current_position, next_position, time_step, *current_state, pos_up_left)) {
+                return true;
+            }
             break;
         case SE:
             if (isCollidingWithNeighbour(current_position, next_position, time_step, *current_state, pos_right)) {
@@ -231,7 +244,9 @@ const bool SimpleSequentialSolver::willCollideWithOtherAgents(const Position &cu
             if (isCollidingWithNeighbour(current_position, next_position, time_step, *current_state, pos_down)) {
                 return true;
             }
-            //TODO: add the rest
+            if (isCollidingWithNeighbour(current_position, next_position, time_step, *current_state, pos_down_right)) {
+                return true;
+            }
             break;
         case SW:
             if (isCollidingWithNeighbour(current_position, next_position, time_step, *current_state, pos_left)) {
@@ -244,7 +259,6 @@ const bool SimpleSequentialSolver::willCollideWithOtherAgents(const Position &cu
                 return true;
             }
             break;
-        case NO_DIRECTION:break;
     }
 
     return false;
@@ -255,20 +269,27 @@ SimpleSequentialSolver::isCollidingWithNeighbour(const Position &current_positio
                                                  const int &time_step, State &current_state,
                                                  const Position &current_position_neighbour) {
 
+    // We check if there is an agent at the position that could lead to a collision with our agent
+    // if this agent moves in a particular direction
     auto &it_agent = current_state.findAgentAtPosition(current_position_neighbour);
 
     if (it_agent != current_state.positions.end()) {
+        // We fetch the next state to be able to see where this agent will go at the next time step
         State* next_state = state_dictionary.getStateFromTimeStep(time_step + 1);
 
+        // There is no next state yet, then it means that the other agent will not move at this point
         if (next_state == nullptr) {
+            // There is no collision
             return false;
         }
 
+        // If the movements will result in a collision
         if (areMovementsColliding(current_position, next_position, it_agent->second,
                                   next_state->positions[it_agent->first])) {
             return true;
         }
     }
+    // There is no agent
     return false;
 }
 
