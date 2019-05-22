@@ -26,11 +26,11 @@ public:
 
     SearchSquare computeShortestPathPossible(const Agent &agent, ConstraintNode &constraint_node);
 
-    void populateOpenList(Multimap &open_list, const std::set<std::string> &closed_list, const Agent &agent,
+    void populateOpenList(MultimapSearchSquare &open_list, const std::set<std::string> &closed_list, const Agent &agent,
                           std::shared_ptr<SearchSquare> &current_agent_position,
                           ConstraintNode &constraint_node);
 
-    void tryInsertInOpenList(Multimap &open_list, const std::set<std::string> &closed_list,
+    void tryInsertInOpenList(MultimapSearchSquare &open_list, const std::set<std::string> &closed_list,
                              const Agent &agent, std::shared_ptr<SearchSquare> &current_agent_position,
                              Position &analyzed_pos, ConstraintNode &constraint_node);
 };

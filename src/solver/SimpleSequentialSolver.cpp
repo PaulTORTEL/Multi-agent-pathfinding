@@ -29,7 +29,7 @@ void SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
     //TODO: wait action possible ??
 
     const int& agent_id = agent.getId();
-    Multimap open_list;
+    MultimapSearchSquare open_list;
     std::set<std::string> closed_list;
 
     // We populate the open list with the initial search square, wrapping the initial position of the agent
@@ -79,7 +79,7 @@ void SimpleSequentialSolver::recordStatesFromPath(const int &agent_id,
     std::cout << std::endl;
 }
 
-void SimpleSequentialSolver::populateOpenList(Multimap &open_list, const std::set<std::string> &closed_list,
+void SimpleSequentialSolver::populateOpenList(MultimapSearchSquare &open_list, const std::set<std::string> &closed_list,
                                               const Agent &agent, std::shared_ptr<SearchSquare> &current_agent_position) {
 
     const int x = current_agent_position->position.x;
@@ -125,7 +125,7 @@ void SimpleSequentialSolver::populateOpenList(Multimap &open_list, const std::se
     }
 }
 
-void SimpleSequentialSolver::tryInsertInOpenList(Multimap &open_list, const std::set<std::string> &closed_list,
+void SimpleSequentialSolver::tryInsertInOpenList(MultimapSearchSquare &open_list, const std::set<std::string> &closed_list,
                                                  const Agent &agent,
                                                  std::shared_ptr<SearchSquare> &current_agent_position,
                                                  Position &analyzed_pos, const Direction &direction) {

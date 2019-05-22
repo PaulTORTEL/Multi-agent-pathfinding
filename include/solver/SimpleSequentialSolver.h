@@ -26,7 +26,7 @@ private:
      * @param agent : the agent we are dealing with
      * @param current_agent_position : the currently analyzed position for the agent (last element taken from the open list)
      */
-    void populateOpenList(Multimap &open_list, const std::set<std::string> &closed_list,
+    void populateOpenList(MultimapSearchSquare &open_list, const std::set<std::string> &closed_list,
                           const Agent &agent, std::shared_ptr<SearchSquare> &current_agent_position);
 
 
@@ -38,7 +38,7 @@ private:
      * @param current_agent_position : the currently analyzed position for the agent
      * @param analyzed_pos : the new position that we can reach from the currently analyzed position
      */
-    void tryInsertInOpenList(Multimap &open_list, const std::set<std::string> &closed_list,
+    void tryInsertInOpenList(MultimapSearchSquare &open_list, const std::set<std::string> &closed_list,
                              const Agent &agent,
                              std::shared_ptr<SearchSquare> &current_agent_position,
                              Position &analyzed_pos, const Direction &direction);

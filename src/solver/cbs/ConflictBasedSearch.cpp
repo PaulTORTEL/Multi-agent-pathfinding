@@ -13,8 +13,20 @@ void ConflictBasedSearch::solve() {
 void ConflictBasedSearch::highLevelSolver() {
 
     root.constraints.clear();
-    root.solutions = lowLevelSolver(root);
-    int a = 0;
+    root.solution = lowLevelSolver(root);
+    root.computeSicHeuristic();
+
+    MultimapConstraintNode open_list;
+   // std::shared_ptr<Constraint> current_search_square = std::make_shared<Constraint>(init_state.positions[agent_id], nullptr);
+    open_list.insert({root.cost, root});
+
+    while (!open_list.empty()) {
+        const auto& it_open_list = open_list.begin();
+        ConstraintNode current_node = it_open_list->second;
+
+        //TODO: remove
+        break;
+    }
 }
 
 ConflictBasedSearch::ConflictBasedSearch(Map &map) : Solver(map){}
@@ -39,7 +51,7 @@ SearchSquare ConflictBasedSearch::computeShortestPathPossible(const Agent &agent
                                                                ConstraintNode &constraint_node) {
 
     const int& agent_id = agent.getId();
-    Multimap open_list;
+    MultimapSearchSquare open_list;
     std::set<std::string> closed_list;
 
     // We populate the open list with the initial search square, wrapping the initial position of the agent
@@ -68,7 +80,7 @@ SearchSquare ConflictBasedSearch::computeShortestPathPossible(const Agent &agent
 }
 
 void
-ConflictBasedSearch::populateOpenList(Multimap &open_list, const std::set<std::string> &closed_list, const Agent &agent,
+ConflictBasedSearch::populateOpenList(MultimapSearchSquare &open_list, const std::set<std::string> &closed_list, const Agent &agent,
                                       std::shared_ptr<SearchSquare> &current_agent_position,
                                       ConstraintNode &constraint_node) {
 
@@ -115,7 +127,7 @@ ConflictBasedSearch::populateOpenList(Multimap &open_list, const std::set<std::s
     }
 }
 
-void ConflictBasedSearch::tryInsertInOpenList(Multimap &open_list, const std::set<std::string> &closed_list,
+void ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, const std::set<std::string> &closed_list,
                                               const Agent &agent, std::shared_ptr<SearchSquare> &current_agent_position,
                                               Position &analyzed_pos, ConstraintNode &constraint_node) {
 

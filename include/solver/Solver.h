@@ -10,6 +10,7 @@
 #include "../Map.h"
 #include "../StateDictionary.h"
 #include "../SearchSquare.h"
+#include "cbs/ConstraintNode.h"
 #include <vector>
 
 class Solver {
@@ -67,7 +68,8 @@ protected:
     const Map map;
 
     // Cost - SearchSquare (Position embedded)
-    typedef std::multimap<float, std::shared_ptr<SearchSquare>> Multimap;
+    typedef std::multimap<float, std::shared_ptr<SearchSquare>> MultimapSearchSquare;
+    typedef std::multimap<float, ConstraintNode> MultimapConstraintNode;
 
     /**
      * Return the total movement cost (heuristic + move)
@@ -112,7 +114,7 @@ protected:
     * @param open_list : the open list
     * @return an iterator on the position
     */
-    static Solver::Multimap::iterator findPositionInOpenList(const Position &pos, Multimap &open_list);
+    static Solver::MultimapSearchSquare::iterator findPositionInOpenList(const Position &pos, MultimapSearchSquare &open_list);
 
 public:
 
