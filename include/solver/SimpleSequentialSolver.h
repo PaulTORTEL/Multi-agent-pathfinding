@@ -13,9 +13,6 @@ class SimpleSequentialSolver : Solver {
 
 private:
 
-    // Cost - SearchSquare (Position embedded)
-    typedef std::multimap<float, std::shared_ptr<SearchSquare>> Multimap;
-
     /**
      * Compute the shortest path possible for a given agent
      * @param agent : the agent
@@ -31,14 +28,6 @@ private:
      */
     void populateOpenList(Multimap &open_list, const std::set<std::string> &closed_list,
                           const Agent &agent, std::shared_ptr<SearchSquare> &current_agent_position);
-
-    /**
-     * Find a position in the open list
-     * @param pos : the position we look for
-     * @param open_list : the open list
-     * @return an iterator on the position
-     */
-    static SimpleSequentialSolver::Multimap::iterator findPositionInOpenList(const Position &pos, Multimap &open_list);
 
 
     /**

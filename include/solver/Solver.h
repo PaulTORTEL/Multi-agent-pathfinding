@@ -66,6 +66,9 @@ protected:
      */
     const Map map;
 
+    // Cost - SearchSquare (Position embedded)
+    typedef std::multimap<float, std::shared_ptr<SearchSquare>> Multimap;
+
     /**
      * Return the total movement cost (heuristic + move)
      * @param current : the current search square
@@ -102,6 +105,15 @@ protected:
      */
     static const bool areMovementsColliding(const Position &start_pos1, const Position &end_pos1, const Position &start_pos2,
                                      const Position &end_pos2);
+
+    /**
+    * Find a position in the open list
+    * @param pos : the position we look for
+    * @param open_list : the open list
+    * @return an iterator on the position
+    */
+    static Solver::Multimap::iterator findPositionInOpenList(const Position &pos, Multimap &open_list);
+
 public:
 
     Solver(Map &map);

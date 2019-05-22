@@ -25,7 +25,7 @@ void SimpleSequentialSolver::solve() {
 }
 
 void SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
-    //TODO: level ? type du square?
+    //TODO: level
     //TODO: wait action possible ??
 
     const int& agent_id = agent.getId();
@@ -135,8 +135,6 @@ void SimpleSequentialSolver::tryInsertInOpenList(Multimap &open_list, const std:
 
     //TODO: if water..., add it here
     //TODO: check if the agent and the square are on the same level or that the agent can climb/use "staircases"
-    //TODO: if we do not allow agents to exchange their position (cross the same edge simultaneously in both direction,
-    // add to check if next state.pos = current agent pos
 
     // If the position (left, right, up, down, top-right etc.) from our current search square is a walkable square
     if (map.getMapSquare(analyzed_pos).type != WALL) {
@@ -314,16 +312,4 @@ State *SimpleSequentialSolver::getStateToEvaluateFromTimeStep(const int &time_st
             return &states[states.size() - 1];
         }
     }
-}
-
-SimpleSequentialSolver::Multimap::iterator SimpleSequentialSolver::findPositionInOpenList(
-        const Position &pos,
-        Multimap &open_list) {
-
-    for (auto it = open_list.begin(); it != open_list.end(); ++it) {
-        if (it->second->position == pos) {
-            return it;
-        }
-    }
-    return open_list.end();
 }

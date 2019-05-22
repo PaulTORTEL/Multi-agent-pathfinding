@@ -4,15 +4,17 @@
 #include "../include/State.h"
 #include "../include/solver/Solver.h"
 #include "../include/solver/SimpleSequentialSolver.h"
+#include "../include/solver/cbs/ConflictBasedSearch.h"
 
 int main() {
     Map map = XmlParser::buildMapFromXml("../maps/map_1.xml", "map_1");
     std::cout << map << std::endl;
 
-    SimpleSequentialSolver solver(map);
+    //SimpleSequentialSolver solver(map);
+    //solver.solve();
 
-
-    solver.solve();
+    ConflictBasedSearch cbsSolver(map);
+    cbsSolver.solve();
 
     return 0;
 }

@@ -159,3 +159,15 @@ const bool Solver::areMovementsColliding(const Position& start_pos1, const Posit
 
     return false;
 }
+
+Solver::Multimap::iterator Solver::findPositionInOpenList(
+        const Position &pos,
+        Multimap &open_list) {
+
+    for (auto it = open_list.begin(); it != open_list.end(); ++it) {
+        if (it->second->position == pos) {
+            return it;
+        }
+    }
+    return open_list.end();
+}
