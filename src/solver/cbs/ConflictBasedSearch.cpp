@@ -18,12 +18,12 @@ void ConflictBasedSearch::highLevelSolver() {
     root.computeSicHeuristic();
 
     MultimapConstraintNode open_list;
-   // std::shared_ptr<Constraint> current_search_square = std::make_shared<Constraint>(init_state.positions[agent_id], nullptr);
     open_list.insert({root.cost, root});
 
     while (!open_list.empty()) {
         const auto& it_open_list = open_list.begin();
         ConstraintNode current_node = it_open_list->second;
+        open_list.erase(it_open_list);
         std::unique_ptr<Conflict> conflict = current_node.scanForFirstConflict();
 
         if (conflict == nullptr) {
@@ -32,13 +32,23 @@ void ConflictBasedSearch::highLevelSolver() {
         }
 
         for (int& agent_id : conflict->agents_conflicting) {
+            std::vector<Constraint> new_constraints;
             ConstraintNode new_node;
-            new_node.setAndMergeConstraints(current_node.constraints, Constraint(agent_id, conflict->position, conflict->time_step));
+            new_node.solution = current_node.solution;
+
+            for (int& agent_id2 : conflict->agents_conflicting) {
+                if (agent_id == agent_id2) {
+                    continue;
+                }
+                new_node.constraints[agent_id2].emplace_back(agent_id2, conflict->position, conflict->time_step);
+                new_node.solution = lowLevelSolver(new_node, agent_id2);
+                new_node.computeSicHeuristic();
+
+                if (new_node.cost > 0) {
+                    open_list.insert({new_node.cost, new_node});
+                }
+            }
         }
-
-
-
-
     }
 }
 
@@ -58,6 +68,11 @@ StateDictionary ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_n
         recordStatesFromPath(agent_id, final_search_square);
     }
 
+    //TODO: debug state dictionary: there is only the search squares of the agents that are still moving at time step x...
+    // ex : if agent 2 has reached its goal position, its current search square will never appear in the states at next time steps....
+    // TODO: add collision detection
+    //TODO: optimization with shared ptr/unique ptr for conflicts, constraintNode etc...
+    //TODO: testing
     return state_dictionary;
 }
 

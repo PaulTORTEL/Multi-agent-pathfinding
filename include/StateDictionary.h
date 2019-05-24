@@ -28,7 +28,13 @@ struct StateDictionary {
 
         } else {
             // New
-            State new_state = init_state;
+            State new_state;
+            if (time_step == 0) {
+                new_state = init_state;
+            } else {
+                new_state = dictionary[time_step-1];
+            }
+
             new_state.search_squares[agent_id] = new_search_square;
             dictionary[time_step] = new_state;
         }

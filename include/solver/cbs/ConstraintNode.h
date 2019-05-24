@@ -11,11 +11,11 @@
 #include "Conflict.h"
 
 struct ConstraintNode {
-    typedef std::map<int, std::vector<std::shared_ptr<Constraint>>> ConstraintMap;
+    typedef std::map<int, std::vector<Constraint>> ConstraintMap;
     ConstraintMap constraints;
     std::vector<ConstraintNode> sons;
     StateDictionary solution;
-    int cost;
+    int cost = 0;
 
     const bool isPositionForbiddenForAgent(const int &agent_id, const Position &position) {
 
@@ -26,7 +26,7 @@ struct ConstraintNode {
         }
 
         for (auto& constraint : constraints_agent_it->second) {
-            if ((*constraint).position == position) {
+            if (constraint.position == position) {
                 return true;
             }
         }
@@ -39,41 +39,24 @@ struct ConstraintNode {
     }
 
     const std::unique_ptr<Conflict> scanForFirstConflict() {
-        std::vector<State> known_positions_at_time_steps;
-/*
-        for (auto &agent_it : solution) {
-            int time_step = agent_it.second->time_step;
-            auto& current_search_square = agent_it.second;
 
-            while (current_search_square != nullptr)   {
+        for (auto &state_it : solution.dictionary) {
+            std::pair<Position, std::vector<int>> agents_conflicting = state_it.second.getAgentsInFirstConflict();
 
-                if (time_step >= 0) {
-                    const auto& other_agent_it = known_positions_at_time_steps[time_step].findAgentAtPosition(current_search_square->position);
-                    if (other_agent_it != known_positions_at_time_steps[time_step].positions.end()) {
-
-                        //TODO: get all the agents that are at this position at this time step (not only 1)
-
-                        return std::make_shared<Conflict>(std::vector<int>(other_agent_it->first, agent_it.first), current_search_square->position, time_step);
-                    } else {
-                        known_positions_at_time_steps[time_step].positions[agent_it.first] = current_search_square->position;
-                    }
-                } else {
-                    State state;
-                    state.positions[agent_it.first] = current_search_square->position;
-                    known_positions_at_time_steps[time_step] = state;
-                }
-
-                current_search_square = current_search_square->parent;
-                time_step--;
+            if (!agents_conflicting.second.empty()) {
+                return std::make_unique<Conflict>(agents_conflicting.second, agents_conflicting.first, state_it.first);
             }
-        }*/
+        }
 
         return nullptr;
     }
 
-    void setAndMergeConstraints(ConstraintMap& former_constraints, const Constraint& new_constraint) {
+    void setAndMergeConstraints(ConstraintMap& former_constraints, const std::vector<Constraint>& new_constraints) {
         this->constraints = former_constraints;
-       // this->constraints[new_constraint.agent_id].push_back(new_constraint);
+
+        for (auto& constraint : new_constraints) {
+            this->constraints[constraint.agent_id].push_back(constraint);
+        }
     }
 };
 

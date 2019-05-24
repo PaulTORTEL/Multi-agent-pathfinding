@@ -67,6 +67,32 @@ struct State {
         }
         return sic;
     }
+
+    std::pair<Position, std::vector<int>> getAgentsInFirstConflict() {
+        std::vector<int> agents_conflicting;
+
+        for (auto& search_squares_it : search_squares) {
+            agents_conflicting.push_back(search_squares_it.first);
+            Position& pos = search_squares_it.second->position;
+
+            for (auto& search_squares_it2 : search_squares) {
+                if (search_squares_it == search_squares_it2 || search_squares_it.first > search_squares_it2.first) {
+                    continue;
+                }
+
+                if (search_squares_it.second->position == search_squares_it2.second->position) {
+                    agents_conflicting.push_back(search_squares_it2.first);
+                }
+            }
+
+            if (agents_conflicting.size() > 1) {
+                return std::make_pair(pos, agents_conflicting);
+            }
+            agents_conflicting.clear();
+        }
+
+        return std::make_pair(Position(0,0), agents_conflicting);
+    }
 };
 
 #endif //PATHFINDING_PROJECT_STATE_H
