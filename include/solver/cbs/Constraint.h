@@ -9,11 +9,11 @@
 #include "../../Agent.h"
 
 struct Constraint {
-    const std::weak_ptr<Agent> agent;
+    const int agent_id;
     const Position position;
     const int time_step;
 
-    Constraint(std::shared_ptr<Agent>& agent, const Position &position, const int timeStep) : agent(agent), position(position),
+    Constraint(const int& agent_id, const Position &position, const int timeStep) : agent_id(agent_id), position(position),
                                                                                            time_step(timeStep) {}
 };
 #endif //PATHFINDING_PROJECT_CONSTRAINT_H

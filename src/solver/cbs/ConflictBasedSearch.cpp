@@ -4,6 +4,7 @@
 
 #include "../../../include/solver/cbs/ConflictBasedSearch.h"
 #include <set>
+#include <iostream>
 
 void ConflictBasedSearch::solve() {
 
@@ -23,32 +24,58 @@ void ConflictBasedSearch::highLevelSolver() {
     while (!open_list.empty()) {
         const auto& it_open_list = open_list.begin();
         ConstraintNode current_node = it_open_list->second;
+        std::unique_ptr<Conflict> conflict = current_node.scanForFirstConflict();
 
-        //TODO: remove
-        break;
+        if (conflict == nullptr) {
+            std::cout << "solution found" << std::endl;
+            return;
+        }
+
+        for (int& agent_id : conflict->agents_conflicting) {
+            ConstraintNode new_node;
+            new_node.setAndMergeConstraints(current_node.constraints, Constraint(agent_id, conflict->position, conflict->time_step));
+        }
+
+
+
+
     }
 }
 
 ConflictBasedSearch::ConflictBasedSearch(Map &map) : Solver(map){}
 
-std::map<int, SearchSquare> ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_node, int agent_id) {
-    std::map<int, SearchSquare> solutions;
+std::map<int, std::vector<std::shared_ptr<SearchSquare>>> ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_node,
+                                                                                 int agent_id) {
+    std::map<int, std::vector<std::shared_ptr<SearchSquare>>> solution;
 
-    // If we want to recompute the whole paths
+    // If we want to compute the whole paths
     if (agent_id == 0) {
         for (auto& it_agent : map.getAgents()) {
-            solutions[it_agent.first] = computeShortestPathPossible(it_agent.second, constraint_node);
+            auto final_search_square = computeShortestPathPossible(it_agent.second, constraint_node);
+            solution[it_agent.first] = extractPathFromFinalSquare(it_agent.first, final_search_square);
         }
     } else {
         const auto& it_agent = map.getAgents().find(agent_id);
-        solutions[agent_id] = computeShortestPathPossible(it_agent->second, constraint_node);
+        auto final_search_square = computeShortestPathPossible(it_agent->second, constraint_node);
+        solution[it_agent->first] = extractPathFromFinalSquare(it_agent->first, final_search_square);
     }
 
-    return solutions;
+    return solution;
 }
 
-SearchSquare ConflictBasedSearch::computeShortestPathPossible(const Agent &agent,
-                                                               ConstraintNode &constraint_node) {
+std::vector<std::shared_ptr<SearchSquare>> ConflictBasedSearch::extractPathFromFinalSquare(const int& agent_id, const std::shared_ptr<SearchSquare>& final_seach_square) {
+    std::shared_ptr<SearchSquare> current_search_square = final_seach_square;
+    std::vector<std::shared_ptr<SearchSquare>> path;
+
+    while (current_search_square != nullptr) {
+        path.insert(path.begin(), current_search_square);
+        current_search_square = current_search_square->parent;
+    }
+    return path;
+}
+
+std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(const Agent &agent,
+                                                                               ConstraintNode &constraint_node) {
 
     const int& agent_id = agent.getId();
     MultimapSearchSquare open_list;
@@ -76,7 +103,7 @@ SearchSquare ConflictBasedSearch::computeShortestPathPossible(const Agent &agent
         // We loop while we didn't detect that there is no solution or that we didn't reach the goal position of the agent
     } while (current_search_square->position != agent.getGoalCoord());
 
-    return *current_search_square;
+    return current_search_square;
 }
 
 void

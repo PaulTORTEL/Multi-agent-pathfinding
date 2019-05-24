@@ -14,7 +14,7 @@ struct ConstraintNode {
     typedef std::map<int, std::vector<std::shared_ptr<Constraint>>> ConstraintMap;
     ConstraintMap constraints;
     std::vector<ConstraintNode> sons;
-    std::map<int, std::shared_ptr<SearchSquare>> solution;
+    std::map<int, std::vector<std::shared_ptr<SearchSquare>>> solution;
     int cost;
 
     const bool isPositionForbiddenForAgent(const int &agent_id, const Position &position) {
@@ -37,29 +37,47 @@ struct ConstraintNode {
     const void computeSicHeuristic() {
         int sic = 0.;
         for (auto &it : solution) {
-            sic += it.second->time_step;
+            sic += it.second.back()->time_step;
         }
         cost = sic;
     }
 
-    const std::shared_ptr<Conflict> getFirstConflict() {
-        //TODO: store not only the positions, but also the id of the agent that is occupying the position
-        std::vector<std::set<Position>> known_positions_at_time_steps;
-
+    const std::unique_ptr<Conflict> scanForFirstConflict() {
+        std::vector<State> known_positions_at_time_steps;
+/*
         for (auto &agent_it : solution) {
-            int time_step = 0;
+            int time_step = agent_it.second->time_step;
             auto& current_search_square = agent_it.second;
 
             while (current_search_square != nullptr)   {
-                std::set<Position> positions_at_this_time_step = known_positions_at_time_steps[time_step];
-                if (positions_at_this_time_step.find(current_search_square->position) != positions_at_this_time_step.end()) {
-                    //return std::make_shared<Conflict>()
+
+                if (time_step >= 0) {
+                    const auto& other_agent_it = known_positions_at_time_steps[time_step].findAgentAtPosition(current_search_square->position);
+                    if (other_agent_it != known_positions_at_time_steps[time_step].positions.end()) {
+
+                        //TODO: get all the agents that are at this position at this time step (not only 1)
+
+                        return std::make_shared<Conflict>(std::vector<int>(other_agent_it->first, agent_it.first), current_search_square->position, time_step);
+                    } else {
+                        known_positions_at_time_steps[time_step].positions[agent_it.first] = current_search_square->position;
+                    }
+                } else {
+                    State state;
+                    state.positions[agent_it.first] = current_search_square->position;
+                    known_positions_at_time_steps[time_step] = state;
                 }
+
                 current_search_square = current_search_square->parent;
-                time_step++;
+                time_step--;
             }
-           // paths.push_back(path);
-        }
+        }*/
+
+        return nullptr;
+    }
+
+    void setAndMergeConstraints(ConstraintMap& former_constraints, const Constraint& new_constraint) {
+        this->constraints = former_constraints;
+       // this->constraints[new_constraint.agent_id].push_back(new_constraint);
     }
 };
 

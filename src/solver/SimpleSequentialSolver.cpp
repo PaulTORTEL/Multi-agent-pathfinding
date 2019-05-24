@@ -67,14 +67,14 @@ void SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
 void SimpleSequentialSolver::recordStatesFromPath(const int &agent_id,
                                                   const std::shared_ptr<SearchSquare> &current_search_square) {
     // We get the search square wrapping the goal position and the total cost
-    SearchSquare *square = current_search_square.get();
+    std::shared_ptr<SearchSquare> square = current_search_square;
 
     std::cout << "agent " << agent_id << ": ";
     do {
         // We set up the states according to the position of the agent along its path towards its goal
         state_dictionary.addOrUpdateState(init_state, square->time_step, agent_id, square->position);
         std::cout << square->position << " <= ";
-        square = square->parent.get();
+        square = square->parent;
     } while (square != nullptr);
     std::cout << std::endl;
 }

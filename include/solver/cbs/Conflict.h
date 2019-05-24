@@ -6,15 +6,14 @@
 #define PATHFINDING_PROJECT_CONFLICT_H
 
 #include "../../utility.h"
+#include <vector>
 
 struct Conflict {
-    int agent_id_1, agent_id_2;
+    std::vector<int> agents_conflicting;
     Position position;
     int time_step;
 
-    Conflict(int agentId1, int agentId2, const Position &position, int timeStep) : agent_id_1(agentId1),
-                                                                                   agent_id_2(agentId2),
-                                                                                   position(position),
+    Conflict(std::vector<int> agents_conflicting, const Position &position, int timeStep) : agents_conflicting(agents_conflicting), position(position),
                                                                                    time_step(timeStep) {}
 };
 #endif //PATHFINDING_PROJECT_CONFLICT_H
