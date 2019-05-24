@@ -116,6 +116,13 @@ protected:
     */
     static Solver::MultimapSearchSquare::iterator findPositionInOpenList(const Position &pos, MultimapSearchSquare &open_list);
 
+    /**
+    * Record the states in the state dictionary from the path we have just computed
+    * @param agent_id : the agent id
+    * @param current_search_square : the final search square embedding the goal position
+    */
+    void recordStatesFromPath(const int &agent_id, const std::shared_ptr<SearchSquare> &current_search_square);
+
 public:
 
     Solver(Map &map);
@@ -140,6 +147,8 @@ public:
      * @return
      */
     virtual void solve() = 0;
+
+
 };
 
 

@@ -44,34 +44,21 @@ void ConflictBasedSearch::highLevelSolver() {
 
 ConflictBasedSearch::ConflictBasedSearch(Map &map) : Solver(map){}
 
-std::map<int, std::vector<std::shared_ptr<SearchSquare>>> ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_node,
-                                                                                 int agent_id) {
-    std::map<int, std::vector<std::shared_ptr<SearchSquare>>> solution;
-
+StateDictionary ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_node,
+                                                    int agent_id) {
     // If we want to compute the whole paths
     if (agent_id == 0) {
         for (auto& it_agent : map.getAgents()) {
             auto final_search_square = computeShortestPathPossible(it_agent.second, constraint_node);
-            solution[it_agent.first] = extractPathFromFinalSquare(it_agent.first, final_search_square);
+            recordStatesFromPath(it_agent.first, final_search_square);
         }
     } else {
         const auto& it_agent = map.getAgents().find(agent_id);
         auto final_search_square = computeShortestPathPossible(it_agent->second, constraint_node);
-        solution[it_agent->first] = extractPathFromFinalSquare(it_agent->first, final_search_square);
+        recordStatesFromPath(agent_id, final_search_square);
     }
 
-    return solution;
-}
-
-std::vector<std::shared_ptr<SearchSquare>> ConflictBasedSearch::extractPathFromFinalSquare(const int& agent_id, const std::shared_ptr<SearchSquare>& final_seach_square) {
-    std::shared_ptr<SearchSquare> current_search_square = final_seach_square;
-    std::vector<std::shared_ptr<SearchSquare>> path;
-
-    while (current_search_square != nullptr) {
-        path.insert(path.begin(), current_search_square);
-        current_search_square = current_search_square->parent;
-    }
-    return path;
+    return state_dictionary;
 }
 
 std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(const Agent &agent,
@@ -82,7 +69,7 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(c
     std::set<std::string> closed_list;
 
     // We populate the open list with the initial search square, wrapping the initial position of the agent
-    std::shared_ptr<SearchSquare> current_search_square = std::make_shared<SearchSquare>(init_state.positions[agent_id], nullptr);
+    std::shared_ptr<SearchSquare> current_search_square = init_state.search_squares[agent_id];
     open_list.insert({current_search_square->cost(), current_search_square});
 
     do {

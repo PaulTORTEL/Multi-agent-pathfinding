@@ -2,6 +2,7 @@
 // Created by Paul Tortel on 15/05/2019.
 //
 
+#include "../../include/solver/SimpleSequentialSolver.h"
 #include "../../include/solver/Solver.h"
 #include <set>
 #include <iostream>
@@ -20,8 +21,12 @@ Solver::Solver(Map &map) : map(map) {
         }
 
         // We save the initial and goal positions of the agent
-        init_state.positions[agent_id] = Position(agent_it->second.getStartCoord().x, agent_it->second.getStartCoord().y);
-        goal_state.positions[agent_id] = Position(agent_it->second.getGoalCoord().x, agent_it->second.getGoalCoord().y);
+        auto init_state_search_square = std::make_unique<SearchSquare>(Position(agent_it->second.getStartCoord().x, agent_it->second.getStartCoord().y),
+                                                                       nullptr);
+        auto goal_state_search_square = std::make_unique<SearchSquare>(Position(agent_it->second.getGoalCoord().x, agent_it->second.getGoalCoord().y),
+                                                                       nullptr);
+        init_state.search_squares[agent_id] = std::move(init_state_search_square);
+        goal_state.search_squares[agent_id] = std::move(goal_state_search_square);
     }
 
     bool validity = true;
@@ -49,9 +54,9 @@ bool Solver::checkStateValidity(const State &state, const std::vector<std::vecto
 
     std::set<std::string> known_pos;
 
-    for (auto& it : state.positions) {
-        const int x = it.second.x;
-        const int y = it.second.y;
+    for (auto& it : state.search_squares) {
+        const int x = it.second->position.x;
+        const int y = it.second->position.y;
 
         std::string key = std::to_string(x) + ";" + std::to_string(y);
 
@@ -170,4 +175,19 @@ Solver::MultimapSearchSquare::iterator Solver::findPositionInOpenList(
         }
     }
     return open_list.end();
+}
+
+void Solver::recordStatesFromPath(const int &agent_id,
+                                                  const std::shared_ptr<SearchSquare> &current_search_square) {
+    // We get the search square wrapping the goal position and the total cost
+    std::shared_ptr<SearchSquare> square = current_search_square;
+
+    std::cout << "agent " << agent_id << ": ";
+    while (square != nullptr) {
+        // We set up the states according to the position of the agent along its path towards its goal
+        state_dictionary.addOrUpdateState(init_state, square->time_step, agent_id, square);
+        std::cout << square->position << " <= ";
+        square = square->parent;
+    }
+    std::cout << std::endl;
 }

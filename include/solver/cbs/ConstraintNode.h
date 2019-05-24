@@ -14,7 +14,7 @@ struct ConstraintNode {
     typedef std::map<int, std::vector<std::shared_ptr<Constraint>>> ConstraintMap;
     ConstraintMap constraints;
     std::vector<ConstraintNode> sons;
-    std::map<int, std::vector<std::shared_ptr<SearchSquare>>> solution;
+    StateDictionary solution;
     int cost;
 
     const bool isPositionForbiddenForAgent(const int &agent_id, const Position &position) {
@@ -35,11 +35,7 @@ struct ConstraintNode {
     }
 
     const void computeSicHeuristic() {
-        int sic = 0.;
-        for (auto &it : solution) {
-            sic += it.second.back()->time_step;
-        }
-        cost = sic;
+        cost = solution.dictionary.at(solution.dictionary.size()-1).getSicHeuristic();
     }
 
     const std::unique_ptr<Conflict> scanForFirstConflict() {

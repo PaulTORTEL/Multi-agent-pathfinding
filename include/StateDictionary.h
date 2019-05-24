@@ -18,17 +18,18 @@ struct StateDictionary {
      * @param init_state : the initial state to initialize a new state if necessary
      * @param time_step : the current time step
      * @param agent_id : the agent id that we want to change/update its position
-     * @param new_position : the new position of the agent in the state
+     * @param new_search_square : the new position of the agent in the state
      */
-    void addOrUpdateState(const State& init_state, const int time_step, const int agent_id, const Position& new_position) {
+    void addOrUpdateState(const State &init_state, const int time_step, const int agent_id,
+                          const std::shared_ptr<SearchSquare> &new_search_square) {
         if (dictionary.find(time_step) != dictionary.end()) {
             // Not new
-            dictionary[time_step].positions[agent_id] = new_position;
+            dictionary[time_step].search_squares[agent_id] = new_search_square;
 
         } else {
             // New
             State new_state = init_state;
-            new_state.positions[agent_id] = new_position;
+            new_state.search_squares[agent_id] = new_search_square;
             dictionary[time_step] = new_state;
         }
     }

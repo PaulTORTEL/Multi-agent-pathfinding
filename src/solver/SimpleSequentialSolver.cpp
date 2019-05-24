@@ -5,7 +5,6 @@
 #include <iostream>
 #include "../../include/solver/SimpleSequentialSolver.h"
 
-
 SimpleSequentialSolver::SimpleSequentialSolver(Map &map) : Solver(map) {}
 
 void SimpleSequentialSolver::solve() {
@@ -33,7 +32,7 @@ void SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
     std::set<std::string> closed_list;
 
     // We populate the open list with the initial search square, wrapping the initial position of the agent
-    std::shared_ptr<SearchSquare> current_search_square = std::make_shared<SearchSquare>(init_state.positions[agent_id], nullptr);
+    std::shared_ptr<SearchSquare> current_search_square = init_state.search_squares[agent_id];
     open_list.insert({current_search_square->cost(), current_search_square});
 
     do {
@@ -62,21 +61,6 @@ void SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
     }
 
     recordStatesFromPath(agent_id, current_search_square);
-}
-
-void SimpleSequentialSolver::recordStatesFromPath(const int &agent_id,
-                                                  const std::shared_ptr<SearchSquare> &current_search_square) {
-    // We get the search square wrapping the goal position and the total cost
-    std::shared_ptr<SearchSquare> square = current_search_square;
-
-    std::cout << "agent " << agent_id << ": ";
-    do {
-        // We set up the states according to the position of the agent along its path towards its goal
-        state_dictionary.addOrUpdateState(init_state, square->time_step, agent_id, square->position);
-        std::cout << square->position << " <= ";
-        square = square->parent;
-    } while (square != nullptr);
-    std::cout << std::endl;
 }
 
 void SimpleSequentialSolver::populateOpenList(MultimapSearchSquare &open_list, const std::set<std::string> &closed_list,
@@ -139,7 +123,7 @@ void SimpleSequentialSolver::tryInsertInOpenList(MultimapSearchSquare &open_list
     // If the position (left, right, up, down, top-right etc.) from our current search square is a walkable square
     if (map.getMapSquare(analyzed_pos).type != WALL) {
         auto& it_agent_searched = state_to_evaluate->findAgentAtPosition(analyzed_pos);
-        const bool isAgentThere = it_agent_searched != state_to_evaluate->positions.end();
+        const bool isAgentThere = it_agent_searched != state_to_evaluate->search_squares.end();
 
         // If there is no agent at the position or if the agent that is there is the agent we are currently processing
         if (!isAgentThere || it_agent_searched->first == agent.getId()) {
@@ -271,7 +255,7 @@ SimpleSequentialSolver::isCollidingWithNeighbour(const Position &current_positio
     // if this agent moves in a particular direction
     auto &it_agent = current_state.findAgentAtPosition(current_position_neighbour);
 
-    if (it_agent != current_state.positions.end()) {
+    if (it_agent != current_state.search_squares.end()) {
         // We fetch the next state to be able to see where this agent will go at the next time step
         State* next_state = state_dictionary.getStateFromTimeStep(time_step + 1);
 
@@ -282,8 +266,8 @@ SimpleSequentialSolver::isCollidingWithNeighbour(const Position &current_positio
         }
 
         // If the movements will result in a collision
-        if (areMovementsColliding(current_position, next_position, it_agent->second,
-                                  next_state->positions[it_agent->first])) {
+        if (areMovementsColliding(current_position, next_position, it_agent->second->position,
+                                  next_state->search_squares[it_agent->first]->position)) {
             return true;
         }
     }

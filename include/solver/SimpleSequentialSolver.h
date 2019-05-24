@@ -51,13 +51,6 @@ private:
     State *getStateToEvaluateFromTimeStep(const int &time_step);
 
     /**
-     * Record the states in the state dictionary from the path we have just computed
-     * @param agent_id : the agent id
-     * @param current_search_square : the final search square embedding the goal position
-     */
-    void recordStatesFromPath(const int &agent_id, const std::shared_ptr<SearchSquare> &current_search_square);
-
-    /**
      * Return whether the agent will collide with other agents if it moves in a given direction
      * @param current_position : the current agent position
      * @param next_position : the next agent position that we are evaluating
