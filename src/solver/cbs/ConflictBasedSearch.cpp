@@ -15,6 +15,7 @@ void ConflictBasedSearch::highLevelSolver() {
 
     root.constraints.clear();
     root.solution = lowLevelSolver(root);
+    //TODO: check if status = No solution
     root.computeSicHeuristic();
 
     MultimapConstraintNode open_list;
@@ -42,6 +43,7 @@ void ConflictBasedSearch::highLevelSolver() {
                 }
                 new_node.constraints[agent_id2].emplace_back(agent_id2, conflict->position, conflict->time_step);
                 new_node.solution = lowLevelSolver(new_node, agent_id2);
+                //TODO: check if status = No solution
                 new_node.computeSicHeuristic();
 
                 if (new_node.cost > 0) {
@@ -68,10 +70,9 @@ StateDictionary ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_n
         recordStatesFromPath(agent_id, final_search_square);
     }
 
-    //TODO: debug state dictionary: there is only the search squares of the agents that are still moving at time step x...
-    // ex : if agent 2 has reached its goal position, its current search square will never appear in the states at next time steps....
+
     // TODO: add collision detection
-    //TODO: optimization with shared ptr/unique ptr for conflicts, constraintNode etc...
+    //TODO: optimization with shared ptr/unique ptr for conflicts, constraintNode, map.rbegin()->first rather than .size()-1 etc...
     //TODO: testing
     return state_dictionary;
 }
@@ -102,8 +103,12 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(c
         // We populate the open list with the surroundings of the current search square
         populateOpenList(open_list, closed_list, agent, current_search_square, constraint_node);
 
+        if (open_list.empty()) {
+            _status = NO_SOLUTION;
+        }
+
         // We loop while we didn't detect that there is no solution or that we didn't reach the goal position of the agent
-    } while (current_search_square->position != agent.getGoalCoord());
+    } while (current_search_square->position != agent.getGoalCoord() && _status == OK);
 
     return current_search_square;
 }

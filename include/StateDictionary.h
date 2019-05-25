@@ -29,10 +29,11 @@ struct StateDictionary {
         } else {
             // New
             State new_state;
-            if (time_step == 0) {
+
+            if (dictionary.empty() || time_step < dictionary.rbegin()->first) {
                 new_state = init_state;
-            } else {
-                new_state = dictionary[time_step-1];
+            } else if (time_step > dictionary.size() -1) {
+                new_state = dictionary.rbegin()->second;
             }
 
             new_state.search_squares[agent_id] = new_search_square;
