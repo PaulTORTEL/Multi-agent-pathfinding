@@ -47,7 +47,7 @@ struct StateDictionary {
             return &dictionary[time_step];
         }
 
-        return dictionary.empty() ? nullptr : &dictionary[dictionary.size() - 1];
+        return dictionary.empty() ? nullptr : &dictionary.rbegin()->second;
     }
 
 };

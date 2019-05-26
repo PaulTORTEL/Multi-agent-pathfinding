@@ -129,41 +129,6 @@ const float Solver::total_movement_cost(const SearchSquare &current, const Posit
     return movement_cost(current, next) + heuristic_cost(next, goal);
 }
 
-const bool Solver::areMovementsColliding(const Position& start_pos1, const Position& end_pos1,
-        const Position& start_pos2, const Position& end_pos2) {
-
-    // We assume that the pos1 & pos2 are adjacent, we are only interested in determining whether their movements are colliding
-    Direction d1 = extractDirection(start_pos1, end_pos1);
-    Direction d2 = extractDirection(start_pos2, end_pos2);
-
-    if (d1 == NW && d2 == NE) {
-        return true;
-    } else if (d1 == NE && d2 == NW) {
-        return true;
-    } else if (d1 == SW && d2 == SE) {
-        return true;
-    } else if (d1 == SE && d2 == SW) {
-        return true;
-    } else if (d1 == NE && d2 == SW) {
-        return true;
-    } else if (d1 == NW && d2 == SE) {
-        return true;
-    } else if (d1 == SW && d2 == NE) {
-        return true;
-    } else if (d1 == SE && d2 == NW) {
-        return true;
-    } else if (d1 == WEST && d2 == EAST) {
-        return true;
-    } else if (d1 == EAST && d2 == WEST) {
-        return true;
-    } else if (d1 == NORTH && d2 == SOUTH) {
-        return true;
-    } else if (d1 == SOUTH && d2 == NORTH) {
-        return true;
-    }
-
-    return false;
-}
 
 Solver::MultimapSearchSquare::iterator Solver::findPositionInOpenList(
         const Position &pos,
@@ -191,3 +156,4 @@ void Solver::recordStatesFromPath(const int &agent_id,
     }
     std::cout << std::endl;
 }
+

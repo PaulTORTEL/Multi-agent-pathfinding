@@ -9,9 +9,6 @@
 #include "State.h"
 #include <memory>
 
-
-struct State;
-
 struct SearchSquare {
     /**
      * The position related to the search square

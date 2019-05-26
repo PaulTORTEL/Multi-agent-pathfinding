@@ -6,14 +6,12 @@
 #define PATHFINDING_PROJECT_CONFLICT_H
 
 #include "../../utility.h"
-#include <vector>
+#include <map>
 
 struct Conflict {
-    std::vector<int> agents_conflicting;
-    Position position;
-    int time_step;
+    // Agent ID => time step, position
+    std::multimap<int, std::pair<int, Position>> agents_conflicting;
 
-    Conflict(std::vector<int> agents_conflicting, const Position &position, int timeStep) : agents_conflicting(agents_conflicting), position(position),
-                                                                                   time_step(timeStep) {}
+    Conflict(std::multimap<int, std::pair<int, Position>> agents_conflicting) : agents_conflicting(agents_conflicting){}
 };
 #endif //PATHFINDING_PROJECT_CONFLICT_H

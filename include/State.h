@@ -10,6 +10,7 @@
 #include "SearchSquare.h"
 #include <map>
 #include <memory>
+#include <utility>
 
 struct State {
     /**
@@ -68,30 +69,48 @@ struct State {
         return sic;
     }
 
-    std::pair<Position, std::vector<int>> getAgentsInFirstConflict() {
-        std::vector<int> agents_conflicting;
+    std::multimap<int, std::pair<int, Position>> getAgentsInFirstConflict(std::map<int, State>& state_dictionary, const int& time_step) {
+        std::multimap<int, std::pair<int, Position>> agents_conflicting;
 
         for (auto& search_squares_it : search_squares) {
-            agents_conflicting.push_back(search_squares_it.first);
-            Position& pos = search_squares_it.second->position;
+            const Position& agent_1_position = search_squares_it.second->position;
+            agents_conflicting.insert({search_squares_it.first, std::make_pair(time_step, agent_1_position)});
 
             for (auto& search_squares_it2 : search_squares) {
                 if (search_squares_it == search_squares_it2 || search_squares_it.first > search_squares_it2.first) {
                     continue;
                 }
 
-                if (search_squares_it.second->position == search_squares_it2.second->position) {
-                    agents_conflicting.push_back(search_squares_it2.first);
+                Position& agent_2_position = search_squares_it2.second->position;
+
+                if (agent_1_position == agent_2_position) {
+                    agents_conflicting.insert({search_squares_it2.first, std::make_pair(time_step, agent_1_position)});
+                }
+
+                else if (!agent_1_position.isNeighbourWith(agent_2_position)) {
+                    continue;
+                }
+
+                else if (state_dictionary.rbegin()->first > time_step) {
+                    const int next_time_step = time_step + 1;
+                    State& next_state = state_dictionary[next_time_step];
+                    Position& agent_1_next_pos = next_state.search_squares[search_squares_it.first]->position;
+                    Position& agent_2_next_pos = next_state.search_squares[search_squares_it2.first]->position;
+
+                    if (areMovementsColliding(agent_1_position, agent_1_next_pos, agent_2_position, agent_2_next_pos)) {
+                        agents_conflicting.insert({search_squares_it.first, std::make_pair(next_time_step, agent_1_next_pos)});
+                        agents_conflicting.insert({search_squares_it2.first, std::make_pair(next_time_step, agent_2_next_pos)});
+                    }
                 }
             }
 
             if (agents_conflicting.size() > 1) {
-                return std::make_pair(pos, agents_conflicting);
+                return agents_conflicting;
             }
             agents_conflicting.clear();
         }
 
-        return std::make_pair(Position(0,0), agents_conflicting);
+        return agents_conflicting;
     }
 };
 

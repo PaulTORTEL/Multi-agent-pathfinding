@@ -17,7 +17,7 @@ struct ConstraintNode {
     StateDictionary solution;
     int cost = 0;
 
-    const bool isPositionForbiddenForAgent(const int &agent_id, const Position &position) {
+    const bool isPositionForbiddenForAgent(const int &agent_id, const Position &position, const int& time_step) {
 
         auto constraints_agent_it = constraints.find(agent_id);
 
@@ -26,7 +26,7 @@ struct ConstraintNode {
         }
 
         for (auto& constraint : constraints_agent_it->second) {
-            if (constraint.position == position) {
+            if (constraint.time_step == time_step && constraint.position == position) {
                 return true;
             }
         }
@@ -35,17 +35,17 @@ struct ConstraintNode {
     }
 
     const void computeSicHeuristic() {
-        cost = solution.dictionary.at(solution.dictionary.size()-1).getSicHeuristic();
+        cost = solution.dictionary.rbegin()->second.getSicHeuristic();
     }
 
     const std::unique_ptr<Conflict> scanForFirstConflict() {
 
         for (auto &state_it : solution.dictionary) {
             //TODO: detect collision if agents exchange positions or cross each other path
-            std::pair<Position, std::vector<int>> agents_conflicting = state_it.second.getAgentsInFirstConflict();
+            std::multimap<int, std::pair<int, Position>> agents_conflicting = state_it.second.getAgentsInFirstConflict(solution.dictionary, state_it.first);
 
-            if (!agents_conflicting.second.empty()) {
-                return std::make_unique<Conflict>(agents_conflicting.second, agents_conflicting.first, state_it.first);
+            if (!agents_conflicting.empty()) {
+                return std::make_unique<Conflict>(agents_conflicting);
             }
         }
 
