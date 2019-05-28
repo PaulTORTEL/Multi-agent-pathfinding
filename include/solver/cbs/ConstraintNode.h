@@ -64,14 +64,6 @@ struct ConstraintNode {
         return nullptr;
     }
 
-    void setAndMergeConstraints(ConstraintMap& former_constraints, const std::vector<Constraint>& new_constraints) {
-        this->constraints = former_constraints;
-
-        for (auto& constraint : new_constraints) {
-            this->constraints[constraint.agent_id].push_back(constraint);
-        }
-    }
-
     friend std::ostream &operator<<(std::ostream &os, const ConstraintNode &node) {
         os << "ConstraintNode constraints: " << std::endl;
         for (auto&it : node.constraints) {

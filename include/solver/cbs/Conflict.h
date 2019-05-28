@@ -6,6 +6,7 @@
 #define PATHFINDING_PROJECT_CONFLICT_H
 
 #include "../../utility.h"
+#include "Constraint.h"
 #include <map>
 #include <utility>
 
@@ -15,6 +16,8 @@ struct Conflict {
 
     Conflict(int agentId1, int agentId2, int timeStep) : agent_id1(agentId1), agent_id2(agentId2),
                                                          time_step(timeStep) {}
+
+    virtual Constraint constructConstraint(const int& agent_no) = 0;
 };
 
 struct VertexConflict : Conflict {
@@ -22,6 +25,10 @@ struct VertexConflict : Conflict {
 
     VertexConflict(int agentId1, int agentId2, int timeStep, const Position &position)
             : Conflict(agentId1, agentId2, timeStep), position(position) {}
+
+    Constraint constructConstraint(const int &agent_no) override {
+        return Constraint(agent_no == 1 ? agent_id1 : agent_id2, position, time_step);
+    }
 };
 
 struct EdgeConflict : Conflict {
@@ -32,6 +39,10 @@ struct EdgeConflict : Conflict {
             const Position &next_pos_agent1, const Position &next_pos_agent2)
             : Conflict(agentId1, agentId2, timeStep), init_pos_agent1(init_pos_agent1), init_pos_agent2(init_pos_agent1),
               next_pos_agent1(next_pos_agent1), next_pos_agent2(next_pos_agent2) {}
+
+    Constraint constructConstraint(const int &agent_no) override {
+        return Constraint(agent_no == 1 ? agent_id1 : agent_id2, agent_no == 1 ? next_pos_agent1 : next_pos_agent2, time_step);
+    }
 };
 
 

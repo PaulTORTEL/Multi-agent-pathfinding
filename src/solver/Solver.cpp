@@ -149,9 +149,10 @@ void Solver::recordStatesFromPath(const int &agent_id, const std::shared_ptr<Sea
     std::shared_ptr<SearchSquare> square = current_search_square;
 
     std::cout << "agent " << agent_id << ": ";
-   /* if (square != nullptr) {
-        state_dictionary.deleteStatesForAgentFromTimeStep(square->time_step+1, agent_id);
-    }*/
+
+    if (square != nullptr) {
+        state_dictionary.setAgentPositionFromTimeStep(square->time_step, agent_id, square);
+    }
 
     while (square != nullptr) {
         // We set up the states according to the position of the agent along its path towards its goal
@@ -161,4 +162,6 @@ void Solver::recordStatesFromPath(const int &agent_id, const std::shared_ptr<Sea
     }
     std::cout << std::endl;
 }
+
+
 

@@ -7,14 +7,14 @@
 #include "../include/solver/cbs/ConflictBasedSearch.h"
 
 int main() {
-    Map map = XmlParser::buildMapFromXml("../maps/map_2.xml", "map_1");
+    Map map = XmlParser::buildMapFromXml("../maps/map_1.xml", "map_1");
     std::cout << map << std::endl;
 
-    SimpleSequentialSolver solver(map);
-    solver.solve();
+    //SimpleSequentialSolver solver(map);
+    //solver.solve();
 
-    //ConflictBasedSearch cbsSolver(map);
-    //cbsSolver.solve();
+    ConflictBasedSearch cbsSolver(map);
+    cbsSolver.solve();
 
     return 0;
 }

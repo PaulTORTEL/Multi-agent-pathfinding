@@ -43,6 +43,14 @@ struct StateDictionary {
         }
     }
 
+    void setAgentPositionFromTimeStep(int time_step, const int& agent_id, const std::shared_ptr<SearchSquare>& search_square) {
+
+        while (dictionary.find(time_step) != dictionary.end()) {
+            dictionary[time_step].setSearchSquareForAgent(agent_id, search_square);
+            time_step++;
+        }
+    }
+
     State * getStateFromTimeStep(const int &time_step) {
 
         if (dictionary.find(time_step) != dictionary.end()) {
@@ -51,14 +59,6 @@ struct StateDictionary {
 
         return dictionary.empty() ? nullptr : &dictionary.rbegin()->second;
     }
-/*
-    void deleteStatesForAgentFromTimeStep(int time_step, const int& agent_id) {
-        auto it = dictionary.find(time_step);
-        while (it != dictionary.end()) {
-            it->second.search_squares.erase(agent_id);
-            it = dictionary.find(++time_step);
-        }
-    }*/
 
     friend std::ostream &operator<<(std::ostream &os, const StateDictionary &_dictionary) {
         os << "Sol: " << std::endl;
@@ -69,7 +69,8 @@ struct StateDictionary {
         return os;
     }
 
-    std::unique_ptr<EdgeConflict> detectFirstEdgeConflictFromTwoStates(const int& time_step, std::map<int, State>::iterator it_current_state, std::map<int, State>::iterator it_next_state) {
+    std::unique_ptr<EdgeConflict> detectFirstEdgeConflictFromTwoStates(const int& time_step, std::map<int, State>::iterator it_current_state,
+            std::map<int, State>::iterator it_next_state) {
 
         for (auto& it_agent : it_current_state->second.getSearchSquares()) {
             Position& curr_pos = it_agent.second->position;

@@ -8,10 +8,6 @@
 #include "utility.h"
 #include "solver/cbs/Conflict.h"
 #include "SearchSquare.h"
-#include <map>
-#include <memory>
-#include <utility>
-#include <ostream>
 
 class State {
 

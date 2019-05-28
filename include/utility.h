@@ -99,6 +99,10 @@ const bool inline areMovementsColliding(const Position& start_pos1, const Positi
     Direction d1 = extractDirection(start_pos1, end_pos1);
     Direction d2 = extractDirection(start_pos2, end_pos2);
 
+    bool test = start_pos2.x > start_pos1.x && start_pos2.y > end_pos1.y;
+    bool test2 = start_pos1.x > start_pos2.x && start_pos1.y > end_pos2.y;
+    //TODO: ADD THE OTHER TESTS FOR THE CROSSING!!!
+
     if (d1 == NW && d2 == NE) {
         return true;
     } else if (d1 == NE && d2 == NW) {
@@ -107,11 +111,11 @@ const bool inline areMovementsColliding(const Position& start_pos1, const Positi
         return true;
     } else if (d1 == SE && d2 == SW) {
         return true;
-    } else if (d1 == NE && d2 == SW) {
+    } else if (d1 == NE && d2 == SW && test) {
         return true;
     } else if (d1 == NW && d2 == SE) {
         return true;
-    } else if (d1 == SW && d2 == NE) {
+    } else if (d1 == SW && d2 == NE && test2) {
         return true;
     } else if (d1 == SE && d2 == NW) {
         return true;
