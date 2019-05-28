@@ -5,18 +5,11 @@
 #ifndef PATHFINDING_PROJECT_SIMPLESEQUENTIALSOLVER_H
 #define PATHFINDING_PROJECT_SIMPLESEQUENTIALSOLVER_H
 
-
 #include "Solver.h"
-#include <set>
 
 class SimpleSequentialSolver : Solver {
 
 private:
-
-    /**
-    * The dictionary gathering all the known states in the problem solving
-    */
-    StateDictionary state_dictionary;
 
     /**
      * Compute the shortest path possible for a given agent
@@ -55,37 +48,18 @@ private:
      */
     State *getStateToEvaluateFromTimeStep(const int &time_step);
 
-    /**
-     * Return whether the agent will collide with other agents if it moves in a given direction
-     * @param current_position : the current agent position
-     * @param next_position : the next agent position that we are evaluating
-     * @param direction : the direction such movement would do
-     * @param time_step : the current time step
-     * @return true if a collision with another agent is detected
-     */
-    const bool willCollideWithOtherAgents(const Position &current_position, Position &next_position,
-                                          const Direction &direction,
-                                          const int &time_step);
-
-    /**
-     * Return whether the agent is colliding with a neighbour agent or not
-     * @param current_position : the current agent position
-     * @param next_position : the next agent position that we are evaluating
-     * @param time_step : the current time step
-     * @param current_state : the current state
-     * @param current_position_neighbour : the current position of the neighbour agent
-     * @return true if a collision is detected
-     */
-    const bool
-    isCollidingWithNeighbour(const Position &current_position, const Position &next_position,
-                             const int &time_step, State &current_state,
-                             const Position &current_position_neighbour);
 
 public:
 
     SimpleSequentialSolver(Map &map);
 
     void solve() override;
+
+
+    /**
+    * The dictionary gathering all the known states in the problem solving
+    */
+    StateDictionary state_dictionary;
 };
 
 

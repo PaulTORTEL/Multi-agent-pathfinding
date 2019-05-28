@@ -6,6 +6,7 @@
 #include <set>
 #include <iostream>
 
+
 void ConflictBasedSearch::solve() {
 
     highLevelSolver();
@@ -31,7 +32,7 @@ void ConflictBasedSearch::highLevelSolver() {
 
         //TODO: debug and simplify scanning of conflicts, need to only return a conflict, not that much conflicts at a time step
         std::unique_ptr<Conflict> conflict = current_node.scanForFirstConflict();
-
+/*
         if (conflict == nullptr) {
             std::cout << "solution found" << std::endl;
 
@@ -76,7 +77,7 @@ void ConflictBasedSearch::highLevelSolver() {
                 _status = OK;
                 break;
             }
-        }
+        }*/
     }
 }
 
@@ -120,7 +121,7 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(c
     std::set<std::string> closed_list;
 
     // We populate the open list with the initial search square, wrapping the initial position of the agent
-    std::shared_ptr<SearchSquare> current_search_square = init_state.search_squares[agent_id];
+    std::shared_ptr<SearchSquare> current_search_square = init_state.getSearchSquares().at(agent_id);
     open_list.insert({current_search_square->cost(), current_search_square});
 
     do {

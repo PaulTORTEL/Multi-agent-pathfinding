@@ -6,7 +6,6 @@
 #define PATHFINDING_PROJECT_CONFLICTBASEDSEARCH_H
 
 
-#include <set>
 #include "../Solver.h"
 #include "Constraint.h"
 #include "ConstraintNode.h"

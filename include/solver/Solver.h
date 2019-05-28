@@ -5,13 +5,12 @@
 #ifndef PATHFINDING_PROJECT_SOLVER_H
 #define PATHFINDING_PROJECT_SOLVER_H
 
-
 #include "../State.h"
 #include "../Map.h"
 #include "../StateDictionary.h"
 #include "../SearchSquare.h"
 #include "cbs/ConstraintNode.h"
-#include <vector>
+
 
 class Solver {
 

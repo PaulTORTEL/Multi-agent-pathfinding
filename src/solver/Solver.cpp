@@ -6,6 +6,7 @@
 #include "../../include/solver/Solver.h"
 #include <set>
 #include <iostream>
+#include <vector>
 #include <algorithm>
 
 Solver::Solver(Map &map) : map(map) {
@@ -25,8 +26,8 @@ Solver::Solver(Map &map) : map(map) {
                                                                        nullptr);
         auto goal_state_search_square = std::make_unique<SearchSquare>(Position(agent_it->second.getGoalCoord().x, agent_it->second.getGoalCoord().y),
                                                                        nullptr);
-        init_state.search_squares[agent_id] = std::move(init_state_search_square);
-        goal_state.search_squares[agent_id] = std::move(goal_state_search_square);
+        init_state.setSearchSquareForAgent(agent_id, std::move(init_state_search_square));
+        goal_state.setSearchSquareForAgent(agent_id, std::move(goal_state_search_square));
     }
 
     bool validity = true;
@@ -54,7 +55,7 @@ bool Solver::checkStateValidity(const State &state, const std::vector<std::vecto
 
     std::set<std::string> known_pos;
 
-    for (auto& it : state.search_squares) {
+    for (auto& it : state.getSearchSquares()) {
         const int x = it.second->position.x;
         const int y = it.second->position.y;
 

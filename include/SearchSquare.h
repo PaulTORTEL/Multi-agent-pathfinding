@@ -6,7 +6,6 @@
 #define PATHFINDING_PROJECT_SEARCHSQUARE_H
 
 #include "utility.h"
-#include "State.h"
 #include <memory>
 
 struct SearchSquare {

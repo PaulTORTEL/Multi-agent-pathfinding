@@ -14,7 +14,6 @@
 struct ConstraintNode {
     typedef std::map<int, std::vector<Constraint>> ConstraintMap;
     ConstraintMap constraints;
-    std::vector<ConstraintNode> sons;
     StateDictionary solution;
     int cost = 0;
 
@@ -41,12 +40,24 @@ struct ConstraintNode {
 
     const std::unique_ptr<Conflict> scanForFirstConflict() {
 
-        for (auto &state_it : solution.dictionary) {
+        for (auto it_state = solution.dictionary.begin(); it_state != solution.dictionary.end(); ++it_state) {
             //TODO: detect collision if agents exchange positions or cross each other path
-            std::multimap<int, std::pair<int, Position>> agents_conflicting = state_it.second.getAgentsInFirstConflict(solution.dictionary, state_it.first);
 
-            if (!agents_conflicting.empty()) {
-                return std::make_unique<Conflict>(agents_conflicting);
+            std::unique_ptr<VertexConflict> vertex_conflict = it_state->second.detectVertexConflict(it_state->first);
+
+            if (vertex_conflict != nullptr) {
+                return vertex_conflict;
+            }
+
+            auto it_next_state = it_state;
+            it_next_state++;
+
+            if (it_next_state != solution.dictionary.end()) {
+                std::unique_ptr<EdgeConflict> edge_conflict = solution.detectFirstEdgeConflictFromTwoStates(it_state->first, it_state, it_next_state);
+
+                if (edge_conflict != nullptr) {
+                    return edge_conflict;
+                }
             }
         }
 
