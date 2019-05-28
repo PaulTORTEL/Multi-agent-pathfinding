@@ -11,6 +11,7 @@
 #include <map>
 #include <memory>
 #include <utility>
+#include <ostream>
 
 struct State {
     /**
@@ -111,6 +112,13 @@ struct State {
         }
 
         return agents_conflicting;
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const State &state) {
+        for (auto& it : state.search_squares) {
+            os << "A:" << it.first << " " << it.second->position;
+        }
+        return os;
     }
 };
 

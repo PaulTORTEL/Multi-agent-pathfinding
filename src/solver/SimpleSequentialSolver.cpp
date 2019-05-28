@@ -60,7 +60,7 @@ void SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
         return;
     }
 
-    recordStatesFromPath(agent_id, current_search_square);
+    recordStatesFromPath(agent_id, current_search_square, state_dictionary);
 }
 
 void SimpleSequentialSolver::populateOpenList(MultimapSearchSquare &open_list, const std::set<std::string> &closed_list,

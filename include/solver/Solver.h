@@ -57,10 +57,7 @@ protected:
 
     State goal_state;
 
-    /**
-     * The dictionary gathering all the known states in the problem solving
-     */
-    StateDictionary state_dictionary;
+
 
     /**
      * Keep a const. ref. of the map it is working on
@@ -109,7 +106,8 @@ protected:
     * @param agent_id : the agent id
     * @param current_search_square : the final search square embedding the goal position
     */
-    void recordStatesFromPath(const int &agent_id, const std::shared_ptr<SearchSquare> &current_search_square);
+    void recordStatesFromPath(const int &agent_id, const std::shared_ptr<SearchSquare> &current_search_square,
+                              StateDictionary &state_dictionary);
 
 public:
 

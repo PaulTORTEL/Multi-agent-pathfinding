@@ -2,8 +2,8 @@
 <map>
     <properties>
         <size>
-            <width>5</width>
-            <height>5</height>
+            <width>3</width>
+            <height>3</height>
         </size>
         <population>
             <agents>
@@ -35,35 +35,5 @@
         </population>
     </properties>
     <topology>
-        <square>
-            <coordinates x="2" y="3"/>
-            <type>WALL</type>
-            <level>0</level>
-        </square>
-        <square>
-            <coordinates x="1" y="3"/>
-            <type>WALL</type>
-            <level>0</level>
-        </square>
-        <square>
-            <coordinates x="0" y="3"/>
-            <type>WALL</type>
-            <level>0</level>
-        </square>
-        <square>
-            <coordinates x="4" y="1"/>
-            <type>WALL</type>
-            <level>0</level>
-        </square>
-        <square>
-            <coordinates x="3" y="1"/>
-            <type>WALL</type>
-            <level>0</level>
-        </square>
-        <square>
-            <coordinates x="3" y="4"/>
-            <type>SWAMP</type>
-            <level>1</level>
-        </square>
     </topology>
 </map>

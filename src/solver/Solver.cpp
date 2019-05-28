@@ -142,12 +142,16 @@ Solver::MultimapSearchSquare::iterator Solver::findPositionInOpenList(
     return open_list.end();
 }
 
-void Solver::recordStatesFromPath(const int &agent_id,
-                                                  const std::shared_ptr<SearchSquare> &current_search_square) {
+void Solver::recordStatesFromPath(const int &agent_id, const std::shared_ptr<SearchSquare> &current_search_square,
+                                  StateDictionary &state_dictionary) {
     // We get the search square wrapping the goal position and the total cost
     std::shared_ptr<SearchSquare> square = current_search_square;
 
     std::cout << "agent " << agent_id << ": ";
+   /* if (square != nullptr) {
+        state_dictionary.deleteStatesForAgentFromTimeStep(square->time_step+1, agent_id);
+    }*/
+
     while (square != nullptr) {
         // We set up the states according to the position of the agent along its path towards its goal
         state_dictionary.addOrUpdateState(init_state, square->time_step, agent_id, square);

@@ -14,6 +14,11 @@ class SimpleSequentialSolver : Solver {
 private:
 
     /**
+    * The dictionary gathering all the known states in the problem solving
+    */
+    StateDictionary state_dictionary;
+
+    /**
      * Compute the shortest path possible for a given agent
      * @param agent : the agent
      */

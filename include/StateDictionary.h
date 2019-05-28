@@ -5,6 +5,7 @@
 #ifndef PATHFINDING_PROJECT_STATEDICTIONARY_H
 #define PATHFINDING_PROJECT_STATEDICTIONARY_H
 
+#include <ostream>
 #include "State.h"
 
 struct StateDictionary {
@@ -30,9 +31,9 @@ struct StateDictionary {
             // New
             State new_state;
 
-            if (dictionary.empty() || time_step < dictionary.rbegin()->first) {
+            if (dictionary.empty()) {
                 new_state = init_state;
-            } else if (time_step > dictionary.size() -1) {
+            } else {
                 new_state = dictionary.rbegin()->second;
             }
 
@@ -50,6 +51,22 @@ struct StateDictionary {
         return dictionary.empty() ? nullptr : &dictionary.rbegin()->second;
     }
 
+    void deleteStatesForAgentFromTimeStep(int time_step, const int& agent_id) {
+        auto it = dictionary.find(time_step);
+        while (it != dictionary.end()) {
+            it->second.search_squares.erase(agent_id);
+            it = dictionary.find(++time_step);
+        }
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const StateDictionary &dictionary) {
+        os << "Sol: " << std::endl;
+        for (auto& it : dictionary.dictionary) {
+            os << "T:" << it.first << std::endl << it.second << std::endl;
+        }
+        os << std::endl;
+        return os;
+    }
 };
 
 #endif //PATHFINDING_PROJECT_STATEDICTIONARY_H

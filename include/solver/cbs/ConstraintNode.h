@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <set>
+#include <ostream>
 #include "Constraint.h"
 #include "Conflict.h"
 
@@ -58,6 +59,19 @@ struct ConstraintNode {
         for (auto& constraint : new_constraints) {
             this->constraints[constraint.agent_id].push_back(constraint);
         }
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const ConstraintNode &node) {
+        os << "ConstraintNode constraints: " << std::endl;
+        for (auto&it : node.constraints) {
+            os << "Agent " << it.first << ":" << std::endl;
+            for (auto& constraint : it.second) {
+                os << constraint << std::endl;
+            }
+            os << std::endl;
+        }
+        os << std::endl;
+        return os;
     }
 };
 

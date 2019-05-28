@@ -26,7 +26,10 @@ void ConflictBasedSearch::highLevelSolver() {
         const auto& it_open_list = open_list.begin();
         ConstraintNode current_node = it_open_list->second;
         open_list.erase(it_open_list);
-        //TODO: debug and siplify scanning of conflicts, need to only return a conflict, not that much conflicts at a time step
+        std::cout << current_node << std::endl;
+        std::cout << current_node.solution << std::endl;
+
+        //TODO: debug and simplify scanning of conflicts, need to only return a conflict, not that much conflicts at a time step
         std::unique_ptr<Conflict> conflict = current_node.scanForFirstConflict();
 
         if (conflict == nullptr) {
@@ -44,17 +47,18 @@ void ConflictBasedSearch::highLevelSolver() {
             return;
         }
 
-        for (auto& agent_it : conflict->agents_conflicting) {
+        for (auto agent_it : conflict->agents_conflicting) {
             ConstraintNode new_node;
             new_node.solution = current_node.solution;
             new_node.constraints = current_node.constraints;
 
-            for (auto& agent_it2 : conflict->agents_conflicting) {
+            for (auto agent_it2 : conflict->agents_conflicting) {
                 if (agent_it.first == agent_it2.first || agent_it2.second.second == map.getAgents().at(agent_it2.first).getGoalCoord()) {
                     continue;
                 }
-
+                std::cout << "Const added: A: " << agent_it2.first << " " << agent_it2.second.second << " T:" << agent_it2.second.first << std::endl;
                 new_node.constraints[agent_it2.first].emplace_back(agent_it2.first, agent_it2.second.second, agent_it2.second.first);
+
                 new_node.solution = lowLevelSolver(new_node, agent_it2.first);
 
                 if (_status == NO_SOLUTION) {
@@ -70,7 +74,6 @@ void ConflictBasedSearch::highLevelSolver() {
 
             if (_status == NO_SOLUTION) {
                 _status = OK;
-                std::cout << "no solution aa" << std::endl;
                 break;
             }
         }
@@ -81,6 +84,9 @@ ConflictBasedSearch::ConflictBasedSearch(Map &map) : Solver(map){}
 
 StateDictionary ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_node,
                                                     int agent_id) {
+    StateDictionary state_dictionary = constraint_node.solution;
+
+    //TODO: wait action ??
     // If we want to compute the whole paths
     if (agent_id == 0) {
         for (auto& it_agent : map.getAgents()) {
@@ -88,7 +94,7 @@ StateDictionary ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_n
             if (_status == NO_SOLUTION) {
                 return state_dictionary;
             }
-            recordStatesFromPath(it_agent.first, final_search_square);
+            recordStatesFromPath(it_agent.first, final_search_square, state_dictionary);
         }
     } else {
         const auto& it_agent = map.getAgents().find(agent_id);
@@ -96,7 +102,7 @@ StateDictionary ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_n
         if (_status == NO_SOLUTION) {
             return state_dictionary;
         }
-        recordStatesFromPath(agent_id, final_search_square);
+        recordStatesFromPath(agent_id, final_search_square, state_dictionary);
     }
 
 
