@@ -10,7 +10,7 @@ int main() {
     Map map = XmlParser::buildMapFromXml("../maps/map_1.xml", "map_1");
     std::cout << map << std::endl;
 
-    //SimpleSequentialSolver solver(map);
+   // SimpleSequentialSolver solver(map);
     //solver.solve();
 
     ConflictBasedSearch cbsSolver(map);

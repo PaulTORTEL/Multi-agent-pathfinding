@@ -85,47 +85,47 @@ Direction inline extractDirection(const Position& p1, const Position& p2) {
 
 /**
 * WARNING: ONLY CALL THIS FUNCTION WITH ADJACENT POSITIONS (pos1 & pos2)
-* Return whether the directions of the movements would result to a collision
+* Return whether the directions of the movements would result to an edge collision
 * @param start_pos1 : the starting position 1
 * @param end_pos1 : the ending position 1
 * @param start_pos2 : the starting position 2
 * @param end_pos2 : the ending position 2
 * @return true if the movements should collide
 */
-const bool inline areMovementsColliding(const Position& start_pos1, const Position& end_pos1,
-                                         const Position& start_pos2, const Position& end_pos2) {
+const bool inline areMovementsEdgeColliding(const Position &start_pos1, const Position &end_pos1,
+                                            const Position &start_pos2, const Position &end_pos2) {
 
-    // We assume that the pos1 & pos2 are adjacent, we are only interested in determining whether their movements are colliding
+    // We assume that the pos1 & pos2 are adjacent, we are only interested in determining whether their movements will result to an edge collision
     Direction d1 = extractDirection(start_pos1, end_pos1);
     Direction d2 = extractDirection(start_pos2, end_pos2);
 
-    bool test = start_pos2.x > start_pos1.x && start_pos2.y > end_pos1.y;
-    bool test2 = start_pos1.x > start_pos2.x && start_pos1.y > end_pos2.y;
-    //TODO: ADD THE OTHER TESTS FOR THE CROSSING!!!
+    // Which side the agent 2 is on from the agent 1
+    // If the agent 2 is at the left hand side of agent 1, side = WEST
+    Direction side_agent_2 = extractDirection(start_pos1, start_pos2);
 
-    if (d1 == NW && d2 == NE) {
+    if (d1 == NW && d2 == NE && side_agent_2 == WEST) {
         return true;
-    } else if (d1 == NE && d2 == NW) {
+    } else if (d1 == NE && d2 == NW && side_agent_2 == EAST) {
         return true;
-    } else if (d1 == SW && d2 == SE) {
+    } else if (d1 == SW && d2 == SE && side_agent_2 == WEST) {
         return true;
-    } else if (d1 == SE && d2 == SW) {
+    } else if (d1 == SE && d2 == SW && side_agent_2 == EAST) {
         return true;
-    } else if (d1 == NE && d2 == SW && test) {
+    } else if (d1 == NE && d2 == SW  && side_agent_2 == NE) {
         return true;
-    } else if (d1 == NW && d2 == SE) {
+    } else if (d1 == NW && d2 == SE && side_agent_2 == NW) {
         return true;
-    } else if (d1 == SW && d2 == NE && test2) {
+    } else if (d1 == SW && d2 == NE && side_agent_2 == SW) {
         return true;
-    } else if (d1 == SE && d2 == NW) {
+    } else if (d1 == SE && d2 == NW && side_agent_2 == SE) {
         return true;
-    } else if (d1 == WEST && d2 == EAST) {
+    } else if (d1 == WEST && d2 == EAST && side_agent_2 == WEST) {
         return true;
-    } else if (d1 == EAST && d2 == WEST) {
+    } else if (d1 == EAST && d2 == WEST && side_agent_2 == EAST) {
         return true;
-    } else if (d1 == NORTH && d2 == SOUTH) {
+    } else if (d1 == NORTH && d2 == SOUTH && side_agent_2 == NORTH) {
         return true;
-    } else if (d1 == SOUTH && d2 == NORTH) {
+    } else if (d1 == SOUTH && d2 == NORTH && side_agent_2 == SOUTH) {
         return true;
     }
 

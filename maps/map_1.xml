@@ -33,10 +33,10 @@
                 </agent>
                 <agent id="4">
                     <start>
-                        <coordinates x="0" y="2"/>
+                        <coordinates x="4" y="4"/>
                     </start>
                     <goal>
-                        <coordinates x="4" y="4"/>
+                        <coordinates x="0" y="2"/>
                     </goal>
                 </agent>
             </agents>

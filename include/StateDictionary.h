@@ -118,11 +118,37 @@ struct StateDictionary {
 
         switch(direction) {
 
-            case NORTH:break;
-            case SOUTH:break;
-            case EAST:break;
-            case WEST:break;
             case NO_DIRECTION:break;
+
+            case NORTH:
+                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
+                                                                 *current_state, pos_up, agent_id);
+                if (edge_conflict != nullptr) {
+                    return edge_conflict;
+                }
+                break;
+            case SOUTH:
+                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
+                                                                 *current_state, pos_down, agent_id);
+                if (edge_conflict != nullptr) {
+                    return edge_conflict;
+                }
+                break;
+            case EAST:
+                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
+                                                                 *current_state, pos_right, agent_id);
+                if (edge_conflict != nullptr) {
+                    return edge_conflict;
+                }
+                break;
+            case WEST:
+                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
+                                                                 *current_state, pos_left, agent_id);
+                if (edge_conflict != nullptr) {
+                    return edge_conflict;
+                }
+                break;
+
 
             case NE:
                 // In the case our current agent plans to go north-east, the only positions that could have other agents and that could result to a collision
@@ -242,9 +268,9 @@ struct StateDictionary {
             }
 
             // If the movements will result in a collision
-            if (areMovementsColliding(current_position, next_position, it_agent->second->position,
-                                      next_state->getSearchSquares().at(it_agent->first)->position)) {
-                return std::make_unique<EdgeConflict>(agent_id, it_agent->first, time_step,
+            if (areMovementsEdgeColliding(current_position, next_position, it_agent->second->position,
+                                          next_state->getSearchSquares().at(it_agent->first)->position)) {
+                return std::make_unique<EdgeConflict>(agent_id, it_agent->first, time_step+1,
                         current_position, it_agent->second->position,
                         next_position, next_state->getSearchSquares().at(it_agent->first)->position);
             }
