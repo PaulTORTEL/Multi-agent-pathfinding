@@ -41,7 +41,6 @@ struct ConstraintNode {
     const std::unique_ptr<Conflict> scanForFirstConflict() {
 
         for (auto it_state = solution.dictionary.begin(); it_state != solution.dictionary.end(); ++it_state) {
-            //TODO: detect collision if agents exchange positions or cross each other path
 
             std::unique_ptr<VertexConflict> vertex_conflict = it_state->second.detectVertexConflict(it_state->first);
 

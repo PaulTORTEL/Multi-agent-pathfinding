@@ -29,7 +29,7 @@ void ConflictBasedSearch::highLevelSolver() {
 
     while (!open_list.empty()) {
 
-        const auto& it_open_list = open_list.begin();
+        const auto& it_open_list = getIteratorOnLessConstrainedNode(open_list);;
         ConstraintNode current_node = it_open_list->second;
         open_list.erase(it_open_list);
        // std::cout << current_node << std::endl;
@@ -42,13 +42,13 @@ void ConflictBasedSearch::highLevelSolver() {
         std::unique_ptr<Conflict> conflict = current_node.scanForFirstConflict();
 
         if (conflict == nullptr) {
-            std::cout << "solution found" << std::endl;
+            std::cout << "Solution found" << std::endl;
 
             for (auto& it : current_node.solution.dictionary) {
-                std::cout << "TIMESTEP " << it.first << ": ";
+                std::cout << "T" << it.first << ": ";
 
                 for (auto &it_search_square : it.second.getSearchSquares()) {
-                    std::cout << "Agent " << it_search_square.first << " = " << it_search_square.second->position << "; ";
+                    std::cout << "A" << it_search_square.first << " = " << it_search_square.second->position << "; ";
                 }
                 std::cout << std::endl;
             }
@@ -82,6 +82,24 @@ void ConflictBasedSearch::highLevelSolver() {
             _status = OK;
         }
     }
+}
+
+Solver::MultimapConstraintNode::iterator ConflictBasedSearch::getIteratorOnLessConstrainedNode(Solver::MultimapConstraintNode &open_list) {
+
+    MultimapConstraintNode::iterator it_low, it_up, it_optimized;
+    it_low = open_list.lower_bound(open_list.begin()->first);
+    it_up = open_list.upper_bound(open_list.begin()->first);
+    it_optimized = open_list.begin();
+    int num_of_constraints = it_optimized->second.constraints.size();
+
+    for (auto it = it_low; it != it_up; ++it) {
+        int new_num_of_constraints = it->second.constraints.size();
+        if (new_num_of_constraints < num_of_constraints) {
+            it_optimized = it;
+            num_of_constraints = new_num_of_constraints;
+        }
+    }
+    return it_optimized;
 }
 
 ConflictBasedSearch::ConflictBasedSearch(Map &map) : Solver(map){}

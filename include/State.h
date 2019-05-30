@@ -63,9 +63,6 @@ public:
 
     std::unique_ptr<VertexConflict> detectVertexConflict(const int &time_step);
 
-    std::multimap<int, std::pair<int, Position>>
-    getAgentsInFirstConflict(std::map<int, State> &state_dictionary, const int &time_step);
-
     void setSearchSquareForAgent(const int& agent_id, const std::shared_ptr<SearchSquare>& search_square);
 };
 
