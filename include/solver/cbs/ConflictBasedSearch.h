@@ -29,6 +29,7 @@ private:
                              Position &analyzed_pos, ConstraintNode &constraint_node);
 
     static Solver::MultimapConstraintNode::iterator getIteratorOnLessConstrainedNode(MultimapConstraintNode &open_list);
+    static bool isNodeAlreadyInOpenList(const Solver::MultimapConstraintNode& open_list, const ConstraintNode& constraint_node);
 
 public:
 

@@ -22,5 +22,15 @@ struct Constraint {
            << constraint.time_step;
         return os;
     }
+
+    bool operator==(const Constraint &rhs) const {
+        return agent_id == rhs.agent_id &&
+               position == rhs.position &&
+               time_step == rhs.time_step;
+    }
+
+    bool operator!=(const Constraint &rhs) const {
+        return !(rhs == *this);
+    }
 };
 #endif //PATHFINDING_PROJECT_CONSTRAINT_H

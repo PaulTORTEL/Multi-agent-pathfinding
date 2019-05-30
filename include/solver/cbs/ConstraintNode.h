@@ -75,6 +75,39 @@ struct ConstraintNode {
         os << std::endl;
         return os;
     }
+
+    bool hasSameConstraintsThan(const ConstraintNode& rhs) const {
+        if (constraints.size() != rhs.constraints.size()) {
+            return false;
+        }
+
+        for (const auto& element : constraints) {
+            auto it_elem_rhs = rhs.constraints.find(element.first);
+
+            if (it_elem_rhs == rhs.constraints.end()) {
+                return false;
+            }
+
+            if (element.second.size() != it_elem_rhs->second.size()) {
+                return false;
+            }
+
+            for (const auto& constraint : element.second) {
+                bool found = false;
+                for (const auto& constraint_rhs : it_elem_rhs->second) {
+                    if (constraint == constraint_rhs) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 };
 
 #endif //PATHFINDING_PROJECT_CONSTRAINTNODE_H

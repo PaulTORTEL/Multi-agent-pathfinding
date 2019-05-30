@@ -5,11 +5,21 @@
 #include "../../../include/solver/cbs/ConflictBasedSearch.h"
 #include <set>
 #include <iostream>
+#include <ctime>
 
 
 void ConflictBasedSearch::solve() {
 
+    std::clock_t start;
+    double duration;
+
+    start = std::clock();
+
     highLevelSolver();
+
+    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+
+    std::cout << "Time elapsed: " << duration <<'\n';
 }
 
 void ConflictBasedSearch::highLevelSolver() {
@@ -21,7 +31,7 @@ void ConflictBasedSearch::highLevelSolver() {
         std::cout << "No solution found for this problem..." << std::endl;
         return;
     }
-
+    int number_of_nodes_created = 1;
     root.computeSicHeuristic();
 
     MultimapConstraintNode open_list;
@@ -29,20 +39,17 @@ void ConflictBasedSearch::highLevelSolver() {
 
     while (!open_list.empty()) {
 
-        const auto& it_open_list = getIteratorOnLessConstrainedNode(open_list);;
+        const auto& it_open_list = getIteratorOnLessConstrainedNode(open_list);
         ConstraintNode current_node = it_open_list->second;
         open_list.erase(it_open_list);
-       // std::cout << current_node << std::endl;
-       // std::cout << current_node.solution << std::endl;
 
-        //TODO: detecting exisiting constraint node to avoid duplicating
         //TODO: optimization with shared ptr/unique ptr for conflicts, constraintNode, map.rbegin()->first rather than .size()-1 etc...
         //TODO: wait action ??
 
         std::unique_ptr<Conflict> conflict = current_node.scanForFirstConflict();
 
         if (conflict == nullptr) {
-            std::cout << "Solution found" << std::endl;
+            std::cout << "Solution found with " << number_of_nodes_created << " nodes inserted in the open list" << std::endl;
 
             for (auto& it : current_node.solution.dictionary) {
                 std::cout << "T" << it.first << ": ";
@@ -58,11 +65,16 @@ void ConflictBasedSearch::highLevelSolver() {
 
         for (int i = 1; i <= 2; i++) {
             ConstraintNode new_node;
-            new_node.solution = current_node.solution;
+
             new_node.constraints = current_node.constraints;
             const int& agent_id = i == 1 ? conflict->agent_id2 : conflict->agent_id1;
-
             new_node.constraints[agent_id].emplace_back(conflict->constructConstraint(i));
+
+            if (isNodeAlreadyInOpenList(open_list, new_node)) {
+                continue;
+            }
+
+            new_node.solution = current_node.solution;
             new_node.solution = lowLevelSolver(new_node, agent_id);
 
             if (_status == NO_SOLUTION) {
@@ -73,6 +85,7 @@ void ConflictBasedSearch::highLevelSolver() {
 
             if (new_node.cost >= 0) {
                 open_list.insert({new_node.cost, new_node});
+                number_of_nodes_created++;
             }
         }
 
@@ -99,6 +112,7 @@ Solver::MultimapConstraintNode::iterator ConflictBasedSearch::getIteratorOnLessC
             num_of_constraints = new_num_of_constraints;
         }
     }
+
     return it_optimized;
 }
 
@@ -264,4 +278,15 @@ void ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, c
             open_list.insert({cost, new_search_square});
         }
     }
+}
+
+bool ConflictBasedSearch::isNodeAlreadyInOpenList(const Solver::MultimapConstraintNode &open_list,
+                                                  const ConstraintNode &constraint_node) {
+
+    for (const auto& it_nodes : open_list) {
+        if (it_nodes.second.hasSameConstraintsThan(constraint_node)) {
+            return true;
+        }
+    }
+    return false;
 }
