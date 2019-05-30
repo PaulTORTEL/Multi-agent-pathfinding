@@ -23,10 +23,10 @@ const std::map<int, std::shared_ptr<SearchSquare>>::iterator State::findAgentAtP
     return search_squares.end();
 }
 
-const int State::getSicHeuristic() {
-    int sic = 0;
+const float State::getSicHeuristic() {
+    float sic = 0.;
     for (auto &it : search_squares) {
-        sic += it.second->time_step;
+        sic += it.second->cost();
     }
     return sic;
 }

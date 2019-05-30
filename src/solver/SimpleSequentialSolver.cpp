@@ -16,16 +16,24 @@ void SimpleSequentialSolver::solve() {
     // We loop through all the agents
     for (auto& agent_it : map.getAgents()) {
 
-        computeShortestPathPossible(agent_it.second);
+        std::shared_ptr<SearchSquare> search_square = computeShortestPathPossible(agent_it.second);
         // If there is no solution for one agent, we stop
         if (_status == NO_SOLUTION) {
             std::cout << "NO SOLUTION FOR AGENT " << agent_it.first << std::endl;
             break;
         }
+
+        std::cout << "Agent " << agent_it.first << ": ";
+
+        while (search_square != nullptr) {
+            std::cout << search_square->position << " <= ";
+            search_square = search_square->parent;
+        }
+        std::cout << std::endl;
     }
 }
 
-void SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
+const std::shared_ptr<SearchSquare> SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
     //TODO: level
     //TODO: wait action possible ??
 
@@ -59,10 +67,12 @@ void SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
     } while (current_search_square->position != agent.getGoalCoord() && _status == OK);
 
     if (_status == NO_SOLUTION) {
-        return;
+        return nullptr;
     }
 
     recordStatesFromPath(agent_id, current_search_square, state_dictionary);
+
+    return current_search_square;
 }
 
 void SimpleSequentialSolver::populateOpenList(MultimapSearchSquare &open_list, const std::set<std::string> &closed_list,

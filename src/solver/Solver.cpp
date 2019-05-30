@@ -66,7 +66,7 @@ bool Solver::checkStateValidity(const State &state, const std::vector<std::vecto
             // We insert the position because it has just been evaluated
             known_pos.insert(key);
 
-            if (x < grid.size() && y < grid.size()) {
+            if (x < grid.size() && y < grid[0].size()) {
                 // If the square type is WALL
                 if (grid[x][y].type == WALL) {
                     return false;
@@ -148,8 +148,6 @@ void Solver::recordStatesFromPath(const int &agent_id, const std::shared_ptr<Sea
     // We get the search square wrapping the goal position and the total cost
     std::shared_ptr<SearchSquare> square = current_search_square;
 
-    std::cout << "agent " << agent_id << ": ";
-
     if (square != nullptr) {
         state_dictionary.setAgentPositionFromTimeStep(square->time_step, agent_id, square);
     }
@@ -157,10 +155,8 @@ void Solver::recordStatesFromPath(const int &agent_id, const std::shared_ptr<Sea
     while (square != nullptr) {
         // We set up the states according to the position of the agent along its path towards its goal
         state_dictionary.addOrUpdateState(init_state, square->time_step, agent_id, square);
-        std::cout << square->position << " <= ";
         square = square->parent;
     }
-    std::cout << std::endl;
 }
 
 

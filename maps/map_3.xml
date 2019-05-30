@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map>
+    <properties>
+        <size>
+            <width>5</width>
+            <height>2</height>
+        </size>
+        <population>
+            <agents>
+                <agent id="1">
+                    <start>
+                        <coordinates x="0" y="0"/>
+                    </start>
+                    <goal>
+                        <coordinates x="4" y="0"/>
+                    </goal>
+                </agent>
+                <agent id="2">
+                    <start>
+                        <coordinates x="1" y="0"/>
+                    </start>
+                    <goal>
+                        <coordinates x="3" y="0"/>
+                    </goal>
+                </agent>
+            </agents>
+        </population>
+    </properties>
+    <topology>
+        <square>
+            <coordinates x="0" y="1"/>
+            <type>WALL</type>
+            <level>0</level>
+        </square>
+        <square>
+            <coordinates x="1" y="1"/>
+            <type>WALL</type>
+            <level>0</level>
+        </square>
+        <square>
+            <coordinates x="3" y="1"/>
+            <type>WALL</type>
+            <level>0</level>
+        </square>
+        <square>
+            <coordinates x="4" y="1"/>
+            <type>WALL</type>
+            <level>0</level>
+        </square>
+    </topology>
+</map>

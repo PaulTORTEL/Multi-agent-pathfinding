@@ -16,7 +16,12 @@ void ConflictBasedSearch::highLevelSolver() {
 
     root.constraints.clear();
     root.solution = lowLevelSolver(root);
-    //TODO: check if status = No solution
+
+    if (_status == NO_SOLUTION) {
+        std::cout << "No solution found for this problem..." << std::endl;
+        return;
+    }
+
     root.computeSicHeuristic();
 
     MultimapConstraintNode open_list;
@@ -30,7 +35,10 @@ void ConflictBasedSearch::highLevelSolver() {
        // std::cout << current_node << std::endl;
        // std::cout << current_node.solution << std::endl;
 
-        //TODO: debug and simplify scanning of conflicts, need to only return a conflict, not that much conflicts at a time step
+        //TODO: detecting exisiting constraint node to avoid duplicating
+        //TODO: optimization with shared ptr/unique ptr for conflicts, constraintNode, map.rbegin()->first rather than .size()-1 etc...
+        //TODO: wait action ??
+
         std::unique_ptr<Conflict> conflict = current_node.scanForFirstConflict();
 
         if (conflict == nullptr) {
@@ -58,7 +66,6 @@ void ConflictBasedSearch::highLevelSolver() {
             new_node.solution = lowLevelSolver(new_node, agent_id);
 
             if (_status == NO_SOLUTION) {
-                _status = OK;
                 break;
             }
 
@@ -67,6 +74,12 @@ void ConflictBasedSearch::highLevelSolver() {
             if (new_node.cost >= 0) {
                 open_list.insert({new_node.cost, new_node});
             }
+        }
+
+        if (open_list.empty()) {
+            std::cout << "No solution found for this problem..." << std::endl;
+        } else {
+            _status = OK;
         }
     }
 }
@@ -77,7 +90,6 @@ StateDictionary ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_n
                                                     int agent_id) {
     StateDictionary state_dictionary = constraint_node.solution;
 
-    //TODO: wait action ??
     // If we want to compute the whole paths
     if (agent_id == 0) {
         for (auto& it_agent : map.getAgents()) {
@@ -88,6 +100,7 @@ StateDictionary ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_n
             recordStatesFromPath(it_agent.first, final_search_square, state_dictionary);
         }
     } else {
+        // If we want to compute only the path for an agent
         const auto& it_agent = map.getAgents().find(agent_id);
         auto final_search_square = computeShortestPathPossible(it_agent->second, constraint_node);
         if (_status == NO_SOLUTION) {
@@ -96,10 +109,6 @@ StateDictionary ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_n
         recordStatesFromPath(agent_id, final_search_square, state_dictionary);
     }
 
-
-    // TODO: add collision detection
-    //TODO: optimization with shared ptr/unique ptr for conflicts, constraintNode, map.rbegin()->first rather than .size()-1 etc...
-    //TODO: testing
     return state_dictionary;
 }
 
@@ -147,14 +156,15 @@ ConflictBasedSearch::populateOpenList(MultimapSearchSquare &open_list, const std
     const int x = current_agent_position->position.x;
     const int y = current_agent_position->position.y;
 
-    const int max_xy = map.getGrid().size() - 1;
+    const int max_x = map.getGrid().size() - 1;
+    const int max_y = map.getGrid()[0].size() - 1;
 
     // There is a position at the left
     const bool left = x > 0;
     // There is a position at the right
-    const bool right = x < max_xy;
+    const bool right = x < max_x;
     // There is a position at the top
-    const bool up = y < max_xy;
+    const bool up = y < max_y;
     // There is a position at the bottom
     const bool down = y > 0;
 

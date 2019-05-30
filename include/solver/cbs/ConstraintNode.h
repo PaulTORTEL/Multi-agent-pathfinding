@@ -15,7 +15,7 @@ struct ConstraintNode {
     typedef std::map<int, std::vector<Constraint>> ConstraintMap;
     ConstraintMap constraints;
     StateDictionary solution;
-    int cost = 0;
+    float cost = 0.;
 
     const bool isPositionForbiddenForAgent(const int &agent_id, const Position &position, const int& time_step) {
 

@@ -59,7 +59,7 @@ public:
 
     const std::map<int, std::shared_ptr<SearchSquare>>::iterator findAgentAtPosition(const Position &position);
 
-    const int getSicHeuristic();
+    const float getSicHeuristic();
 
     std::unique_ptr<VertexConflict> detectVertexConflict(const int &time_step);
 

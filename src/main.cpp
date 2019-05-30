@@ -7,10 +7,16 @@
 #include "../include/solver/cbs/ConflictBasedSearch.h"
 
 int main() {
-    Map map = XmlParser::buildMapFromXml("../maps/map_1.xml", "map_1");
+    std::cout << "Type the number of the map to load: ";
+    int map_no = 1;
+    std::cin >> map_no;
+    std::string map_to_load = "../maps/map_" + std::to_string(map_no) + ".xml";
+    std::string map_name = "map_" + std::to_string(map_no);
+
+    Map map = XmlParser::buildMapFromXml(map_to_load.c_str(), map_name.c_str());
     std::cout << map << std::endl;
 
-   // SimpleSequentialSolver solver(map);
+    //SimpleSequentialSolver solver(map);
     //solver.solve();
 
     ConflictBasedSearch cbsSolver(map);
