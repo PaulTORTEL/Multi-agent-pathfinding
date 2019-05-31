@@ -15,7 +15,7 @@ struct ConstraintNode {
     typedef std::map<int, std::vector<Constraint>> ConstraintMap;
     ConstraintMap constraints;
     StateDictionary solution;
-    float cost = 0.;
+    float cost = -1.;
 
     const bool isPositionForbiddenForAgent(const int &agent_id, const Position &position, const int& time_step) {
 
@@ -26,6 +26,7 @@ struct ConstraintNode {
         }
 
         for (auto& constraint : constraints_agent_it->second) {
+            // If there is a constraint at this time step for this position and for this agent
             if (constraint.time_step == time_step && constraint.position == position) {
                 return true;
             }

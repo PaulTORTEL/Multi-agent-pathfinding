@@ -14,7 +14,7 @@ void ConflictBasedSearch::solve() {
     double duration;
 
     start = std::clock();
-
+    // We call the CBS algorithm
     highLevelSolver();
 
     duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
@@ -25,6 +25,7 @@ void ConflictBasedSearch::solve() {
 void ConflictBasedSearch::highLevelSolver() {
 
     root.constraints.clear();
+    // We set the root solution with a first solution found without any constrained
     root.solution = lowLevelSolver(root);
 
     if (_status == NO_SOLUTION) {
@@ -32,6 +33,7 @@ void ConflictBasedSearch::highLevelSolver() {
         return;
     }
     int number_of_nodes_created = 1;
+    // We compute the sic heuristic of the node
     root.computeSicHeuristic();
 
     MultimapConstraintNode open_list;
@@ -39,15 +41,17 @@ void ConflictBasedSearch::highLevelSolver() {
 
     while (!open_list.empty()) {
 
+        // We get the less constrained node
         const auto& it_open_list = getIteratorOnLessConstrainedNode(open_list);
         ConstraintNode current_node = it_open_list->second;
         open_list.erase(it_open_list);
 
-        //TODO: optimization with shared ptr/unique ptr for conflicts, constraintNode, map.rbegin()->first rather than .size()-1 etc...
         //TODO: wait action ??
 
+        // We search for a conflict in the current solution
         std::unique_ptr<Conflict> conflict = current_node.scanForFirstConflict();
 
+        // If there is no conflict, we have found a valid and admissible solution
         if (conflict == nullptr) {
             std::cout << "Solution found with " << number_of_nodes_created << " nodes inserted in the open list" << std::endl;
 
@@ -63,18 +67,22 @@ void ConflictBasedSearch::highLevelSolver() {
             return;
         }
 
+        // There is a conflict between two agents, therefore we will add 2 news constraint nodes
         for (int i = 1; i <= 2; i++) {
             ConstraintNode new_node;
 
             new_node.constraints = current_node.constraints;
             const int& agent_id = i == 1 ? conflict->agent_id2 : conflict->agent_id1;
+            // We construct the new constraint node by merging the constraints of the current node with a new constraint coming from the conflict detected
             new_node.constraints[agent_id].emplace_back(conflict->constructConstraint(i));
 
+            // We check if the new node is not already inside the open list to avoid redundant nodes
             if (isNodeAlreadyInOpenList(open_list, new_node)) {
                 continue;
             }
 
             new_node.solution = current_node.solution;
+            // We compute the new solution for one of the agent conflicting, with the new node (and new constraints)
             new_node.solution = lowLevelSolver(new_node, agent_id);
 
             if (_status == NO_SOLUTION) {
@@ -83,7 +91,9 @@ void ConflictBasedSearch::highLevelSolver() {
 
             new_node.computeSicHeuristic();
 
+            // If the sic heuristic is correct
             if (new_node.cost >= 0) {
+                // We insert the new constraint node to the open list, so we can analyze its solution later
                 open_list.insert({new_node.cost, new_node});
                 number_of_nodes_created++;
             }
@@ -100,9 +110,12 @@ void ConflictBasedSearch::highLevelSolver() {
 Solver::MultimapConstraintNode::iterator ConflictBasedSearch::getIteratorOnLessConstrainedNode(Solver::MultimapConstraintNode &open_list) {
 
     MultimapConstraintNode::iterator it_low, it_up, it_optimized;
+    // We set it_low and it_up on the lower and upper bounds of the smallest key of the open list
     it_low = open_list.lower_bound(open_list.begin()->first);
     it_up = open_list.upper_bound(open_list.begin()->first);
     it_optimized = open_list.begin();
+
+    // Number of constraints in the first node
     int num_of_constraints = it_optimized->second.constraints.size();
 
     for (auto it = it_low; it != it_up; ++it) {
@@ -248,6 +261,7 @@ void ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, c
             return;
         }
 
+        // If the agent is not allowed to go to this position (constraints are used at this point)
         if (constraint_node.isPositionForbiddenForAgent(agent.getId(), analyzed_pos, time_step+1)) {
             return;
         }
@@ -284,6 +298,7 @@ bool ConflictBasedSearch::isNodeAlreadyInOpenList(const Solver::MultimapConstrai
                                                   const ConstraintNode &constraint_node) {
 
     for (const auto& it_nodes : open_list) {
+        // We are only interested in nodes that have the same constraints since the solution, computed or not will be similar from the same constraints
         if (it_nodes.second.hasSameConstraintsThan(constraint_node)) {
             return true;
         }
