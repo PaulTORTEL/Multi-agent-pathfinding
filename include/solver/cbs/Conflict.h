@@ -17,6 +17,13 @@ struct Conflict {
     Conflict(int agentId1, int agentId2, int timeStep) : agent_id1(agentId1), agent_id2(agentId2),
                                                          time_step(timeStep) {}
 
+    /**
+    * Constructs and returns the constraints according to the agent number:
+     * if we are dealing with the first agent (==1), we want to build constraint for the second agent
+     * if we are dealing with the second agent (==2), we want to build constraint for the first agent
+    * @param agent_no : the first or second agent
+    * @return the new constraint
+    */
     virtual Constraint constructConstraint(const int& agent_no) = 0;
 };
 
@@ -25,6 +32,7 @@ struct VertexConflict : Conflict {
 
     VertexConflict(int agentId1, int agentId2, int timeStep, const Position &position)
             : Conflict(agentId1, agentId2, timeStep), position(position) {}
+
 
     Constraint constructConstraint(const int &agent_no) override {
         return Constraint(agent_no == 1 ? agent_id2 : agent_id1, position, time_step);

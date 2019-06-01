@@ -57,12 +57,31 @@ public:
         return os;
     }
 
+    /**
+     * Finds an agent at a given position
+     * @param position : the position to look for
+     * @return an iterator on the found agent
+     */
     const std::map<int, std::shared_ptr<SearchSquare>>::iterator findAgentAtPosition(const Position &position);
 
+    /**
+     * Computes the sic heuristic
+     * @return the sic heuristic value
+     */
     const float getSicHeuristic();
 
+    /**
+     * Detect a vertext conflict if it exists, at a time step
+     * @param time_step : the given time step
+     * @return an unique pointer on a vertex conflict, null if no conflict detected
+     */
     std::unique_ptr<VertexConflict> detectVertexConflict(const int &time_step);
 
+    /**
+     * Set the search square for a given agent
+     * @param agent_id : the agent id
+     * @param search_square : the new search square to record
+     */
     void setSearchSquareForAgent(const int& agent_id, const std::shared_ptr<SearchSquare>& search_square);
 };
 

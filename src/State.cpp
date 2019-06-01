@@ -8,14 +8,9 @@
 #include <utility>
 #include <ostream>
 
-
-/**
- * Find an agent at a given position
- * @param position : the position to look for
- * @return an iterator on the found agent
- */
 const std::map<int, std::shared_ptr<SearchSquare>>::iterator State::findAgentAtPosition(const Position &position) {
     for (auto it = search_squares.begin(); it != search_squares.end(); ++it) {
+        // If the agent is at this position, we return the iterator on this agent
         if (it->second->position == position) {
             return it;
         }
@@ -33,18 +28,24 @@ const float State::getSicHeuristic() {
 
 std::unique_ptr<VertexConflict> State::detectVertexConflict(const int& time_step) {
 
+    // We loop through all the search squares (all the agents)
     for (auto& search_squares_it : search_squares) {
+        // We get the position of the current agent and its ID
         const Position& agent_1_position = search_squares_it.second->position;
         const int& agent_1_id = search_squares_it.first;
 
+        // We loop through all the search squares again
         for (auto& search_squares_it2 : search_squares) {
+            // If the ID are the same, we skip this search square
             if (search_squares_it2.first <= search_squares_it.first) {
                 continue;
             }
 
+            // We get the position of the second agent, and its ID
             Position& agent_2_position = search_squares_it2.second->position;
             const int& agent_2_id = search_squares_it2.first;
 
+            // If the position of both agents are the same, it means we have a vertex conflict since they are both at the same time at the same place
             if (agent_1_position == agent_2_position) {
                 return std::make_unique<VertexConflict>(agent_1_id, agent_2_id, time_step, agent_1_position);
             }

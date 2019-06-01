@@ -43,6 +43,12 @@ struct StateDictionary {
         }
     }
 
+    /**
+     * Sets the position of agent at a given time step
+     * @param time_step : the given time step
+     * @param agent_id : the agent ID
+     * @param search_square : the new search square
+     */
     void setAgentPositionFromTimeStep(int time_step, const int& agent_id, const std::shared_ptr<SearchSquare>& search_square) {
 
         while (dictionary.find(time_step) != dictionary.end()) {
@@ -51,6 +57,11 @@ struct StateDictionary {
         }
     }
 
+    /**
+     * Returns a pointer of the state, found from a given time step
+     * @param time_step : the time step
+     * @return a pointer of the state found, nullptr if nothing is found
+     */
     State * getStateFromTimeStep(const int &time_step) {
 
         if (dictionary.find(time_step) != dictionary.end()) {
@@ -69,6 +80,13 @@ struct StateDictionary {
         return os;
     }
 
+    /**
+     * Detects an edge conflict between two successive states and returns the first one we find
+     * @param time_step : the given time step
+     * @param it_current_state : the current state
+     * @param it_next_state : the next state
+     * @return
+     */
     std::unique_ptr<EdgeConflict> detectFirstEdgeConflictFromTwoStates(const int& time_step, std::map<int, State>::iterator it_current_state,
             std::map<int, State>::iterator it_next_state) {
 

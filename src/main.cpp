@@ -16,8 +16,8 @@ int main() {
     Map map = XmlParser::buildMapFromXml(map_to_load.c_str(), map_name.c_str());
     std::cout << map << std::endl;
 
-    //SimpleSequentialSolver solver(map);
-    //solver.solve();
+   // SimpleSequentialSolver solver(map);
+  //  solver.solve();
 
     ConflictBasedSearch cbsSolver(map);
     cbsSolver.solve();

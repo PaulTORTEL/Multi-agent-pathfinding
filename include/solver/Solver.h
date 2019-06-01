@@ -65,6 +65,7 @@ protected:
 
     // Cost - SearchSquare (Position embedded)
     typedef std::multimap<float, std::shared_ptr<SearchSquare>> MultimapSearchSquare;
+    // Cost - Constraint node (solution embedded)
     typedef std::multimap<float, ConstraintNode> MultimapConstraintNode;
 
     /**
