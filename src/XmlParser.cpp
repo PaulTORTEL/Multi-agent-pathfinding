@@ -95,10 +95,12 @@ void XmlParser::parseTopology(tinyxml2::XMLElement* mapElement, Map& map) {
             // While we have square tags to process
             while (position != nullptr) {
                 const char* direction = position->GetText();
-                map.addStairsForSquare(x, y, direction);
+                if (!map.addStairsForSquare(x, y, direction)) {
+                    // If here, the Stairs position written in the XML for this square is unknown
+                    std::cerr << "Error: square at [" << x << "," << y << "] has an unknown stairs position" << std::endl;
+                }
                 position = position->NextSiblingElement("position");
             }
-
         }
 
         // We move on to the next square tag (if doesn't exit, then square == nullptr)

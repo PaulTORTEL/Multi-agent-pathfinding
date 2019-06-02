@@ -183,7 +183,7 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(c
         // We populate the open list with the surroundings of the current search square
         populateOpenList(open_list, closed_list, agent, current_search_square, constraint_node);
 
-        if (open_list.empty()) {
+        if (open_list.empty() && current_search_square->position != agent.getGoalCoord()) {
             _status = NO_SOLUTION;
         }
 

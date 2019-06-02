@@ -129,9 +129,23 @@ public:
      * @param position : the position that we want to get
      * @return a const reference on the MapSquare
      */
-    const MapSquare & getMapSquare(Position &position) const;
+    const MapSquare & getMapSquare(const Position &position) const;
 
+    /**
+     * Adds stairs for the corresponding square
+     * @param x : the x coordinate of the square
+     * @param y : the y coordinate of the square
+     * @param direction : the direction
+     * @return false if the direction is unknown
+     */
     bool addStairsForSquare(const int &x, const int &y, const char *direction);
+
+    /**
+     * Returns the extra movement cost from a position
+     * @param position : the position
+     * @return the extra cost
+     */
+    const float getExtraCostFromMapSquareType(const Position &position) const;
 };
 
 

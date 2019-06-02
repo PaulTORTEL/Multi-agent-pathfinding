@@ -110,11 +110,11 @@ protected:
                               StateDictionary &state_dictionary);
 
     /**
-     * Indicates whether the agent can access to the analyzed position or not  
-     * @param agent
-     * @param current_agent_pos
-     * @param analyzed_pos
-     * @return
+     * Indicates whether the agent can access to the analyzed position or not
+     * @param agent : the agent moving
+     * @param current_agent_pos : its current position
+     * @param analyzed_pos : the analyzed position, where the agent wants to go
+     * @return true if the agent can move to this position
      */
     bool canAgentAccessPosition(const Agent &agent, std::shared_ptr<SearchSquare> &current_agent_pos,
                                 Position &analyzed_pos);

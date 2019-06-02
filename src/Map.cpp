@@ -56,7 +56,7 @@ void Map::setLevelForSquare(const int &x, const int &y, const int &level) {
     _grid[x][y].level = level;
 }
 
-const MapSquare & Map::getMapSquare(Position &position) const {
+const MapSquare & Map::getMapSquare(const Position &position) const {
     return _grid[position.x][position.y];
 }
 
@@ -72,4 +72,23 @@ bool Map::addStairsForSquare(const int &x, const int &y, const char *direction) 
     // We add stairs
     _grid[x][y].stairs.insert(it->second);
     return true;
+}
+
+const float Map::getExtraCostFromMapSquareType(const Position &position) const {
+    const MapSquare& map_square = getMapSquare(position);
+
+    //TODO: remove extra cost for agents able to move efficiently in specific areas
+
+    float extra_cost = 0.;
+
+    switch (map_square.type) {
+
+        case NONE:break;
+        case WALL:break;
+        case SWAMP:
+            extra_cost = 2.;
+            break;
+    }
+
+    return extra_cost;
 }

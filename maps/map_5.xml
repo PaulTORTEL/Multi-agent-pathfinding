@@ -46,7 +46,7 @@
         </square>
         <square>
             <coordinates x="2" y="4"/>
-            <type>SWAMP</type>
+            <type>NONE</type>
             <level>1</level>
             <stairs>
                 <position>EAST</position>
@@ -63,8 +63,13 @@
             </stairs>
         </square>
         <square>
-            <coordinates x="0" y="4"/>
-            <type>NONE</type>
+            <coordinates x="2" y="2"/>
+            <type>SWAMP</type>
+            <level>0</level>
+        </square>
+        <square>
+            <coordinates x="3" y="3"/>
+            <type>SWAMP</type>
             <level>0</level>
         </square>
     </topology>

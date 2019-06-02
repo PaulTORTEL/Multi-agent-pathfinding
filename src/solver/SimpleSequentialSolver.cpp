@@ -60,7 +60,7 @@ const std::shared_ptr<SearchSquare> SimpleSequentialSolver::computeShortestPathP
         // We populate the open list with the surroundings of the current search square
         populateOpenList(open_list, closed_list, agent, current_search_square);
 
-        if (open_list.empty()) {
+        if (open_list.empty() && current_search_square->position != agent.getGoalCoord()) {
             _status = NO_SOLUTION;
         }
         // We loop while we didn't detect that there is no solution or that we didn't reach the goal position of the agent

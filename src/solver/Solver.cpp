@@ -107,16 +107,18 @@ float Solver::movement_cost(const SearchSquare &current, const Position &next) {
 
     // We get the direction (North, South, etc.)
     Direction move_direction = extractDirection(current.position, next);
+    const float extra_cost = map.getExtraCostFromMapSquareType(current.position);
+
     const float straight = 1.;
     const float diagonal = 1.414;
 
     switch (move_direction) {
 
         case NORTH: case SOUTH: case WEST: case EAST:
-            return straight + current.cost_movement;
+            return straight + current.cost_movement + extra_cost;
 
         case NE: case NW: case SE: case SW:
-            return diagonal + current.cost_movement;
+            return diagonal + current.cost_movement + extra_cost;
 
         case NO_DIRECTION:
             return 0.;
@@ -164,18 +166,19 @@ Solver::canAgentAccessPosition(const Agent &agent, std::shared_ptr<SearchSquare>
                                Position &analyzed_pos) {
 
     //TODO: skills of the agent to test here
-
-//TODO: if water..., add it here
+    //TODO: if water..., add it here
     //TODO: check if the agent can climb
 
     const MapSquare& analyzed_map_square = map.getMapSquare(analyzed_pos);
 
+    // If the position is a non-walkable square
     if (analyzed_map_square.type == WALL) {
         return false;
     }
 
     const MapSquare& current_map_square = map.getMapSquare(current_agent_pos->position);
 
+    // If both square are on the same level, the agent can move to this position
     if (current_map_square.level == analyzed_map_square.level) {
         return true;
     }
