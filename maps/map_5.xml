@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map>
+    <properties>
+        <size>
+            <width>5</width>
+            <height>5</height>
+        </size>
+        <population>
+            <agents>
+                <agent id="1">
+                    <start>
+                        <coordinates x="0" y="0"/>
+                    </start>
+                    <goal>
+                        <coordinates x="0" y="4"/>
+                    </goal>
+                </agent>
+            </agents>
+        </population>
+    </properties>
+    <topology>
+        <square>
+            <coordinates x="2" y="3"/>
+            <type>WALL</type>
+            <level>0</level>
+        </square>
+        <square>
+            <coordinates x="1" y="3"/>
+            <type>WALL</type>
+            <level>0</level>
+        </square>
+        <square>
+            <coordinates x="0" y="3"/>
+            <type>WALL</type>
+            <level>0</level>
+        </square>
+        <square>
+            <coordinates x="4" y="1"/>
+            <type>WALL</type>
+            <level>0</level>
+        </square>
+        <square>
+            <coordinates x="3" y="1"/>
+            <type>WALL</type>
+            <level>0</level>
+        </square>
+        <square>
+            <coordinates x="2" y="4"/>
+            <type>SWAMP</type>
+            <level>1</level>
+            <stairs>
+                <position>EAST</position>
+                <position>SE</position>
+            </stairs>
+        </square>
+        <square>
+            <coordinates x="1" y="4"/>
+            <type>NONE</type>
+            <level>2</level>
+            <stairs>
+                <position>EAST</position>
+                <position>WEST</position>
+            </stairs>
+        </square>
+        <square>
+            <coordinates x="0" y="4"/>
+            <type>NONE</type>
+            <level>0</level>
+        </square>
+    </topology>
+</map>

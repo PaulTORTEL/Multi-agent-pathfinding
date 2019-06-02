@@ -59,3 +59,17 @@ void Map::setLevelForSquare(const int &x, const int &y, const int &level) {
 const MapSquare & Map::getMapSquare(Position &position) const {
     return _grid[position.x][position.y];
 }
+
+bool Map::addStairsForSquare(const int &x, const int &y, const char *direction) {
+    // We get an iterator on the value from the direction
+    auto it = __key_Direction_map.find(direction);
+
+    // True if the type has not been found
+    if (it == __key_Direction_map.end()) {
+        return false;
+    }
+
+    // We add stairs
+    _grid[x][y].stairs.insert(it->second);
+    return true;
+}

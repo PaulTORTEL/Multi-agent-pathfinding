@@ -129,58 +129,57 @@ void SimpleSequentialSolver::tryInsertInOpenList(MultimapSearchSquare &open_list
     const int& time_step = current_agent_position->time_step;
     State *state_to_evaluate = getStateToEvaluateFromTimeStep(time_step);
 
-    //TODO: if water..., add it here
-    //TODO: check if the agent and the square are on the same level or that the agent can climb/use "staircases"
-
     // If the position (left, right, up, down, top-right etc.) from our current search square is a walkable square
-    if (map.getMapSquare(analyzed_pos).type != WALL) {
-        auto& it_agent_searched = state_to_evaluate->findAgentAtPosition(analyzed_pos);
-        const bool isAgentThere = it_agent_searched != state_to_evaluate->getSearchSquares().end();
+    if (!canAgentAccessPosition(agent, current_agent_position, analyzed_pos)) {
+        return;
+    }
 
-        // If there is no agent at the position or if the agent that is there is the agent we are currently processing
-        if (!isAgentThere || it_agent_searched->first == agent.getId()) {
+    auto& it_agent_searched = state_to_evaluate->findAgentAtPosition(analyzed_pos);
+    const bool isAgentThere = it_agent_searched != state_to_evaluate->getSearchSquares().end();
 
-            // If the agent will collide with other agents if it does this move
-            if (state_dictionary.getEdgeConflictWithOtherAgents(current_agent_position->position, analyzed_pos,
-                                                                direction,
-                                                                time_step,
-                                                                state_dictionary.getStateFromTimeStep(time_step),
-                                                                agent.getId()) != nullptr)  {
-                return;
+    // If there is no agent at the position or if the agent that is there is the agent we are currently processing
+    if (!isAgentThere || it_agent_searched->first == agent.getId()) {
+
+        // If the agent will collide with other agents if it does this move
+        if (state_dictionary.getEdgeConflictWithOtherAgents(current_agent_position->position, analyzed_pos,
+                                                            direction,
+                                                            time_step,
+                                                            state_dictionary.getStateFromTimeStep(time_step),
+                                                            agent.getId()) != nullptr)  {
+            return;
+        }
+
+        std::string pos_coord = std::to_string(analyzed_pos.x) + ";" + std::to_string(analyzed_pos.y);
+        // We check that the position has not already been processed (i.e., not in the closed list)
+        if (closed_list.find(pos_coord) != closed_list.end()) {
+            // Already processed, we stop here for this position
+            return;
+        }
+
+        const float move_cost = movement_cost(*current_agent_position, analyzed_pos);
+        const float heuristic = heuristic_cost(analyzed_pos, agent.getGoalCoord());
+
+        const float cost = move_cost + heuristic;
+
+        const auto& it_analyzed_pos = findPositionInOpenList(analyzed_pos, open_list);
+
+        // If we realize that the position is already in the open list
+        if (it_analyzed_pos != open_list.end()) {
+            // If the cost is cheaper with the current path (current search square and its parent)
+            if (it_analyzed_pos->second->cost() > cost) {
+                // We change only the movement cost since the heuristic cost can't change
+                it_analyzed_pos->second->cost_movement = move_cost;
+                // We change the parent
+                it_analyzed_pos->second->parent = current_agent_position;
+                // We change its time step
+                it_analyzed_pos->second->time_step = current_agent_position->time_step + 1;
             }
-
-            std::string pos_coord = std::to_string(analyzed_pos.x) + ";" + std::to_string(analyzed_pos.y);
-            // We check that the position has not already been processed (i.e., not in the closed list)
-            if (closed_list.find(pos_coord) != closed_list.end()) {
-                // Already processed, we stop here for this position
-                return;
-            }
-
-            const float move_cost = movement_cost(*current_agent_position, analyzed_pos);
-            const float heuristic = heuristic_cost(analyzed_pos, agent.getGoalCoord());
-
-            const float cost = move_cost + heuristic;
-
-            const auto& it_analyzed_pos = findPositionInOpenList(analyzed_pos, open_list);
-
-            // If we realize that the position is already in the open list
-            if (it_analyzed_pos != open_list.end()) {
-                // If the cost is cheaper with the current path (current search square and its parent)
-                if (it_analyzed_pos->second->cost() > cost) {
-                    // We change only the movement cost since the heuristic cost can't change
-                    it_analyzed_pos->second->cost_movement = move_cost;
-                    // We change the parent
-                    it_analyzed_pos->second->parent = current_agent_position;
-                    // We change its time step
-                    it_analyzed_pos->second->time_step = current_agent_position->time_step + 1;
-                }
-            } else {
-                // This is a new position (not yet processed), we create a search square to represent it and we set its parent with the current search square
-                // since we reach this new search square thanks to the current search square
-                std::shared_ptr<SearchSquare> new_search_square = std::make_shared<SearchSquare>(analyzed_pos, current_agent_position, move_cost, heuristic);
-                // We insert it in the open list
-                open_list.insert({cost, new_search_square});
-            }
+        } else {
+            // This is a new position (not yet processed), we create a search square to represent it and we set its parent with the current search square
+            // since we reach this new search square thanks to the current search square
+            std::shared_ptr<SearchSquare> new_search_square = std::make_shared<SearchSquare>(analyzed_pos, current_agent_position, move_cost, heuristic);
+            // We insert it in the open list
+            open_list.insert({cost, new_search_square});
         }
     }
 }

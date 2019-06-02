@@ -159,5 +159,38 @@ void Solver::recordStatesFromPath(const int &agent_id, const std::shared_ptr<Sea
     }
 }
 
+bool
+Solver::canAgentAccessPosition(const Agent &agent, std::shared_ptr<SearchSquare> &current_agent_pos,
+                               Position &analyzed_pos) {
+
+    //TODO: skills of the agent to test here
+
+//TODO: if water..., add it here
+    //TODO: check if the agent can climb
+
+    const MapSquare& analyzed_map_square = map.getMapSquare(analyzed_pos);
+
+    if (analyzed_map_square.type == WALL) {
+        return false;
+    }
+
+    const MapSquare& current_map_square = map.getMapSquare(current_agent_pos->position);
+
+    if (current_map_square.level == analyzed_map_square.level) {
+        return true;
+    }
+
+    Direction direction;
+
+    // We have to check if the high ground square has stairs
+    if (current_map_square.level > analyzed_map_square.level) {
+        direction = extractDirection(current_agent_pos->position, analyzed_pos);
+        return !(current_map_square.stairs.find(direction) == current_map_square.stairs.end());
+    } else {
+        direction = extractDirection(analyzed_pos, current_agent_pos->position);
+        return !(analyzed_map_square.stairs.find(direction) == analyzed_map_square.stairs.end());
+    }
+}
+
 
 

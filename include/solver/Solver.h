@@ -59,7 +59,7 @@ protected:
 
 
     /**
-     * Keep a const. ref. of the map it is working on
+     * Keeps a const. ref. of the map it is working on
      */
     const Map map;
 
@@ -69,7 +69,7 @@ protected:
     typedef std::multimap<float, ConstraintNode> MultimapConstraintNode;
 
     /**
-     * Return the total movement cost (heuristic + move)
+     * Returns the total movement cost (heuristic + move)
      * @param current : the current search square
      * @param next : the position that we are computing
      * @param goal : the position of the agent's goal
@@ -78,7 +78,7 @@ protected:
     const float total_movement_cost(const SearchSquare &current, const Position &next, const Position &goal);
 
     /**
-     * Return the movement cost
+     * Returns the movement cost
      * @param current : the current search square
      * @param next : the position that we are computing
      * @return the movement cost
@@ -94,7 +94,7 @@ protected:
     static float heuristic_cost(const Position &current, const Position &goal);
 
     /**
-    * Find a position in the open list
+    * Finds a position in the open list
     * @param pos : the position we look for
     * @param open_list : the open list
     * @return an iterator on the position
@@ -102,19 +102,29 @@ protected:
     static Solver::MultimapSearchSquare::iterator findPositionInOpenList(const Position &pos, MultimapSearchSquare &open_list);
 
     /**
-    * Record the states in the state dictionary from the path we have just computed
+    * Records the states in the state dictionary from the path we have just computed
     * @param agent_id : the agent id
     * @param current_search_square : the final search square embedding the goal position
     */
     void recordStatesFromPath(const int &agent_id, const std::shared_ptr<SearchSquare> &current_search_square,
                               StateDictionary &state_dictionary);
 
+    /**
+     * Indicates whether the agent can access to the analyzed position or not  
+     * @param agent
+     * @param current_agent_pos
+     * @param analyzed_pos
+     * @return
+     */
+    bool canAgentAccessPosition(const Agent &agent, std::shared_ptr<SearchSquare> &current_agent_pos,
+                                Position &analyzed_pos);
+
 public:
 
     Solver(Map &map);
 
     /**
-     * Check if a state is valid or not
+     * Checks if a state is valid or not
      * @param state : the state to evaluate
      * @param grid : the world
      * @return True if the state is valid
@@ -122,7 +132,7 @@ public:
     static bool checkStateValidity(const State &state, const std::vector<std::vector<MapSquare>> &grid);
 
     /**
-     * Set the status of the solver
+     * Sets the status of the solver
      * @param status : the status to be set
      * @param msg : the optional message
      */

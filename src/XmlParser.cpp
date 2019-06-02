@@ -88,6 +88,19 @@ void XmlParser::parseTopology(tinyxml2::XMLElement* mapElement, Map& map) {
             std::cerr << "Error: square at [" << x << "," << y << "] has an unknown SquareType" << std::endl;
         }
 
+        tinyxml2::XMLElement* stairs = square->FirstChildElement("stairs");
+
+        if (stairs != nullptr) {
+            auto* position = stairs->FirstChildElement("position");
+            // While we have square tags to process
+            while (position != nullptr) {
+                const char* direction = position->GetText();
+                map.addStairsForSquare(x, y, direction);
+                position = position->NextSiblingElement("position");
+            }
+
+        }
+
         // We move on to the next square tag (if doesn't exit, then square == nullptr)
         square = square->NextSiblingElement("square");
     }

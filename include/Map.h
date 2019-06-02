@@ -9,12 +9,13 @@
 #include <ostream>
 #include <vector>
 #include <map>
+#include <set>
 #include <string>
 #include "Agent.h"
 
 /**
- * Enumeration of the different types that can have a square
- */
+* Enumeration of the different types that can have a square
+*/
 enum SquareType {
     NONE,
     WALL,
@@ -22,46 +23,68 @@ enum SquareType {
 };
 
 /**
- * Structure gathering all the properties and information about a Square (a place in the environment)
- */
+* Structure gathering all the properties and information about a Square (a place in the environment)
+*/
 struct MapSquare {
     SquareType type = NONE;
+
     /**
      * Indicates the level of the square (if 0, the square is at sea-level)
      */
     int level = 0;
+
+    /**
+     * Indicates the position of the stairs, if applicable (level > 0 and there are stairs)
+     */
+    std::set<Direction> stairs;
 };
 
 /**
  * Map class gathering all the necessary information and the _grid itself
  */
 class Map {
-private:
-    std::string _name;
-    int _width;
-    int _height;
+    private:
+        std::string _name;
+        int _width;
+        int _height;
 
-    /**
-     * The agents in the world
-     */
-    std::map<int, Agent> _agents;
+        /**
+         * The agents in the world
+         */
+        std::map<int, Agent> _agents;
 
-    /**
-     * The actual world/map representation
-     */
-    std::vector<std::vector<MapSquare>> _grid;
+        /**
+         * The actual world/map representation
+         */
+        std::vector<std::vector<MapSquare>> _grid;
 
-    /**
-     *  Associate a key with the corresponding SquareType value.
-     *  Do not use it outside this class!
-     */
-    std::map<std::string, SquareType> __key_SquareType_map;
+        /**
+         *  Associate a key with the corresponding SquareType value.
+         *  Do not use it outside this class!
+         */
+        std::map<std::string, SquareType> __key_SquareType_map;
+
+        /**
+         *  Associate a key with the corresponding Direction value.
+         *  Do not use it outside this class!
+         */
+        std::map<std::string, Direction > __key_Direction_map;
 
 public:
     Map(std::string name, int width = 0, int height = 0) : _name(name), _width(width), _height(height) {
         __key_SquareType_map["NONE"] = SquareType::NONE;
         __key_SquareType_map["WALL"] = SquareType::WALL;
         __key_SquareType_map["SWAMP"] = SquareType::SWAMP;
+
+        __key_Direction_map["NORTH"] = Direction::NORTH;
+        __key_Direction_map["SOUTH"] = Direction::SOUTH;
+        __key_Direction_map["EAST"] = Direction::EAST;
+        __key_Direction_map["WEST"] = Direction::WEST;
+
+        __key_Direction_map["NE"] = Direction::NE;
+        __key_Direction_map["NW"] = Direction::NW;
+        __key_Direction_map["SW"] = Direction::SW;
+        __key_Direction_map["SE"] = Direction::SE;
     }
 
     int getWidth() const;
@@ -107,6 +130,8 @@ public:
      * @return a const reference on the MapSquare
      */
     const MapSquare & getMapSquare(Position &position) const;
+
+    bool addStairsForSquare(const int &x, const int &y, const char *direction);
 };
 
 
