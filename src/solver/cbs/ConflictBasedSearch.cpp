@@ -10,6 +10,8 @@
 
 void ConflictBasedSearch::solve() {
 
+    if (_status != OK) { return; }
+
     std::clock_t start;
     double duration;
 

@@ -48,6 +48,12 @@ private:
      */
     State *getStateToEvaluateFromTimeStep(const int &time_step);
 
+    /**
+     * Returns a vector of agent IDs, putting at the front the ID found with the gap
+     * @param gap : the number of IDs that we ignore
+     * @return a vector of agents ID
+     */
+    std::vector<int> getAgentsOrderWithGap(const int gap);
 
 public:
 

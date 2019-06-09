@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <set>
+#include <ctime>
+#include <numeric>
 #include "../../include/solver/SimpleSequentialSolver.h"
 #include "../../include/solver/Solver.h"
 
@@ -13,28 +15,67 @@ void SimpleSequentialSolver::solve() {
 
     if (_status != OK) { return; }
 
-    // We loop through all the agents
-    for (auto& agent_it : map.getAgents()) {
+    std::clock_t start;
+    double duration;
 
-        std::shared_ptr<SearchSquare> search_square = computeShortestPathPossible(agent_it.second);
-        // If there is no solution for one agent, we stop
-        if (_status == NO_SOLUTION) {
-            std::cout << "NO SOLUTION FOR AGENT " << agent_it.first << std::endl;
-            break;
+    start = std::clock();
+
+    bool should_retry = false;
+    int gap = 0;
+
+    std::map<int, std::shared_ptr<SearchSquare>> result;
+
+    do {
+        _status = OK;
+        // We get the list of agent ID ordered with the gap
+        // if the gap == 0 => 1,2,3,4... if the gap == 2 => 3,4,1,2
+        std::vector<int> agent_ids_list = getAgentsOrderWithGap(gap);
+
+        // We loop through all the agents
+        for (int& agent_id : agent_ids_list) {
+
+            std::shared_ptr<SearchSquare> search_square = computeShortestPathPossible(map.getAgents().at(agent_id));
+            // If there is no solution for one agent
+            if (_status == NO_SOLUTION) {
+
+                // We increment gap to try to solve the problem by starting with the next agent first
+                gap++;
+
+                // If every agent has been treated first but we still have no solution
+                if (gap == map.getAgents().size()) {
+                    std::cout << "NO SOLUTION FOUND" << std::endl;
+                    should_retry = false;
+                } else {
+                    // We still have agent(s) to treat first
+                    should_retry = true;
+                }
+
+                break;
+            }
+
+            result[agent_id] = search_square;
         }
+    } while (should_retry);
 
-        std::cout << "Agent " << agent_it.first << ": ";
+    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
-        while (search_square != nullptr) {
-            std::cout << search_square->position << " <= ";
-            search_square = search_square->parent;
+    std::cout << "Time elapsed: " << duration <<'\n';
+
+    if (_status == OK) {
+        for (const auto& agent : result) {
+            std::cout << "Agent " << agent.first << ": ";
+            std::shared_ptr<SearchSquare> search_square = agent.second;
+
+            while (search_square != nullptr) {
+                std::cout << search_square->position << " <= ";
+                search_square = search_square->parent;
+            }
+            std::cout << std::endl;
         }
-        std::cout << std::endl;
     }
 }
 
 const std::shared_ptr<SearchSquare> SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
-    //TODO: level
     //TODO: wait action possible ??
 
     const int& agent_id = agent.getId();
@@ -206,4 +247,16 @@ State *SimpleSequentialSolver::getStateToEvaluateFromTimeStep(const int &time_st
             return &states[states.size() - 1];
         }
     }
+}
+
+std::vector<int> SimpleSequentialSolver::getAgentsOrderWithGap(const int gap) {
+    int max_id = map.getAgents().size();
+    std::vector<int> result(max_id-gap);
+
+    std::iota(result.begin(), result.end(), gap+1);
+
+    for (int i = 1; i < gap+1; i++) {
+        result.push_back(i);
+    }
+    return result;
 }
