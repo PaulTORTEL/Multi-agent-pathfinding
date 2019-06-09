@@ -95,7 +95,7 @@ Direction inline extractDirection(const Position& p1, const Position& p2) {
 const bool inline areMovementsEdgeColliding(const Position &start_pos1, const Position &end_pos1,
                                             const Position &start_pos2, const Position &end_pos2) {
 
-    if (!start_pos1.isNeighbourWith(end_pos2)) {
+    if (!start_pos1.isNeighbourWith(start_pos2)) {
         return false;
     }
 

@@ -84,10 +84,6 @@
             <type>WALL</type>
             <level>0</level>
         </square>
-        <square>
-            <coordinates x="3" y="4"/>
-            <type>SWAMP</type>
-            <level>1</level>
-        </square>
+
     </topology>
 </map>

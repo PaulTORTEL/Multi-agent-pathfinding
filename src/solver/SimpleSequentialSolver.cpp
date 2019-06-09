@@ -81,14 +81,15 @@ void SimpleSequentialSolver::populateOpenList(MultimapSearchSquare &open_list, c
     const int x = current_agent_position->position.x;
     const int y = current_agent_position->position.y;
 
-    const int max_xy = map.getGrid().size() - 1;
+    const int max_x = map.getGrid().size() - 1;
+    const int max_y = map.getGrid()[0].size() - 1;
 
     // There is a position at the left
     const bool left = x > 0;
     // There is a position at the right
-    const bool right = x < max_xy;
+    const bool right = x < max_x;
     // There is a position at the top
-    const bool up = y < max_xy;
+    const bool up = y < max_y;
     // There is a position at the bottom
     const bool down = y > 0;
 
