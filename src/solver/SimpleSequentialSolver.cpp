@@ -104,6 +104,7 @@ const std::shared_ptr<SearchSquare> SimpleSequentialSolver::computeShortestPathP
         if (open_list.empty() && current_search_square->position != agent.getGoalCoord()) {
             _status = NO_SOLUTION;
         }
+
         // We loop while we didn't detect that there is no solution or that we didn't reach the goal position of the agent
     } while (current_search_square->position != agent.getGoalCoord() && _status == OK);
 
