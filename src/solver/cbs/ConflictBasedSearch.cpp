@@ -215,6 +215,8 @@ ConflictBasedSearch::populateOpenList(MultimapSearchSquare &open_list, const std
     // There is a position at the bottom
     const bool down = y > 0;
 
+    tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, current_agent_position->position, constraint_node);
+
     if (left) {
         Position left_pos = Position(x-1, y);
         // We insert in the open list left_pos only if its coordinates are not in the closed list
@@ -259,9 +261,9 @@ void ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, c
 
     std::string pos_coord = std::to_string(analyzed_pos.x) + ";" + std::to_string(analyzed_pos.y);
     // We check that the position has not already been processed (i.e., not in the closed list)
-    if (closed_list.find(pos_coord) != closed_list.end()) {
+    if (closed_list.find(pos_coord) != closed_list.end() && current_agent_position->position != analyzed_pos) {
         // Already processed, we stop here for this position
-        return;
+       // return;
     }
 
     // If the agent is not allowed to go to this position (constraints are used at this point)

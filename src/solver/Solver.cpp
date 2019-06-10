@@ -111,6 +111,7 @@ float Solver::movement_cost(const SearchSquare &current, const Position &next) {
 
     const float straight = 1.;
     const float diagonal = 1.414;
+    const float wait = 1.;
 
     switch (move_direction) {
 
@@ -121,7 +122,7 @@ float Solver::movement_cost(const SearchSquare &current, const Position &next) {
             return diagonal + current.cost_movement + extra_cost;
 
         case NO_DIRECTION:
-            return 0.;
+            return wait + current.cost_movement + extra_cost;
 
         default:
             return 0.;
