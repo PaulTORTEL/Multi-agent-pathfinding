@@ -133,6 +133,15 @@ struct ConstraintNode {
         }
         return true;
     }
+
+    bool doesAgentStillHaveFutureConstraints(const int& agent_id, const int& time_step) {
+        for (auto& constraint : constraints[agent_id]) {
+            if (constraint.time_step > time_step) {
+                return true;
+            }
+        }
+        return false;
+    }
 };
 
 #endif //PATHFINDING_PROJECT_CONSTRAINTNODE_H

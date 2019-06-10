@@ -176,7 +176,8 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(c
         current_search_square = it_open_list->second;
 
         // We insert the coordinates in the closed list, so we won't deal with the position ever again
-        std::string pos_coord = std::to_string(current_search_square->position.x) + ";" + std::to_string(current_search_square->position.y);
+        std::string pos_coord = std::to_string(current_search_square->position.x) + ";" + std::to_string(current_search_square->position.y)
+                + ";" + std::to_string(current_search_square->time_step);
         closed_list.insert(pos_coord);
 
         // We remove the search square from the open list
@@ -190,7 +191,9 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(c
         }
 
         // We loop while we didn't detect that there is no solution or that we didn't reach the goal position of the agent
-    } while (current_search_square->position != agent.getGoalCoord() && _status == OK);
+    } while ((current_search_square->position != agent.getGoalCoord() ||
+                constraint_node.doesAgentStillHaveFutureConstraints(agent_id, current_search_square->time_step))
+                && _status == OK);
 
     return current_search_square;
 }
@@ -259,11 +262,11 @@ void ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, c
         return;
     }
 
-    std::string pos_coord = std::to_string(analyzed_pos.x) + ";" + std::to_string(analyzed_pos.y);
+    std::string pos_coord = std::to_string(analyzed_pos.x) + ";" + std::to_string(analyzed_pos.y) + ";" + std::to_string(time_step);
     // We check that the position has not already been processed (i.e., not in the closed list)
     if (closed_list.find(pos_coord) != closed_list.end() && current_agent_position->position != analyzed_pos) {
         // Already processed, we stop here for this position
-       // return;
+        return;
     }
 
     // If the agent is not allowed to go to this position (constraints are used at this point)
