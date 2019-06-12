@@ -49,7 +49,11 @@ struct EdgeConflict : Conflict {
               next_pos_agent1(next_pos_agent1), next_pos_agent2(next_pos_agent2) {}
 
     Constraint constructConstraint(const int &agent_no) override {
-        return Constraint(agent_no == 1 ? agent_id2 : agent_id1, agent_no == 1 ? next_pos_agent2 : next_pos_agent1, time_step);
+        if (agent_no == 1) {
+            return Constraint(agent_id2, next_pos_agent2, time_step, extractDirection(next_pos_agent2, init_pos_agent2));
+        } else {
+            return Constraint(agent_id1, next_pos_agent1, time_step, extractDirection(next_pos_agent1, init_pos_agent1));
+        }
     }
 };
 

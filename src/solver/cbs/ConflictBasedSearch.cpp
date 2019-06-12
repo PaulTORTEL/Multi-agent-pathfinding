@@ -270,7 +270,7 @@ void ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, c
     }
 
     // If the agent is not allowed to go to this position (constraints are used at this point)
-    if (constraint_node.isPositionForbiddenForAgent(agent.getId(), analyzed_pos, time_step+1)) {
+    if (constraint_node.isPositionForbiddenForAgent(agent.getId(), analyzed_pos, time_step + 1, extractDirection(analyzed_pos, current_agent_position->position))) {
         return;
     }
 

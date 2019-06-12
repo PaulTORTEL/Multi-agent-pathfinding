@@ -24,7 +24,8 @@ struct ConstraintNode {
      * @param time_step : the time step
      * @return true if the position is forbidden, false if the agent can go to this position
      */
-    const bool isPositionForbiddenForAgent(const int &agent_id, const Position &position, const int& time_step) {
+    const bool isPositionForbiddenForAgent(const int &agent_id, const Position &position, const int &time_step,
+                                           const Direction &edge) {
 
         auto constraints_agent_it = constraints.find(agent_id);
 
@@ -35,7 +36,13 @@ struct ConstraintNode {
         for (auto& constraint : constraints_agent_it->second) {
             // If there is a constraint at this time step for this position and for this agent
             if (constraint.time_step == time_step && constraint.position == position) {
-                return true;
+                if (constraint.edge == NO_DIRECTION) {
+                    return true;
+                }
+
+                if (constraint.edge == edge) {
+                    return true;
+                }
             }
         }
 
