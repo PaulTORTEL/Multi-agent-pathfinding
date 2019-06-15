@@ -145,7 +145,7 @@ public:
      * @param position : the position
      * @return the extra cost
      */
-    const float getExtraCostFromMapSquareType(const Position &position) const;
+    const int getExtraCostFromMapSquareType(const Position &position) const;
 };
 
 

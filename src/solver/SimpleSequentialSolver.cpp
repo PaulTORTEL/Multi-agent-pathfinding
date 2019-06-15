@@ -199,8 +199,8 @@ void SimpleSequentialSolver::tryInsertInOpenList(MultimapSearchSquare &open_list
             return;
         }
 
-        const float move_cost = movement_cost(*current_agent_position, analyzed_pos);
-        const float heuristic = heuristic_cost(analyzed_pos, agent.getGoalCoord());
+        const float move_cost = movementCost(*current_agent_position, analyzed_pos, agent.getId());
+        const float heuristic = heuristicCost(analyzed_pos, agent.getGoalCoord());
 
         const float cost = move_cost + heuristic;
 

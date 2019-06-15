@@ -10,7 +10,7 @@
 
 void ConflictBasedSearch::solve() {
 
-    if (_status != OK) { return; }
+    if (_status != Status::OK) { return; }
 
     std::clock_t start;
     double duration;
@@ -26,7 +26,8 @@ void ConflictBasedSearch::solve() {
 
 void ConflictBasedSearch::highLevelSolver() {
 
-    root.constraints.clear();
+    ConstraintNode root;
+
     // We set the root solution with a first solution found without any constrained
     root.solution = lowLevelSolver(root);
 
@@ -39,19 +40,18 @@ void ConflictBasedSearch::highLevelSolver() {
     root.computeSicHeuristic();
 
     MultimapConstraintNode open_list;
-    open_list.insert({root.cost, root});
+    open_list.emplace(root.cost, root);
 
     while (!open_list.empty()) {
 
-        // We get the less constrained node
-        const auto& it_open_list = getIteratorOnLessConstrainedNode(open_list);
+        // We get the less conflicted node by scanning through all the nodes of low cost
+        const auto& it_open_list = getIteratorOnLessConflictNode(open_list);
         ConstraintNode current_node = it_open_list->second;
         open_list.erase(it_open_list);
 
-        //TODO: wait action ??
+        //current_node.scanSolution(1);
 
-        // We search for a conflict in the current solution
-        std::unique_ptr<Conflict> conflict = current_node.scanForFirstConflict();
+        std::shared_ptr<Conflict> conflict = current_node.first_conflict;
 
         // If there is no conflict, we have found a valid and admissible solution
         if (conflict == nullptr) {
@@ -76,7 +76,7 @@ void ConflictBasedSearch::highLevelSolver() {
             new_node.constraints = current_node.constraints;
             const int& agent_id = i == 1 ? conflict->agent_id2 : conflict->agent_id1;
             // We construct the new constraint node by merging the constraints of the current node with a new constraint coming from the conflict detected
-            new_node.constraints[agent_id].emplace_back(conflict->constructConstraint(i));
+             new_node.constraints[agent_id].emplace_back(conflict->constructConstraint(i));
 
             // We check if the new node is not already inside the open list to avoid redundant nodes
             if (isNodeAlreadyInOpenList(open_list, new_node)) {
@@ -88,7 +88,9 @@ void ConflictBasedSearch::highLevelSolver() {
             new_node.solution = lowLevelSolver(new_node, agent_id);
 
             if (_status == NO_SOLUTION) {
-                break;
+                _status = Status::OK;
+                continue;
+                //break;
             }
 
             new_node.computeSicHeuristic();
@@ -96,7 +98,7 @@ void ConflictBasedSearch::highLevelSolver() {
             // If the sic heuristic is correct
             if (new_node.cost >= 0) {
                 // We insert the new constraint node to the open list, so we can analyze its solution later
-                open_list.insert({new_node.cost, new_node});
+                open_list.emplace(new_node.cost, new_node);
                 number_of_nodes_created++;
             }
         }
@@ -104,12 +106,12 @@ void ConflictBasedSearch::highLevelSolver() {
         if (open_list.empty()) {
             std::cout << "No solution found for this problem..." << std::endl;
         } else {
-            _status = OK;
+            _status = Status::OK;
         }
     }
 }
-
-Solver::MultimapConstraintNode::iterator ConflictBasedSearch::getIteratorOnLessConstrainedNode(Solver::MultimapConstraintNode &open_list) {
+/*
+Solver::MultimapConstraintNode::iterator ConflictBasedSearch::getIteratorOnLessConflictNode(Solver::MultimapConstraintNode &open_list) {
 
     MultimapConstraintNode::iterator it_low, it_up, it_optimized;
     // We set it_low and it_up on the lower and upper bounds of the smallest key of the open list
@@ -125,6 +127,43 @@ Solver::MultimapConstraintNode::iterator ConflictBasedSearch::getIteratorOnLessC
         if (new_num_of_constraints < num_of_constraints) {
             it_optimized = it;
             num_of_constraints = new_num_of_constraints;
+        }
+        else if (new_num_of_constraints == num_of_constraints) {
+            if (it->second.constraints.size() < it_optimized->second.constraints.size()) {
+                it_optimized = it;
+            }
+        }
+    }
+
+    return it_optimized;
+}*/
+
+
+Solver::MultimapConstraintNode::iterator ConflictBasedSearch::getIteratorOnLessConflictNode(Solver::MultimapConstraintNode &open_list) {
+
+    MultimapConstraintNode::iterator it_low, it_up, it_optimized;
+    // We set it_low and it_up on the lower and upper bounds of the smallest key of the open list
+    it_low = open_list.lower_bound(open_list.begin()->first);
+    it_up = open_list.upper_bound(open_list.begin()->first);
+
+    bool first_to_assign = true;
+
+    // Number of constraints in the first node
+    int num_of_conflicts = 0;
+
+    for (auto it = it_low; it != it_up; ++it) {
+
+        it->second.scanSolution(num_of_conflicts);
+        int new_num_of_conflicts = it->second.conflicts_detected;
+
+        if (first_to_assign || new_num_of_conflicts < num_of_conflicts) {
+            first_to_assign = false;
+            it_optimized = it;
+            num_of_conflicts = new_num_of_conflicts;
+        } else if (new_num_of_conflicts == num_of_conflicts) {
+            if (it->second.constraints.size() < it_optimized->second.constraints.size()) {
+                it_optimized = it;
+            }
         }
     }
 
@@ -168,17 +207,17 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(c
 
     // We populate the open list with the initial search square, wrapping the initial position of the agent
     std::shared_ptr<SearchSquare> current_search_square = init_state.getSearchSquares().at(agent_id);
-    open_list.insert({current_search_square->cost(), current_search_square});
+    open_list.emplace(current_search_square->cost(), current_search_square);
 
     do {
         // We select the search square having the cheapest cost: it becomes our current search square
-        const auto& it_open_list = open_list.begin();
+        const auto& it_open_list = open_list.begin(); //getIteratorOnStateWithLessConflict(open_list, constraint_node);
         current_search_square = it_open_list->second;
 
         // We insert the coordinates in the closed list, so we won't deal with the position ever again
         std::string pos_coord = std::to_string(current_search_square->position.x) + ";" + std::to_string(current_search_square->position.y)
-                + ";" + std::to_string(current_search_square->time_step);
-        closed_list.insert(pos_coord);
+                + ";" ;//+ std::to_string(current_search_square->time_step);
+        closed_list.emplace(pos_coord);
 
         // We remove the search square from the open list
         open_list.erase(it_open_list);
@@ -193,13 +232,43 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(c
         // We loop while we didn't detect that there is no solution or that we didn't reach the goal position of the agent
     } while ((current_search_square->position != agent.getGoalCoord() ||
                 constraint_node.doesAgentStillHaveFutureConstraints(agent_id, current_search_square->time_step))
-                && _status == OK);
+                && _status == Status::OK);
 
     return current_search_square;
 }
 
+Solver::MultimapSearchSquare::iterator ConflictBasedSearch::getIteratorOnStateWithLessConflict(Solver::MultimapSearchSquare &open_list, ConstraintNode& constraint_node) {
+    MultimapSearchSquare::iterator it_low, it_up, it_optimized;
+    // We set it_low and it_up on the lower and upper bounds of the smallest key of the open list
+    it_low = open_list.lower_bound(open_list.begin()->first);
+    it_up = open_list.upper_bound(open_list.begin()->first);
+
+    bool first_to_assign = true;
+    int smallest_num_conflicts = 0;
+
+    for (auto it = it_low; it != it_up; ++it) {
+
+        auto state_it = constraint_node.solution.dictionary.find(it->second->time_step);
+
+        if (state_it != constraint_node.solution.dictionary.end()) {
+            const int conflicts = state_it->second.countAgentsAtPosition(it->second->position);
+
+            if (first_to_assign || conflicts < smallest_num_conflicts) {
+                it_optimized = it;
+                first_to_assign = false;
+                smallest_num_conflicts = conflicts;
+            }
+        } else {
+            return it;
+        }
+    }
+
+    return it_optimized;
+}
+
 void
-ConflictBasedSearch::populateOpenList(MultimapSearchSquare &open_list, const std::set<std::string> &closed_list, const Agent &agent,
+ConflictBasedSearch::populateOpenList(MultimapSearchSquare &open_list, std::set<std::string> &closed_list,
+                                      const Agent &agent,
                                       std::shared_ptr<SearchSquare> &current_agent_position,
                                       ConstraintNode &constraint_node) {
 
@@ -218,23 +287,25 @@ ConflictBasedSearch::populateOpenList(MultimapSearchSquare &open_list, const std
     // There is a position at the bottom
     const bool down = y > 0;
 
-    tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, current_agent_position->position, constraint_node);
-
     if (left) {
         Position left_pos = Position(x-1, y);
         // We insert in the open list left_pos only if its coordinates are not in the closed list
         // or it is not already in the open list with a cheapest cost
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, left_pos, constraint_node);
+        InsertionOpenListResult result = tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, left_pos, constraint_node);
+
     } if (right) {
         Position right_pos = Position(x+1, y);
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, right_pos, constraint_node);
+        InsertionOpenListResult result = tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, right_pos, constraint_node);
+
     } if (up) {
         Position up_pos = Position(x, y+1);
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, up_pos, constraint_node);
+        InsertionOpenListResult result = tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, up_pos, constraint_node);
+
     } if (down) {
         Position down_pos = Position(x, y-1);
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, down_pos, constraint_node);
-    } if (left && up) {
+        InsertionOpenListResult result = tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, down_pos, constraint_node);
+
+    } /*if (left && up) {
         Position left_up_pos = Position(x-1, y+1);
         tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, left_up_pos, constraint_node);
     } if (right && up) {
@@ -246,12 +317,20 @@ ConflictBasedSearch::populateOpenList(MultimapSearchSquare &open_list, const std
     } if (right && down) {
         Position right_down_pos = Position(x+1, y-1);
         tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, right_down_pos, constraint_node);
+    }*/
+
+    //TODO: à analyser
+    if (!constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), current_agent_position->time_step)) {
+        return;
     }
+
+    tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, current_agent_position->position, constraint_node);
 }
 
-void ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, const std::set<std::string> &closed_list,
-                                              const Agent &agent, std::shared_ptr<SearchSquare> &current_agent_position,
-                                              Position &analyzed_pos, ConstraintNode &constraint_node) {
+ConflictBasedSearch::InsertionOpenListResult
+ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::set<std::string> &closed_list,
+                                         const Agent &agent, std::shared_ptr<SearchSquare> &current_agent_position,
+                                         Position &analyzed_pos, ConstraintNode &constraint_node) {
 
     const int& time_step = current_agent_position->time_step;
 
@@ -259,23 +338,35 @@ void ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, c
 
     // If the position (left, right, up, down, top-right etc.) from our current search square is not an accessible square (wall, different level..)
     if (!canAgentAccessPosition(agent, current_agent_position, analyzed_pos)) {
-        return;
+        return FAIL_ENVIRONMENT;
     }
 
-    std::string pos_coord = std::to_string(analyzed_pos.x) + ";" + std::to_string(analyzed_pos.y) + ";" + std::to_string(time_step);
+    std::string pos_coord = std::to_string(analyzed_pos.x) + ";" + std::to_string(analyzed_pos.y) + ";";// + std::to_string(time_step);
     // We check that the position has not already been processed (i.e., not in the closed list)
     if (closed_list.find(pos_coord) != closed_list.end() && current_agent_position->position != analyzed_pos) {
         // Already processed, we stop here for this position
-        return;
+
+
+        //TODO: à analyser
+        int latest_time_step_constraint = constraint_node.getConstraintLatestTimeStepForAgent(agent.getId());
+         //&& (time_step < latest_time_step_constraint || latest_time_step_constraint == -1)
+
+        if (constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), time_step)) {
+            return FAIL_CLOSED_LIST;
+        }
+        //TODO: à analyser, 8 puzzle => need backtracking
+
+        //closed_list.clear();
+       return FAIL_CLOSED_LIST;
     }
 
     // If the agent is not allowed to go to this position (constraints are used at this point)
     if (constraint_node.isPositionForbiddenForAgent(agent.getId(), analyzed_pos, time_step + 1, extractDirection(analyzed_pos, current_agent_position->position))) {
-        return;
+        return FAIL_CONSTRAINT;
     }
 
-    const float move_cost = movement_cost(*current_agent_position, analyzed_pos);
-    const float heuristic = heuristic_cost(analyzed_pos, agent.getGoalCoord());
+    const int move_cost = movementCost(*current_agent_position, analyzed_pos, agent.getId());
+    const int heuristic = heuristicCost(analyzed_pos, agent.getGoalCoord());
 
     const float cost = move_cost + heuristic;
 
@@ -284,7 +375,7 @@ void ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, c
     // If we realize that the position is already in the open list
     if (it_analyzed_pos != open_list.end()) {
         // If the cost is cheaper with the current path (current search square and its parent)
-        if (it_analyzed_pos->second->cost() > cost) {
+        if (it_analyzed_pos->second->cost() > cost) { //TODO: >= pour backtrack ?
             // We change only the movement cost since the heuristic cost can't change
             it_analyzed_pos->second->cost_movement = move_cost;
             // We change the parent
@@ -297,12 +388,14 @@ void ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, c
         // since we reach this new search square thanks to the current search square
         std::shared_ptr<SearchSquare> new_search_square = std::make_shared<SearchSquare>(analyzed_pos, current_agent_position, move_cost, heuristic);
         // We insert it in the open list
-        open_list.insert({cost, new_search_square});
+        open_list.emplace(cost, new_search_square);
     }
+
+    return OK;
 }
 
 bool ConflictBasedSearch::isNodeAlreadyInOpenList(const Solver::MultimapConstraintNode &open_list,
-                                                  const ConstraintNode &constraint_node) {
+                                                  ConstraintNode &constraint_node) {
 
     for (const auto& it_nodes : open_list) {
         // We are only interested in nodes that have the same constraints since the solution, computed or not will be similar from the same constraints

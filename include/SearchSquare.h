@@ -17,7 +17,7 @@ struct SearchSquare {
     /**
      * The cost of the movement and of the heuristic
      */
-    float cost_movement, cost_heuristic;
+    int cost_movement, cost_heuristic;
 
     /**
      * The time step from which the search square has been created
@@ -30,7 +30,7 @@ struct SearchSquare {
     std::shared_ptr<SearchSquare> parent;
 
     explicit SearchSquare(Position position, std::shared_ptr<SearchSquare> parent = nullptr,
-            float cost_movement = 0, float cost_heuristic = 0) :
+                          int cost_movement = 0, int cost_heuristic = 0) :
                 position(position), parent(parent), cost_movement(cost_movement), cost_heuristic(cost_heuristic) {
 
         if (parent != nullptr) {
@@ -49,7 +49,7 @@ struct SearchSquare {
         parent = nullptr;
     }
 
-    float cost() const {
+    int cost() const {
         return cost_movement + cost_heuristic;
     }
 };

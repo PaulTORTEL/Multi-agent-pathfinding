@@ -15,7 +15,9 @@ struct ConstraintNode {
     typedef std::map<int, std::vector<Constraint>> ConstraintMap;
     ConstraintMap constraints;
     StateDictionary solution;
-    float cost = -1.;
+    int cost = -1;
+    std::shared_ptr<Conflict> first_conflict = nullptr;
+    int conflicts_detected = 0;
 
     /**
      * Returns whether the position is allowed for the given agent at this time step
@@ -53,20 +55,25 @@ struct ConstraintNode {
         cost = solution.dictionary.rbegin()->second.getSicHeuristic();
     }
 
-    /**
-     * Scans for a conflict and returns the first one we find
-     * @return an unique pointer on the conflict
+   /**
+     * Scans for conflicts: count and set the first conflict found
      */
-    const std::unique_ptr<Conflict> scanForFirstConflict() {
+    void scanSolution(const int& stop_value) {
         // For each states in the solution
         for (auto it_state = solution.dictionary.begin(); it_state != solution.dictionary.end(); ++it_state) {
             // We try to detect a vertex collision in the given state
             std::unique_ptr<VertexConflict> vertex_conflict = it_state->second.detectVertexConflict(it_state->first);
 
             if (vertex_conflict != nullptr) {
-                return vertex_conflict;
+                if (first_conflict == nullptr) {
+                    first_conflict = std::move(vertex_conflict);
+                }
+                conflicts_detected++;
+                if (stop_value != 0 && conflicts_detected >= stop_value) {
+                    return;
+                }
             }
-            // At this point, there is no vertex collision
+
             // We get the next state
             auto it_next_state = it_state;
             it_next_state++;
@@ -74,15 +81,20 @@ struct ConstraintNode {
             // If the next state exists (it_state was not pointing the last state)
             if (it_next_state != solution.dictionary.end()) {
                 // We try to detect an edge collision between the two states
-                std::unique_ptr<EdgeConflict> edge_conflict = solution.detectFirstEdgeConflictFromTwoStates(it_state->first, it_state, it_next_state);
+                std::unique_ptr<EdgeConflict> edge_conflict = solution.detectFirstEdgeConflictFromTwoStates(
+                        it_state->first, it_state, it_next_state);
 
                 if (edge_conflict != nullptr) {
-                    return edge_conflict;
+                    if (first_conflict == nullptr) {
+                        first_conflict = std::move(edge_conflict);
+                    }
+                    conflicts_detected++;
+                    if (stop_value != 0 && conflicts_detected >= stop_value) {
+                        return;
+                    }
                 }
             }
         }
-
-        return nullptr;
     }
 
     friend std::ostream &operator<<(std::ostream &os, const ConstraintNode &node) {
@@ -148,6 +160,16 @@ struct ConstraintNode {
             }
         }
         return false;
+    }
+
+     int getConstraintLatestTimeStepForAgent(const int& agent_id) {
+        int latest = -1;
+        for (auto& constraint : constraints[agent_id]) {
+            if (latest < constraint.time_step) {
+                latest = constraint.time_step;
+            }
+        }
+        return latest;
     }
 };
 

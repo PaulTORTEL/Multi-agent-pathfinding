@@ -74,19 +74,19 @@ bool Map::addStairsForSquare(const int &x, const int &y, const char *direction) 
     return true;
 }
 
-const float Map::getExtraCostFromMapSquareType(const Position &position) const {
+const int Map::getExtraCostFromMapSquareType(const Position &position) const {
     const MapSquare& map_square = getMapSquare(position);
 
     //TODO: remove extra cost for agents able to move efficiently in specific areas
 
-    float extra_cost = 0.;
+    int extra_cost = 0;
 
     switch (map_square.type) {
 
         case NONE:break;
         case WALL:break;
         case SWAMP:
-            extra_cost = 2.;
+            extra_cost = 2;
             break;
     }
 

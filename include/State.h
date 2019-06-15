@@ -64,11 +64,13 @@ public:
      */
     const std::map<int, std::shared_ptr<SearchSquare>>::iterator findAgentAtPosition(const Position &position);
 
+    const int countAgentsAtPosition(const Position &position);
+
     /**
      * Computes the sic heuristic
      * @return the sic heuristic value
      */
-    const float getSicHeuristic();
+    const int getSicHeuristic();
 
     /**
      * Detect a vertext conflict if it exists, at a time step

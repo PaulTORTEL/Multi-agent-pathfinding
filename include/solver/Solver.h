@@ -39,6 +39,8 @@ private:
      */
     static float chebyshevDistance(const Position &p1, const Position &p2);
 
+    static int manhattanDistance(const Position &p1, const Position &p2);
+
 protected:
 
     /**
@@ -64,18 +66,10 @@ protected:
     const Map map;
 
     // Cost - SearchSquare (Position embedded)
-    typedef std::multimap<float, std::shared_ptr<SearchSquare>> MultimapSearchSquare;
+    typedef std::multimap<int, std::shared_ptr<SearchSquare>> MultimapSearchSquare;
     // Cost - Constraint node (solution embedded)
-    typedef std::multimap<float, ConstraintNode> MultimapConstraintNode;
+    typedef std::multimap<int, ConstraintNode> MultimapConstraintNode;
 
-    /**
-     * Returns the total movement cost (heuristic + move)
-     * @param current : the current search square
-     * @param next : the position that we are computing
-     * @param goal : the position of the agent's goal
-     * @return the total movement cost
-     */
-    const float total_movement_cost(const SearchSquare &current, const Position &next, const Position &goal);
 
     /**
      * Returns the movement cost
@@ -83,7 +77,7 @@ protected:
      * @param next : the position that we are computing
      * @return the movement cost
      */
-    virtual float movement_cost(const SearchSquare &current, const Position &next);
+    virtual int movementCost(const SearchSquare &current, const Position &next, const int &agent_id);
 
     /**
      * Returns the value of the heuristic function
@@ -91,7 +85,7 @@ protected:
      * @param goal : the agent's goal
      * @return the computed value of the estimated distance between the current position and the goal position
      */
-    static float heuristic_cost(const Position &current, const Position &goal);
+    static int heuristicCost(const Position &current, const Position &goal);
 
     /**
     * Finds a position in the open list
@@ -145,6 +139,7 @@ public:
     virtual void solve() = 0;
 
 
+    const int getWaitCost(const int &agent_id, const Position &current_pos) const;
 };
 
 

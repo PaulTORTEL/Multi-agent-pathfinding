@@ -18,8 +18,19 @@ const std::map<int, std::shared_ptr<SearchSquare>>::iterator State::findAgentAtP
     return search_squares.end();
 }
 
-const float State::getSicHeuristic() {
-    float sic = 0.;
+const int State::countAgentsAtPosition(const Position &position) {
+    int counter = 0;
+    for (auto & search_square : search_squares) {
+        // If the agent is at this position, we return the iterator on this agent
+        if (search_square.second->position == position) {
+            counter++;
+        }
+    }
+    return counter;
+}
+
+const int State::getSicHeuristic() {
+    int sic = 0;
     for (auto &it : search_squares) {
         sic += it.second->cost();
     }

@@ -91,8 +91,9 @@ void Solver::setStatus(Status status, const std::string& msg) {
     }
 }
 
-float Solver::heuristic_cost(const Position &current, const Position &goal) {
-    return chebyshevDistance(current, goal);
+int Solver::heuristicCost(const Position &current, const Position &goal) {
+    //return chebyshevDistance(current, goal);
+    return manhattanDistance(current, goal);
 }
 
 float Solver::chebyshevDistance(const Position &p1, const Position &p2) {
@@ -103,36 +104,36 @@ float Solver::chebyshevDistance(const Position &p1, const Position &p2) {
     return std::max(dist_x, dist_y);
 }
 
-float Solver::movement_cost(const SearchSquare &current, const Position &next) {
+int Solver::manhattanDistance(const Position &p1, const Position &p2) {
+    return abs(p2.x - p1.x) + abs(p2.y - p1.y);
+}
+
+
+int Solver::movementCost(const SearchSquare &current, const Position &next, const int &agent_id) {
 
     // We get the direction (North, South, etc.)
     Direction move_direction = extractDirection(current.position, next);
-    const float extra_cost = map.getExtraCostFromMapSquareType(current.position);
+    const int extra_cost = map.getExtraCostFromMapSquareType(current.position);
 
-    const float straight = 1.;
+    const int straight = 1;
     const float diagonal = 1.414;
-    const float wait = 1.;
+    const int wait = getWaitCost(agent_id, current.position);
 
     switch (move_direction) {
 
         case NORTH: case SOUTH: case WEST: case EAST:
             return straight + current.cost_movement + extra_cost;
 
-        case NE: case NW: case SE: case SW:
-            return diagonal + current.cost_movement + extra_cost;
+      /*  case NE: case NW: case SE: case SW:
+            return diagonal + current.cost_movement + extra_cost;*/
 
         case NO_DIRECTION:
-            return wait + current.cost_movement + extra_cost;
+            return wait + current.cost_movement;
 
         default:
-            return 0.;
+            return 0;
     }
 }
-
-const float Solver::total_movement_cost(const SearchSquare &current, const Position &next, const Position &goal) {
-    return movement_cost(current, next) + heuristic_cost(next, goal);
-}
-
 
 Solver::MultimapSearchSquare::iterator Solver::findPositionInOpenList(
         const Position &pos,
@@ -195,6 +196,11 @@ Solver::canAgentAccessPosition(const Agent &agent, std::shared_ptr<SearchSquare>
         return !(analyzed_map_square.stairs.find(direction) == analyzed_map_square.stairs.end());
     }
 }
+
+const int Solver::getWaitCost(const int &agent_id, const Position &current_pos) const {
+    return map.getAgents().at(agent_id).getGoalCoord() == current_pos ? 0 : 1;
+}
+
 
 
 

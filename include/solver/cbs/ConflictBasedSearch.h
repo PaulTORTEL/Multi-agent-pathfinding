@@ -12,10 +12,14 @@
 
 class ConflictBasedSearch : Solver {
 private:
-    /**
-     * The root constraint node, no constraints and a first solution
-     */
-    ConstraintNode root;
+
+    enum InsertionOpenListResult {
+        FAIL_ENVIRONMENT,
+        FAIL_CONSTRAINT,
+        FAIL_CLOSED_LIST,
+        OK
+    };
+
 
     /**
      * Performs the high level of the CBS algorithm
@@ -36,7 +40,8 @@ private:
      * @param constraint_node : the current constraint node
      * @return a shared pointer on the final search square, having a link to its parents
      */
-    std::shared_ptr<SearchSquare> computeShortestPathPossible(const Agent &agent, ConstraintNode &constraint_node);
+    std::shared_ptr<SearchSquare> computeShortestPathPossible(const Agent &agent,
+                                                              ConstraintNode &constraint_node);
 
     /**
      * Populates the open list
@@ -46,7 +51,7 @@ private:
      * @param current_agent_position : the position of the agent
      * @param constraint_node : the constraint node we are using currently
      */
-    void populateOpenList(MultimapSearchSquare &open_list, const std::set<std::string> &closed_list, const Agent &agent,
+    void populateOpenList(MultimapSearchSquare &open_list, std::set<std::string> &closed_list, const Agent &agent,
                           std::shared_ptr<SearchSquare> &current_agent_position,
                           ConstraintNode &constraint_node);
 
@@ -58,17 +63,22 @@ private:
      * @param current_agent_position : the current position of the agent
      * @param analyzed_pos : the position where the agent could be at the next time step
      * @param constraint_node : the constraint node we are using currently
+     * @return the result of the insertion attempt
      */
-    void tryInsertInOpenList(MultimapSearchSquare &open_list, const std::set<std::string> &closed_list,
-                             const Agent &agent, std::shared_ptr<SearchSquare> &current_agent_position,
-                             Position &analyzed_pos, ConstraintNode &constraint_node);
+    InsertionOpenListResult tryInsertInOpenList(MultimapSearchSquare &open_list,
+                                                std::set<std::string> &closed_list,
+                                                const Agent &agent,
+                                                std::shared_ptr<SearchSquare> &current_agent_position,
+                                                Position &analyzed_pos, ConstraintNode &constraint_node);
 
     /**
      * Returns an iterator on the constraint node having the less constraints among the less expensive nodes
      * @param open_list : the open list
      * @return an iterator
      */
-    static Solver::MultimapConstraintNode::iterator getIteratorOnLessConstrainedNode(MultimapConstraintNode &open_list);
+    static Solver::MultimapConstraintNode::iterator getIteratorOnLessConflictNode(MultimapConstraintNode &open_list);
+
+    static Solver::MultimapSearchSquare::iterator getIteratorOnStateWithLessConflict(Solver::MultimapSearchSquare &open_list, ConstraintNode& constraint_node);
 
     /**
      * Returns whether the constraint node is already added in the open list or not
@@ -76,7 +86,8 @@ private:
      * @param constraint_node : the constraint node
      * @return a boolean, true if the node is already added
      */
-    static bool isNodeAlreadyInOpenList(const Solver::MultimapConstraintNode& open_list, const ConstraintNode& constraint_node);
+    static bool isNodeAlreadyInOpenList(const Solver::MultimapConstraintNode &open_list,
+                                        ConstraintNode &constraint_node);
 
 public:
 
