@@ -5,9 +5,9 @@
 #ifndef PATHFINDING_PROJECT_STATE_H
 #define PATHFINDING_PROJECT_STATE_H
 
-#include "utility.h"
-#include "solver/cbs/Conflict.h"
-#include "SearchSquare.h"
+#include "../utility.h"
+#include "../solver/cbs/Conflict.h"
+#include "../map/SearchSquare.h"
 
 class State {
 

@@ -5,7 +5,7 @@
 #ifndef PATHFINDING_PROJECT_AGENT_H
 #define PATHFINDING_PROJECT_AGENT_H
 
-#include "utility.h"
+#include "../utility.h"
 
 class Agent {
 private:

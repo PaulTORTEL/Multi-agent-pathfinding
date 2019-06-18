@@ -4,7 +4,7 @@
 
 #include <utility>
 
-#include "../include/Map.h"
+#include "../../include/map/Map.h"
 
 int Map::getWidth() const {
     return _width;

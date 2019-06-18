@@ -5,12 +5,12 @@
 #ifndef PATHFINDING_PROJECT_SOLVER_H
 #define PATHFINDING_PROJECT_SOLVER_H
 
-#include "../State.h"
-#include "../Map.h"
-#include "../StateDictionary.h"
-#include "../SearchSquare.h"
+#include "../state/State.h"
+#include "../map/Map.h"
+#include "../state/StateDictionary.h"
+#include "../map/SearchSquare.h"
 #include "cbs/ConstraintNode.h"
-
+#include "../stats/StatsManager.h"
 
 class Solver {
 
@@ -30,6 +30,7 @@ private:
             return msg.c_str();
         }
     };
+
 
     /**
      * The Chebyshev distance is used instead of the Manhattan distance since we allow diagonal moves
@@ -58,7 +59,7 @@ protected:
 
     State goal_state;
 
-
+    StatsManager statsManager;
 
     /**
      * Keeps a const. ref. of the map it is working on

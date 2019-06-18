@@ -5,7 +5,7 @@
 #ifndef PATHFINDING_PROJECT_SEARCHSQUARE_H
 #define PATHFINDING_PROJECT_SEARCHSQUARE_H
 
-#include "utility.h"
+#include "../utility.h"
 #include <memory>
 
 struct SearchSquare {

@@ -7,7 +7,7 @@
 
 #include <memory>
 #include <ostream>
-#include "../../Agent.h"
+#include "../../map/Agent.h"
 
 struct Constraint {
     const int agent_id;

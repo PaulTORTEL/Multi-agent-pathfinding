@@ -6,7 +6,7 @@
 #define PATHFINDING_PROJECT_XMLPARSER_H
 
 
-#include "Map.h"
+#include "map/Map.h"
 #include "../libs/xml-parser/tinyxml2.h"
 
 class XmlParser {

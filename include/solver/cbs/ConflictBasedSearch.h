@@ -9,6 +9,7 @@
 #include "../Solver.h"
 #include "Constraint.h"
 #include "ConstraintNode.h"
+#include "../../stats/StatsManager.h"
 
 class ConflictBasedSearch : Solver {
 private:
@@ -19,6 +20,7 @@ private:
         FAIL_CLOSED_LIST,
         OK
     };
+
 
 
     /**
