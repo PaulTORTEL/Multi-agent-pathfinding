@@ -116,19 +116,14 @@ int Solver::movementCost(const SearchSquare &current, const Position &next, cons
     const int extra_cost = map.getExtraCostFromMapSquareType(current.position);
 
     const int straight = 1;
-    const float diagonal = 1.414;
-    const int wait = getWaitCost(agent_id, current.position);
 
     switch (move_direction) {
 
         case NORTH: case SOUTH: case WEST: case EAST:
             return straight + current.cost_movement + extra_cost;
 
-      /*  case NE: case NW: case SE: case SW:
-            return diagonal + current.cost_movement + extra_cost;*/
-
         case NO_DIRECTION:
-            return wait + current.cost_movement;
+            return straight + current.cost_movement;
 
         default:
             return 0;
@@ -178,29 +173,8 @@ Solver::canAgentAccessPosition(const Agent &agent, std::shared_ptr<SearchSquare>
         return false;
     }
 
-    const MapSquare& current_map_square = map.getMapSquare(current_agent_pos->position);
-
-    // If both square are on the same level, the agent can move to this position
-    if (current_map_square.level == analyzed_map_square.level) {
-        return true;
-    }
-
-    Direction direction;
-
-    // We have to check if the high ground square has stairs
-    if (current_map_square.level > analyzed_map_square.level) {
-        direction = extractDirection(current_agent_pos->position, analyzed_pos);
-        return !(current_map_square.stairs.find(direction) == current_map_square.stairs.end());
-    } else {
-        direction = extractDirection(analyzed_pos, current_agent_pos->position);
-        return !(analyzed_map_square.stairs.find(direction) == analyzed_map_square.stairs.end());
-    }
+    return true;
 }
-
-const int Solver::getWaitCost(const int &agent_id, const Position &current_pos) const {
-    return map.getAgents().at(agent_id).getGoalCoord() == current_pos ? 0 : 1;
-}
-
 
 
 

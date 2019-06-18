@@ -27,16 +27,6 @@ enum SquareType {
 */
 struct MapSquare {
     SquareType type = NONE;
-
-    /**
-     * Indicates the level of the square (if 0, the square is at sea-level)
-     */
-    int level = 0;
-
-    /**
-     * Indicates the position of the stairs, if applicable (level > 0 and there are stairs)
-     */
-    std::set<Direction> stairs;
 };
 
 /**
@@ -117,28 +107,11 @@ public:
     void addAgent(const Agent& agent);
 
     /**
-     * Set the level for a MapSquare
-     * @param x : the X position of the square
-     * @param y : the Y position of the square
-     * @param level : the level of the square
-     */
-    void setLevelForSquare(const int& x, const int& y, const int& level);
-
-    /**
      * Get a MapSquare from a given position
      * @param position : the position that we want to get
      * @return a const reference on the MapSquare
      */
     const MapSquare & getMapSquare(const Position &position) const;
-
-    /**
-     * Adds stairs for the corresponding square
-     * @param x : the x coordinate of the square
-     * @param y : the y coordinate of the square
-     * @param direction : the direction
-     * @return false if the direction is unknown
-     */
-    bool addStairsForSquare(const int &x, const int &y, const char *direction);
 
     /**
      * Returns the extra movement cost from a position

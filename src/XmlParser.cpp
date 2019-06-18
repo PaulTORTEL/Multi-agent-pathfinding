@@ -77,30 +77,12 @@ void XmlParser::parseTopology(tinyxml2::XMLElement* mapElement, Map& map) {
         const int y = strtol(coord->FindAttribute("y")->Value(), nullptr, 10);
 
         const char* type = square->FirstChildElement("type")->GetText();
-        const int level = strtol(square->FirstChildElement("level")->GetText(), nullptr, 10);
 
-        // We assign the level
-        map.setLevelForSquare(x, y, level);
 
         // We assign the type to the square and check if something goes wrong
         if (!map.setSquareTypeFromString(type, x, y)) {
             // If here, the SquareType written in the XML for this square is unknown
             std::cerr << "Error: square at [" << x << "," << y << "] has an unknown SquareType" << std::endl;
-        }
-
-        tinyxml2::XMLElement* stairs = square->FirstChildElement("stairs");
-
-        if (stairs != nullptr) {
-            auto* position = stairs->FirstChildElement("position");
-            // While we have square tags to process
-            while (position != nullptr) {
-                const char* direction = position->GetText();
-                if (!map.addStairsForSquare(x, y, direction)) {
-                    // If here, the Stairs position written in the XML for this square is unknown
-                    std::cerr << "Error: square at [" << x << "," << y << "] has an unknown stairs position" << std::endl;
-                }
-                position = position->NextSiblingElement("position");
-            }
         }
 
         // We move on to the next square tag (if doesn't exit, then square == nullptr)

@@ -41,7 +41,7 @@ struct ConstraintNode {
                 if (constraint.edge == NO_DIRECTION) {
                     return true;
                 }
-
+                // Is agent forbidden to access this position from this edge?
                 if (constraint.edge == edge) {
                     return true;
                 }
@@ -153,6 +153,12 @@ struct ConstraintNode {
         return true;
     }
 
+    /**
+     * Returns whether an agent has constraint(s) set after the given time step
+     * @param agent_id : the agent id
+     * @param time_step : a given time step
+     * @return true if there is at least one constraint that is set with a time step
+     */
     bool doesAgentStillHaveFutureConstraints(const int& agent_id, const int& time_step) {
         for (auto& constraint : constraints[agent_id]) {
             if (constraint.time_step > time_step) {
@@ -162,7 +168,12 @@ struct ConstraintNode {
         return false;
     }
 
-     int getConstraintLatestTimeStepForAgent(const int& agent_id) {
+    /**
+     * Returns the latest time step associated to a constraint for an agent
+     * @param agent_id : the agent id
+     * @return -1 if there is no constraint, something else >= 0 if there is constraint
+     */
+    int getConstraintLatestTimeStepForAgent(const int& agent_id) {
         int latest = -1;
         for (auto& constraint : constraints[agent_id]) {
             if (latest < constraint.time_step) {

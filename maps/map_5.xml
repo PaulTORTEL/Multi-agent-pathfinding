@@ -62,22 +62,18 @@
         <square>
             <coordinates x="2" y="3"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
         <square>
             <coordinates x="1" y="3"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
         <square>
             <coordinates x="0" y="3"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
         <square>
             <coordinates x="4" y="1"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
 
     </topology>

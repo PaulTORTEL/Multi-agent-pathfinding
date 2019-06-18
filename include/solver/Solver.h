@@ -138,8 +138,6 @@ public:
      */
     virtual void solve() = 0;
 
-
-    const int getWaitCost(const int &agent_id, const Position &current_pos) const;
 };
 
 

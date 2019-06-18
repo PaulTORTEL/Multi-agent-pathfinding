@@ -2,22 +2,22 @@
 <map>
     <properties>
         <size>
-            <width>5</width>
+            <width>6</width>
             <height>5</height>
         </size>
         <population>
             <agents>
                 <agent id="1">
                     <start>
-                        <coordinates x="0" y="0"/>
+                        <coordinates x="0" y="4"/>
                     </start>
                     <goal>
-                        <coordinates x="0" y="4"/>
+                        <coordinates x="5" y="0"/>
                     </goal>
                 </agent>
                 <agent id="2">
                     <start>
-                        <coordinates x="2" y="2"/>
+                        <coordinates x="5" y="4"/>
                     </start>
                     <goal>
                         <coordinates x="0" y="0"/>
@@ -25,42 +25,42 @@
                 </agent>
                 <agent id="3">
                     <start>
-                        <coordinates x="3" y="4"/>
+                        <coordinates x="0" y="2"/>
                     </start>
                     <goal>
-                        <coordinates x="1" y="0"/>
+                        <coordinates x="5" y="2"/>
                     </goal>
                 </agent>
                 <agent id="4">
                     <start>
-                        <coordinates x="4" y="4"/>
+                        <coordinates x="5" y="2"/>
                     </start>
                     <goal>
                         <coordinates x="0" y="2"/>
                     </goal>
                 </agent>
                 <agent id="5">
-                     <start>
-                         <coordinates x="0" y="1"/>
-                     </start>
-                     <goal>
-                         <coordinates x="4" y="3"/>
-                     </goal>
-                 </agent>
-                <agent id="6">
                     <start>
-                        <coordinates x="0" y="4"/>
+                        <coordinates x="0" y="0"/>
                     </start>
                     <goal>
-                        <coordinates x="4" y="0"/>
+                        <coordinates x="0" y="4"/>
                     </goal>
                 </agent>
+                <!--<agent id="6">
+                    <start>
+                        <coordinates x="5" y="0"/>
+                    </start>
+                    <goal>
+                        <coordinates x="5" y="4"/>
+                    </goal>
+                </agent>-->
             </agents>
         </population>
     </properties>
     <topology>
         <square>
-            <coordinates x="2" y="3"/>
+            <coordinates x="0" y="3"/>
             <type>WALL</type>
         </square>
         <square>
@@ -68,7 +68,27 @@
             <type>WALL</type>
         </square>
         <square>
-            <coordinates x="0" y="3"/>
+            <coordinates x="2" y="3"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="4" y="3"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="5" y="3"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="0" y="1"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="1" y="1"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="3" y="1"/>
             <type>WALL</type>
         </square>
         <square>
@@ -76,9 +96,8 @@
             <type>WALL</type>
         </square>
         <square>
-            <coordinates x="3" y="1"/>
+            <coordinates x="5" y="1"/>
             <type>WALL</type>
         </square>
-
     </topology>
 </map>

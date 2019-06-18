@@ -62,52 +62,42 @@
         <square>
             <coordinates x="2" y="6"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
         <square>
             <coordinates x="3" y="4"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
         <square>
             <coordinates x="3" y="1"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
         <square>
             <coordinates x="5" y="6"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
         <square>
             <coordinates x="6" y="5"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
         <square>
             <coordinates x="7" y="5"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
         <square>
             <coordinates x="6" y="4"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
         <square>
             <coordinates x="7" y="4"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
         <square>
             <coordinates x="6" y="1"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
         <square>
             <coordinates x="2" y="5"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
     </topology>
 </map>

@@ -30,22 +30,18 @@
         <square>
             <coordinates x="3" y="3"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
         <square>
             <coordinates x="0" y="0"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
         <square>
             <coordinates x="0" y="3"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
         <square>
             <coordinates x="3" y="0"/>
             <type>WALL</type>
-            <level>0</level>
         </square>
     </topology>
 </map>

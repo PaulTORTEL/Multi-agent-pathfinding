@@ -166,90 +166,10 @@ struct StateDictionary {
                     return edge_conflict;
                 }
                 break;
-
-
-            case NE:
-                // In the case our current agent plans to go north-east, the only positions that could have other agents and that could result to a collision
-                // are the position at the right, top right, and top
-                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
-                                                                 *current_state, pos_right, agent_id);
-                if (edge_conflict != nullptr) {
-                    return edge_conflict;
-                }
-                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
-                                                                 *current_state, pos_up,
-                                                                 agent_id);
-                if (edge_conflict != nullptr) {
-                    return edge_conflict;
-                }
-                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
-                                                                 *current_state, pos_up_right,
-                                                                 agent_id);
-                if (edge_conflict != nullptr) {
-                    return edge_conflict;
-                }
-                break;
-
-            case NW:
-                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
-                                                                 *current_state, pos_left,
-                                                                 agent_id);
-                if (edge_conflict != nullptr) {
-                    return edge_conflict;
-                }
-                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
-                                                                 *current_state, pos_up,
-                                                                 agent_id);
-                if (edge_conflict != nullptr) {
-                    return edge_conflict;
-                }
-                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
-                                                                 *current_state, pos_up_left,
-                                                                 agent_id);
-                if (edge_conflict != nullptr) {
-                    return edge_conflict;
-                }
-                break;
-            case SE:
-                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
-                                                                 *current_state, pos_right,
-                                                                 agent_id);
-                if (edge_conflict != nullptr) {
-                    return edge_conflict;
-                }
-                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
-                                                                 *current_state, pos_down,
-                                                                 agent_id);
-                if (edge_conflict != nullptr) {
-                    return edge_conflict;
-                }
-                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
-                                                                 *current_state, pos_down_right,
-                                                                 agent_id);
-                if (edge_conflict != nullptr) {
-                    return edge_conflict;
-                }
-                break;
-            case SW:
-                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
-                                                                 *current_state, pos_left,
-                                                                 agent_id);
-                if (edge_conflict != nullptr) {
-                    return edge_conflict;
-                }
-                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
-                                                                 *current_state, pos_down,
-                                                                 agent_id);
-                if (edge_conflict != nullptr) {
-                    return edge_conflict;
-                }
-                edge_conflict = detectEdgeCollisionWithNeighbour(current_position, next_position, time_step,
-                                                                 *current_state, pos_down_left,
-                                                                 agent_id);
-                if (edge_conflict != nullptr) {
-                    return edge_conflict;
-                }
-                break;
+            case NE:break;
+            case NW:break;
+            case SE:break;
+            case SW:break;
         }
 
         return nullptr;

@@ -78,6 +78,12 @@ private:
      */
     static Solver::MultimapConstraintNode::iterator getIteratorOnLessConflictNode(MultimapConstraintNode &open_list);
 
+    /**
+     * Returns an iterator on the search square having the less conflicts with the current solution
+     * @param open_list : the open list
+     * @param constraint_node : the constraint node
+     * @return an iterator
+     */
     static Solver::MultimapSearchSquare::iterator getIteratorOnStateWithLessConflict(Solver::MultimapSearchSquare &open_list, ConstraintNode& constraint_node);
 
     /**

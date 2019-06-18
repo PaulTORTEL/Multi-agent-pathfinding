@@ -64,6 +64,11 @@ public:
      */
     const std::map<int, std::shared_ptr<SearchSquare>>::iterator findAgentAtPosition(const Position &position);
 
+    /**
+     * Count the number of agents at a position
+     * @param position : the position
+     * @return the number found
+     */
     const int countAgentsAtPosition(const Position &position);
 
     /**

@@ -49,8 +49,6 @@ void ConflictBasedSearch::highLevelSolver() {
         ConstraintNode current_node = it_open_list->second;
         open_list.erase(it_open_list);
 
-        //current_node.scanSolution(1);
-
         std::shared_ptr<Conflict> conflict = current_node.first_conflict;
 
         // If there is no conflict, we have found a valid and admissible solution
@@ -88,9 +86,13 @@ void ConflictBasedSearch::highLevelSolver() {
             new_node.solution = lowLevelSolver(new_node, agent_id);
 
             if (_status == NO_SOLUTION) {
-                _status = Status::OK;
-                continue;
-                //break;
+                // To avoid the infinite loop where the agent will wait for an immobile agent that cannot find another solution
+                if (new_node.getConstraintLatestTimeStepForAgent(agent_id) == conflict->time_step) {
+                    break;
+                } else {
+                    _status = Status::OK;
+                    continue;
+                }
             }
 
             new_node.computeSicHeuristic();
@@ -211,7 +213,7 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(c
 
     do {
         // We select the search square having the cheapest cost: it becomes our current search square
-        const auto& it_open_list = open_list.begin(); //getIteratorOnStateWithLessConflict(open_list, constraint_node);
+        const auto& it_open_list = getIteratorOnStateWithLessConflict(open_list, constraint_node);
         current_search_square = it_open_list->second;
 
         // We insert the coordinates in the closed list, so we won't deal with the position ever again
@@ -291,35 +293,23 @@ ConflictBasedSearch::populateOpenList(MultimapSearchSquare &open_list, std::set<
         Position left_pos = Position(x-1, y);
         // We insert in the open list left_pos only if its coordinates are not in the closed list
         // or it is not already in the open list with a cheapest cost
-        InsertionOpenListResult result = tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, left_pos, constraint_node);
+        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, left_pos, constraint_node);
 
     } if (right) {
         Position right_pos = Position(x+1, y);
-        InsertionOpenListResult result = tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, right_pos, constraint_node);
+        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, right_pos, constraint_node);
 
     } if (up) {
         Position up_pos = Position(x, y+1);
-        InsertionOpenListResult result = tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, up_pos, constraint_node);
+        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, up_pos, constraint_node);
 
     } if (down) {
         Position down_pos = Position(x, y-1);
-        InsertionOpenListResult result = tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, down_pos, constraint_node);
+        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, down_pos, constraint_node);
 
-    } /*if (left && up) {
-        Position left_up_pos = Position(x-1, y+1);
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, left_up_pos, constraint_node);
-    } if (right && up) {
-        Position right_up_pos = Position(x+1, y+1);
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, right_up_pos, constraint_node);
-    } if (left && down) {
-        Position left_down_pos = Position(x-1, y-1);
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, left_down_pos, constraint_node);
-    } if (right && down) {
-        Position right_down_pos = Position(x+1, y-1);
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, right_down_pos, constraint_node);
-    }*/
+    }
 
-    //TODO: à analyser
+    // No constraint in the future, the agent is not allowed to wait
     if (!constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), current_agent_position->time_step)) {
         return;
     }
@@ -344,20 +334,17 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
     std::string pos_coord = std::to_string(analyzed_pos.x) + ";" + std::to_string(analyzed_pos.y) + ";";// + std::to_string(time_step);
     // We check that the position has not already been processed (i.e., not in the closed list)
     if (closed_list.find(pos_coord) != closed_list.end() && current_agent_position->position != analyzed_pos) {
-        // Already processed, we stop here for this position
-
 
         //TODO: à analyser
-        int latest_time_step_constraint = constraint_node.getConstraintLatestTimeStepForAgent(agent.getId());
+        //int latest_time_step_constraint = constraint_node.getConstraintLatestTimeStepForAgent(agent.getId());
          //&& (time_step < latest_time_step_constraint || latest_time_step_constraint == -1)
 
-        if (constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), time_step)) {
+        if (constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), time_step+1)) {
             return FAIL_CLOSED_LIST;
         }
-        //TODO: à analyser, 8 puzzle => need backtracking
 
-        //closed_list.clear();
-       return FAIL_CLOSED_LIST;
+        closed_list.clear();
+       //return FAIL_CLOSED_LIST;
     }
 
     // If the agent is not allowed to go to this position (constraints are used at this point)
@@ -375,7 +362,7 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
     // If we realize that the position is already in the open list
     if (it_analyzed_pos != open_list.end()) {
         // If the cost is cheaper with the current path (current search square and its parent)
-        if (it_analyzed_pos->second->cost() > cost) { //TODO: >= pour backtrack ?
+        if (it_analyzed_pos->second->cost() > cost) {
             // We change only the movement cost since the heuristic cost can't change
             it_analyzed_pos->second->cost_movement = move_cost;
             // We change the parent
