@@ -11,7 +11,7 @@
 #include "ConstraintNode.h"
 #include "../../stats/StatsManager.h"
 
-class ConflictBasedSearch : Solver {
+class ConflictBasedSearch : public Solver {
 private:
 
     enum InsertionOpenListResult {
@@ -26,7 +26,7 @@ private:
     /**
      * Performs the high level of the CBS algorithm
      */
-    void highLevelSolver();
+    std::map<int, State> highLevelSolver();
 
     /**
      * Performs the low level of the CBS algorithm
@@ -78,7 +78,7 @@ private:
      * @param open_list : the open list
      * @return an iterator
      */
-    static Solver::MultimapConstraintNode::iterator getIteratorOnLessConflictNode(MultimapConstraintNode &open_list);
+    Solver::MultimapConstraintNode::iterator getIteratorOnLessConflictNode(MultimapConstraintNode &open_list);
 
     /**
      * Returns an iterator on the search square having the less conflicts with the current solution
@@ -99,9 +99,9 @@ private:
 
 public:
 
-    ConflictBasedSearch(Map &map);
+    ConflictBasedSearch(Map &map, const std::map<int, Agent>& agents);
 
-    void solve() override;
+    std::map<int, State> solve() override;
 };
 
 

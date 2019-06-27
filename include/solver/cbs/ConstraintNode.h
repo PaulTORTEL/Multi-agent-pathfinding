@@ -58,11 +58,12 @@ struct ConstraintNode {
    /**
      * Scans for conflicts: count and set the first conflict found
      */
-    void scanSolution(const int& stop_value) {
+   void scanSolution(const int &stop_value, const std::map<int, Position>& agents_goal) {
         // For each states in the solution
         for (auto it_state = solution.dictionary.begin(); it_state != solution.dictionary.end(); ++it_state) {
             // We try to detect a vertex collision in the given state
-            std::unique_ptr<VertexConflict> vertex_conflict = it_state->second.detectVertexConflict(it_state->first);
+            std::unique_ptr<VertexConflict> vertex_conflict = it_state->second.detectVertexConflict(it_state->first,
+                                                                                                    agents_goal);
 
             if (vertex_conflict != nullptr) {
                 if (first_conflict == nullptr) {

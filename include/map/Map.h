@@ -19,13 +19,15 @@
 enum SquareType {
     NONE,
     WALL,
-    SWAMP
+    //SWAMP  => create another enum for ground type
+    HUMAN_POINT
 };
 
 /**
 * Structure gathering all the properties and information about a Square (a place in the environment)
 */
 struct MapSquare {
+    int id = 0;
     SquareType type = NONE;
 };
 
@@ -42,6 +44,10 @@ class Map {
          * The agents in the world
          */
         std::map<int, Agent> _agents;
+
+        std::map<int, Position> _products;
+        std::map<int, Position> _drop_off_points;
+        std::map<int, Position> _repair_points;
 
         /**
          * The actual world/map representation
@@ -64,7 +70,7 @@ public:
     Map(std::string name, int width = 0, int height = 0) : _name(name), _width(width), _height(height) {
         __key_SquareType_map["NONE"] = SquareType::NONE;
         __key_SquareType_map["WALL"] = SquareType::WALL;
-        __key_SquareType_map["SWAMP"] = SquareType::SWAMP;
+        __key_SquareType_map["HUMAN_POINT"] = SquareType::HUMAN_POINT;
 
         __key_Direction_map["NORTH"] = Direction::NORTH;
         __key_Direction_map["SOUTH"] = Direction::SOUTH;
@@ -119,6 +125,28 @@ public:
      * @return the extra cost
      */
     const int getExtraCostFromMapSquareType(const Position &position) const;
+
+    const std::map<int, Position> getProducts() const;
+
+    void setProducts(const std::map<int, Position> &products);
+
+    const std::map<int, Position> getDropOffPoints() const;
+
+    void setDropOffPoints(const std::map<int, Position> &dropOffPoints);
+
+    const std::map<int, Position> getRepairPoints() const;
+
+    void setRepairPoints(const std::map<int, Position> &repairPoints);
+
+    void addProduct(const int x, const int y, const int id);
+
+    void addDropOffPoint(const int x, const int y, const int id);
+
+    void addRepairPoint(const int x, const int y, const int id);
+
+    void removeItemToPickupForAgent(const int &agent_id);
+
+    void setCurrentPositionForAgent(const int &agent_id, const Position &position);
 };
 
 

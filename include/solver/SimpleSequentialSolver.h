@@ -57,9 +57,9 @@ private:
 
 public:
 
-    SimpleSequentialSolver(Map &map);
+    SimpleSequentialSolver(Map &map, const std::map<int, Agent>& agents);
 
-    void solve() override;
+    std::map<int, State> solve() override;
 
 
     /**

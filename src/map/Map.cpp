@@ -67,10 +67,55 @@ const int Map::getExtraCostFromMapSquareType(const Position &position) const {
 
         case NONE:break;
         case WALL:break;
-        case SWAMP:
+        /*case SWAMP:
             extra_cost = 2;
-            break;
+            break;*/
+        case HUMAN_POINT:break;
     }
 
     return extra_cost;
+}
+
+const std::map<int, Position> Map::getProducts() const {
+    return _products;
+}
+
+void Map::setProducts(const std::map<int, Position> &products) {
+    _products = products;
+}
+
+const std::map<int, Position> Map::getDropOffPoints() const {
+    return _drop_off_points;
+}
+
+void Map::setDropOffPoints(const std::map<int, Position> &dropOffPoints) {
+    _drop_off_points = dropOffPoints;
+}
+
+const std::map<int, Position> Map::getRepairPoints() const {
+    return _repair_points;
+}
+
+void Map::setRepairPoints(const std::map<int, Position> &repairPoints) {
+    _repair_points = repairPoints;
+}
+
+void Map::addProduct(const int x, const int y, const int id) {
+    _products[id] = Position(x, y);
+}
+
+void Map::addDropOffPoint(const int x, const int y, const int id) {
+    _drop_off_points[id] = Position(x, y);
+}
+
+void Map::addRepairPoint(const int x, const int y, const int id) {
+    _repair_points[id] = Position(x, y);
+}
+
+void Map::removeItemToPickupForAgent(const int& agent_id) {
+    _agents[agent_id].removeItemToPickup();
+}
+
+void Map::setCurrentPositionForAgent(const int& agent_id, const Position& position) {
+    _agents[agent_id].setCurrentPosition(position);
 }

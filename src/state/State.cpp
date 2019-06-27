@@ -37,7 +37,8 @@ const int State::getSicHeuristic() {
     return sic;
 }
 
-std::unique_ptr<VertexConflict> State::detectVertexConflict(const int& time_step) {
+std::unique_ptr<VertexConflict>
+State::detectVertexConflict(const int &time_step, const std::map<int, Position> &agents_goal) {
 
     // We loop through all the search squares (all the agents)
     for (auto& search_squares_it : search_squares) {
@@ -58,6 +59,13 @@ std::unique_ptr<VertexConflict> State::detectVertexConflict(const int& time_step
 
             // If the position of both agents are the same, it means we have a vertex conflict since they are both at the same time at the same place
             if (agent_1_position == agent_2_position) {
+
+                if (agent_1_position == agents_goal.at(agent_1_id)) {
+                    if (search_squares_it.second->time_step < time_step) {
+                        continue;
+                    }
+                }
+
                 return std::make_unique<VertexConflict>(agent_1_id, agent_2_id, time_step, agent_1_position);
             }
         }

@@ -9,19 +9,21 @@
 #include <ctime>
 
 
-void ConflictBasedSearch::solve() {
+std::map<int, State> ConflictBasedSearch::solve() {
 
-    if (_status != Status::OK) { return; }
+    if (_status != Status::OK) { return std::map<int, State>(); }
 
-    statsManager.startAnalysis(map.getAgents().size());
+    statsManager.startAnalysis(agents.size());
 
     // We call the CBS algorithm
-    highLevelSolver();
+    std::map<int, State> solution = highLevelSolver();
 
     statsManager.stopAnalysis();
+
+    return solution;
 }
 
-void ConflictBasedSearch::highLevelSolver() {
+std::map<int, State> ConflictBasedSearch::highLevelSolver() {
 
     ConstraintNode root;
 
@@ -30,7 +32,7 @@ void ConflictBasedSearch::highLevelSolver() {
 
     if (_status == NO_SOLUTION) {
         std::cout << "No solution found for this problem..." << std::endl;
-        return;
+        return root.solution.dictionary;
     }
 
     statsManager.getCurrentAnalysis().constraint_nodes_created++;
@@ -52,7 +54,6 @@ void ConflictBasedSearch::highLevelSolver() {
 
         // If there is no conflict, we have found a valid and admissible solution
         if (conflict == nullptr) {
-
             for (auto& it : current_node.solution.dictionary) {
                 std::cout << "T" << it.first << ": ";
 
@@ -62,7 +63,7 @@ void ConflictBasedSearch::highLevelSolver() {
                 std::cout << std::endl;
             }
 
-            return;
+            return current_node.solution.dictionary;
         }
 
         // There is a conflict between two agents, therefore we will add 2 news constraint nodes
@@ -105,10 +106,13 @@ void ConflictBasedSearch::highLevelSolver() {
 
         if (open_list.empty()) {
             std::cout << "No solution found for this problem..." << std::endl;
+            _status = Status::NO_SOLUTION;
         } else {
             _status = Status::OK;
         }
     }
+
+    return root.solution.dictionary;
 }
 /*
 Solver::MultimapConstraintNode::iterator ConflictBasedSearch::getIteratorOnLessConflictNode(Solver::MultimapConstraintNode &open_list) {
@@ -153,7 +157,7 @@ Solver::MultimapConstraintNode::iterator ConflictBasedSearch::getIteratorOnLessC
 
     for (auto it = it_low; it != it_up; ++it) {
 
-        it->second.scanSolution(num_of_conflicts);
+       it->second.scanSolution(num_of_conflicts, getAgentsGoal());
         int new_num_of_conflicts = it->second.conflicts_detected;
 
         if (first_to_assign || new_num_of_conflicts < num_of_conflicts) {
@@ -170,7 +174,7 @@ Solver::MultimapConstraintNode::iterator ConflictBasedSearch::getIteratorOnLessC
     return it_optimized;
 }
 
-ConflictBasedSearch::ConflictBasedSearch(Map &map) : Solver(map) {}
+ConflictBasedSearch::ConflictBasedSearch(Map &map, const std::map<int, Agent>& agents) : Solver(map, agents) {}
 
 StateDictionary ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_node,
                                                     int agent_id) {
@@ -178,7 +182,7 @@ StateDictionary ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_n
 
     // If we want to compute the whole paths
     if (agent_id == 0) {
-        for (auto& it_agent : map.getAgents()) {
+        for (auto& it_agent : agents) {
             statsManager.startMeasuringDuration(StatsManager::LOW_LEVEL);
             auto final_search_square = computeShortestPathPossible(it_agent.second, constraint_node);
             statsManager.stopMeasuringDuration(StatsManager::LOW_LEVEL);
@@ -189,7 +193,7 @@ StateDictionary ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_n
         }
     } else {
         // If we want to compute only the path for an agent
-        const auto& it_agent = map.getAgents().find(agent_id);
+        const auto& it_agent = agents.find(agent_id);
         statsManager.startMeasuringDuration(StatsManager::LOW_LEVEL);
         auto final_search_square = computeShortestPathPossible(it_agent->second, constraint_node);
         statsManager.stopMeasuringDuration(StatsManager::LOW_LEVEL);
@@ -229,12 +233,12 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(c
         // We populate the open list with the surroundings of the current search square
         populateOpenList(open_list, closed_list, agent, current_search_square, constraint_node);
 
-        if (open_list.empty() && current_search_square->position != agent.getGoalCoord()) {
+        if (open_list.empty() && current_search_square->position != getAgentGoalPosition(agent)) {
             _status = NO_SOLUTION;
         }
 
         // We loop while we didn't detect that there is no solution or that we didn't reach the goal position of the agent
-    } while ((current_search_square->position != agent.getGoalCoord() ||
+    } while ((current_search_square->position != getAgentGoalPosition(agent)||
                 constraint_node.doesAgentStillHaveFutureConstraints(agent_id, current_search_square->time_step))
                 && _status == Status::OK);
 
@@ -355,7 +359,7 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
     }
 
     const int move_cost = movementCost(*current_agent_position, analyzed_pos, agent.getId());
-    const int heuristic = heuristicCost(analyzed_pos, agent.getGoalCoord());
+    const int heuristic = heuristicCost(analyzed_pos, getAgentGoalPosition(agent));
 
     const float cost = move_cost + heuristic;
 

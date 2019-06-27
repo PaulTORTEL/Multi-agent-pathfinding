@@ -61,6 +61,9 @@ protected:
 
     StatsManager statsManager;
 
+    std::map<int, Agent> agents;
+    std::map<int, Position> agents_goal;
+
     /**
      * Keeps a const. ref. of the map it is working on
      */
@@ -112,16 +115,16 @@ protected:
      * @return true if the agent can move to this position
      */
     bool canAgentAccessPosition(const Agent &agent, std::shared_ptr<SearchSquare> &current_agent_pos,
-                                Position &analyzed_pos);
+                                 Position &analyzed_pos);
 
 public:
 
-    Solver(Map &map);
+    Solver(Map &map, const std::map<int, Agent>& agents);
 
     /**
      * Checks if a state is valid or not
-     * @param state : the state to evaluate
-     * @param grid : the world
+     * @param state : the state to evaluconst ate
+     * @param gr&id : the world
      * @return True if the state is valid
      */
     static bool checkStateValidity(const State &state, const std::vector<std::vector<MapSquare>> &grid);
@@ -135,9 +138,15 @@ public:
 
     /**
      * Virtual pure function that child classes have to override in order to start solving the problem
-     * @return
+     * @return the solution
      */
-    virtual void solve() = 0;
+    virtual std::map<int, State> solve() = 0;
+
+    Position getAgentStartPosition(const Agent &agent);
+
+    Position getAgentGoalPosition(const Agent &agent);
+
+    const std::map<int, Position> & getAgentsGoal() const;
 
 };
 

@@ -9,11 +9,11 @@
 #include "../../include/solver/SimpleSequentialSolver.h"
 #include "../../include/solver/Solver.h"
 
-SimpleSequentialSolver::SimpleSequentialSolver(Map &map) : Solver(map) {}
+SimpleSequentialSolver::SimpleSequentialSolver(Map &map, const std::map<int, Agent>& agents) : Solver(map, agents) {}
 
-void SimpleSequentialSolver::solve() {
+std::map<int, State> SimpleSequentialSolver::solve() {
 
-    if (_status != OK) { return; }
+    if (_status != OK) { return std::map<int, State>(); }
 
     std::clock_t start;
     double duration;
@@ -73,6 +73,8 @@ void SimpleSequentialSolver::solve() {
             std::cout << std::endl;
         }
     }
+
+    return std::map<int, State>();
 }
 
 const std::shared_ptr<SearchSquare> SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
@@ -101,12 +103,12 @@ const std::shared_ptr<SearchSquare> SimpleSequentialSolver::computeShortestPathP
         // We populate the open list with the surroundings of the current search square
         populateOpenList(open_list, closed_list, agent, current_search_square);
 
-        if (open_list.empty() && current_search_square->position != agent.getGoalCoord()) {
+        if (open_list.empty() && current_search_square->position != getAgentGoalPosition(agent)) {
             _status = NO_SOLUTION;
         }
 
         // We loop while we didn't detect that there is no solution or that we didn't reach the goal position of the agent
-    } while (current_search_square->position != agent.getGoalCoord() && _status == OK);
+    } while (current_search_square->position != getAgentGoalPosition(agent) && _status == OK);
 
     if (_status == NO_SOLUTION) {
         return nullptr;
@@ -149,18 +151,6 @@ void SimpleSequentialSolver::populateOpenList(MultimapSearchSquare &open_list, c
     } if (down) {
         Position down_pos = Position(x, y-1);
         tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, down_pos, SOUTH);
-    } if (left && up) {
-        Position left_up_pos = Position(x-1, y+1);
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, left_up_pos, NW);
-    } if (right && up) {
-        Position right_up_pos = Position(x+1, y+1);
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, right_up_pos, NE);
-    } if (left && down) {
-        Position left_down_pos = Position(x-1, y-1);
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, left_down_pos, SW);
-    } if (right && down) {
-        Position right_down_pos = Position(x+1, y-1);
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, right_down_pos, SE);
     }
 }
 
@@ -199,10 +189,10 @@ void SimpleSequentialSolver::tryInsertInOpenList(MultimapSearchSquare &open_list
             return;
         }
 
-        const float move_cost = movementCost(*current_agent_position, analyzed_pos, agent.getId());
-        const float heuristic = heuristicCost(analyzed_pos, agent.getGoalCoord());
+        const int move_cost = movementCost(*current_agent_position, analyzed_pos, agent.getId());
+        const int heuristic = heuristicCost(analyzed_pos, getAgentGoalPosition(agent));
 
-        const float cost = move_cost + heuristic;
+        const int cost = move_cost + heuristic;
 
         const auto& it_analyzed_pos = findPositionInOpenList(analyzed_pos, open_list);
 

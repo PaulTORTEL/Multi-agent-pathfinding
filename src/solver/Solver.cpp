@@ -9,25 +9,17 @@
 #include <vector>
 #include <algorithm>
 
-Solver::Solver(Map &map) : map(map) {
+Solver::Solver(Map &map, const std::map<int, Agent>& agents) : map(map), agents(agents) {
 
-    std::map<int, Agent> agents = map.getAgents();
-
-    for (auto agent_id = 1; agent_id <= agents.size(); agent_id++) {
-        const auto& agent_it = agents.find(agent_id);
-
-        // If we didn't find the corresponding agent (with id = agent_id)
-        if (agent_it == agents.end()) {
-            setStatus(ERROR, "In Solver.cpp (constructor), unknown agent ID");
-        }
+    for (auto& agent : agents) {
 
         // We save the initial and goal positions of the agent
-        auto init_state_search_square = std::make_unique<SearchSquare>(Position(agent_it->second.getStartCoord().x, agent_it->second.getStartCoord().y),
-                                                                       nullptr);
-        auto goal_state_search_square = std::make_unique<SearchSquare>(Position(agent_it->second.getGoalCoord().x, agent_it->second.getGoalCoord().y),
-                                                                       nullptr);
-        init_state.setSearchSquareForAgent(agent_id, std::move(init_state_search_square));
-        goal_state.setSearchSquareForAgent(agent_id, std::move(goal_state_search_square));
+        auto init_state_search_square = std::make_unique<SearchSquare>(agent.second.getCurrentPosition(), nullptr);
+        Position goal = getAgentGoalPosition(agent.second);
+        auto goal_state_search_square = std::make_unique<SearchSquare>(goal, nullptr);
+        agents_goal[agent.first] = goal;
+        init_state.setSearchSquareForAgent(agent.first, std::move(init_state_search_square));
+        goal_state.setSearchSquareForAgent(agent.first, std::move(goal_state_search_square));
     }
 
     bool validity = true;
@@ -40,14 +32,51 @@ Solver::Solver(Map &map) : map(map) {
     }
 
     // We check if the goal state is valid (no agents overlapped, or at incorrect positions such as squares with
-    if (!checkStateValidity(goal_state, map.getGrid())) {
+  /*  if (!checkStateValidity(goal_state, map.getGrid())) {
         validity = false;
         err += "[goal_state]";
-    }
+    }*/
 
     // We throw an exception by setting the status of the solver to ERROR and we specify the error message
     if (!validity) {
         setStatus(ERROR, err);
+    }
+}
+
+//TODO: to remove?
+Position Solver::getAgentStartPosition(const Agent& agent) {
+    int items_to_pickup = agent.getItemsToPickup();
+    int size_of_list = agent.getPickupList().size();
+    if (items_to_pickup == size_of_list)  {
+        return agent.getParkingCoord();
+    }
+
+    int product_id = agent.getPickupList()[size_of_list - (items_to_pickup+1)];
+    return map.getProducts().at(product_id);
+}
+
+Position Solver::getAgentGoalPosition(const Agent& agent) {
+    int items_to_pickup = agent.getItemsToPickup();
+    int size_of_list = agent.getPickupList().size();
+
+    if (items_to_pickup > 0) {
+        int product_id = agent.getPickupList()[size_of_list - items_to_pickup];
+        return map.getProducts().at(product_id);
+    }
+
+    if (agent.hasFinished()) {
+        return agent.getParkingCoord();
+    }
+
+    const auto& drop_off_points = map.getDropOffPoints();
+
+    const int& drop_off_1_heuristic = heuristicCost(agent.getCurrentPosition(), drop_off_points.at(1));
+    const int& drop_off_2_heuristic = heuristicCost(agent.getCurrentPosition(), drop_off_points.at(2));
+
+    if (drop_off_1_heuristic <= drop_off_2_heuristic) {
+        return drop_off_points.at(1);
+    } else {
+        return drop_off_points.at(2);
     }
 }
 
@@ -162,18 +191,22 @@ bool
 Solver::canAgentAccessPosition(const Agent &agent, std::shared_ptr<SearchSquare> &current_agent_pos,
                                Position &analyzed_pos) {
 
-    //TODO: skills of the agent to test here
-    //TODO: if water..., add it here
-    //TODO: check if the agent can climb
-
     const MapSquare& analyzed_map_square = map.getMapSquare(analyzed_pos);
 
     // If the position is a non-walkable square
-    if (analyzed_map_square.type == WALL) {
-        return false;
+    switch (analyzed_map_square.type) {
+        case NONE:break;
+        case WALL:
+            return false;
+        case HUMAN_POINT:
+            return false;
     }
 
     return true;
+}
+
+const std::map<int, Position> & Solver::getAgentsGoal() const {
+    return agents_goal;
 }
 
 

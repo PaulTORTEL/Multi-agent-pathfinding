@@ -6,6 +6,51 @@
 #include "../include/solver/SimpleSequentialSolver.h"
 #include "../include/solver/cbs/ConflictBasedSearch.h"
 
+
+//TODO: temp
+void scanSolution(Map& map, std::map<int, State>& solution, Solver& solver) {
+
+    std::map<int, std::pair<Position, Position>> moves;
+    bool stop = false;
+
+    for (auto & state : solution) {
+
+        for (auto& agent : state.second.getSearchSquares()) {
+
+            // set the current position of the agent bc we will recompute paths very soon
+            map.setCurrentPositionForAgent(agent.first, agent.second->position);
+
+            if (moves.find(agent.first) == moves.end()) {
+                moves[agent.first].second = agent.second->position;
+                continue;
+            } else {
+                moves[agent.first].first = moves[agent.first].second;
+                moves[agent.first].second = agent.second->position;
+            }
+
+            if (moves[agent.first].first != moves[agent.first].second &&
+                        agent.second->position == solver.getAgentGoalPosition(map.getAgents().at(agent.first))) {
+                stop = true;
+                map.removeItemToPickupForAgent(agent.first);
+            }
+        }
+
+        if (stop) {
+            return;
+        }
+    }
+}
+
+bool shouldContinue(Map& map) {
+
+    for (auto& agent : map.getAgents()) {
+        if (agent.second.getCurrentPosition() != agent.second.getParkingCoord()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 int main() {
     int map_no = 1;
     std::cout << "Type the number of the map to load: ";
@@ -25,11 +70,14 @@ int main() {
         std::cin >> technique_no;
 
         if (technique_no == 1) {
-            SimpleSequentialSolver solver(map);
+            SimpleSequentialSolver solver(map, map.getAgents());
             solver.solve();
         } else if (technique_no == 2) {
-            ConflictBasedSearch cbsSolver(map);
-            cbsSolver.solve();
+            do {
+                ConflictBasedSearch cbsSolver(map, map.getAgents());
+                auto solution = cbsSolver.solve();
+                scanSolution(map, solution, cbsSolver);
+            } while (shouldContinue(map));
         }
 
         system("pause");

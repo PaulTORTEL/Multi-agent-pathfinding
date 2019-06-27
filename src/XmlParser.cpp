@@ -52,12 +52,21 @@ void XmlParser::parsePopulation(tinyxml2::XMLElement* properties, Map& map) {
         const int start_x = strtol(start_coord->FindAttribute("x")->Value(), nullptr, 10);
         const int start_y = strtol(start_coord->FindAttribute("y")->Value(), nullptr, 10);
 
-        auto* goal_coord = agent->FirstChildElement("goal")->FirstChildElement("coordinates");
-        const int goal_x = strtol(goal_coord->FindAttribute("x")->Value(), nullptr, 10);
-        const int goal_y = strtol(goal_coord->FindAttribute("y")->Value(), nullptr, 10);
 
-        // We save the information about the agent
-        map.addAgent(Agent(id, start_x, start_y, goal_x, goal_y));
+        Agent new_agent = Agent(id, start_x, start_y);
+
+        auto* pickup_list = agent->FirstChildElement("pickup_list");
+        auto* product = pickup_list->FirstChildElement("product");
+
+        while (product != nullptr) {
+            const int product_id = strtol(product->FindAttribute("id")->Value(), nullptr, 10);
+            new_agent.addProductToPickupList(product_id);
+
+            product = product->NextSiblingElement("product");
+        }
+        new_agent.computeItemsToPickup();
+        map.addAgent(new_agent);
+
 
         // We move on to the next agent tage (if doesn't exist, then agent == nullptr)
         agent = agent->NextSiblingElement("agent");
@@ -78,11 +87,21 @@ void XmlParser::parseTopology(tinyxml2::XMLElement* mapElement, Map& map) {
 
         const char* type = square->FirstChildElement("type")->GetText();
 
-
-        // We assign the type to the square and check if something goes wrong
-        if (!map.setSquareTypeFromString(type, x, y)) {
-            // If here, the SquareType written in the XML for this square is unknown
-            std::cerr << "Error: square at [" << x << "," << y << "] has an unknown SquareType" << std::endl;
+        if (strcmp(type, "PRODUCT") == 0) {
+            const int id = strtol(square->FirstChildElement("id")->GetText(), nullptr, 10);
+            map.addProduct(x, y, id);
+        } else if (strcmp(type, "DROP_OFF_POINT") == 0) {
+            const int id = strtol(square->FirstChildElement("id")->GetText(), nullptr, 10);
+            map.addDropOffPoint(x, y, id);
+        } else if (strcmp(type, "REPAIR_POINT") == 0) {
+            const int id = strtol(square->FirstChildElement("id")->GetText(), nullptr, 10);
+            map.addRepairPoint(x, y, id);
+        } else {
+            // We assign the type to the square and check if something goes wrong
+            if (!map.setSquareTypeFromString(type, x, y)) {
+                // If here, the SquareType written in the XML for this square is unknown
+                std::cerr << "Error: square at [" << x << "," << y << "] has an unknown SquareType" << std::endl;
+            }
         }
 
         // We move on to the next square tag (if doesn't exit, then square == nullptr)

@@ -51,9 +51,16 @@ struct StateDictionary {
      */
     void setAgentPositionFromTimeStep(int time_step, const int& agent_id, const std::shared_ptr<SearchSquare>& search_square) {
 
+        std::shared_ptr<SearchSquare> next_search_square = search_square;
+
         while (dictionary.find(time_step) != dictionary.end()) {
-            dictionary[time_step].setSearchSquareForAgent(agent_id, search_square);
+
+            dictionary[time_step].setSearchSquareForAgent(agent_id, next_search_square);
             time_step++;
+
+            //TODO : to analyze /// TO REMOVE?
+            /*next_search_square = std::make_shared<SearchSquare>
+                    (next_search_square->position, next_search_square, next_search_square->cost_movement, next_search_square->cost_heuristic);*/
         }
     }
 

@@ -6,38 +6,76 @@
 #define PATHFINDING_PROJECT_AGENT_H
 
 #include "../utility.h"
+#include <vector>
 
 class Agent {
 private:
     int id;
+    Position parking_coord;
 
-    //speed ? special skills (e.g., climbing?)
+    std::vector<int> pickup_list;
+    int items_to_pickup = 0;
+    bool has_finished = false;
 
+    Position current_position;
 
-    Position start_coord;
-    Position goal_coord;
 
 public:
 
-    Agent(int id, int start_x, int start_y, int goal_x, int goal_y) : id(id) {
-        start_coord = Position(start_x, start_y);
-        goal_coord = Position(goal_x, goal_y);
+    Agent(int id, int start_x, int start_y) : id(id) {
+        parking_coord = Position(start_x, start_y);
+        current_position = Position(start_x, start_y);
     }
 
-    Agent() {}
+    Agent() {};
 
     int getId() const {
         return id;
     }
 
-    const Position &getStartCoord() const {
-        return start_coord;
+    const Position &getParkingCoord() const {
+        return parking_coord;
     }
 
-    const Position &getGoalCoord() const {
-        return goal_coord;
+    const std::vector<int> &getPickupList() const {
+        return pickup_list;
     }
 
+    void addProductToPickupList(const int product_id) {
+        pickup_list.push_back(product_id);
+    }
+
+    void computeItemsToPickup() {
+        items_to_pickup = pickup_list.size();
+    }
+
+    int getItemsToPickup() const {
+        return items_to_pickup;
+    }
+
+    const Position &getCurrentPosition() const {
+        return current_position;
+    }
+
+    void setCurrentPosition(const Position &currentPosition) {
+        current_position = currentPosition;
+    }
+
+    void removeItemToPickup() {
+        if (items_to_pickup > 0) {
+            items_to_pickup--;
+        } else {
+            setHasFinished(true);
+        }
+    }
+
+    bool hasFinished() const {
+        return has_finished;
+    }
+
+    void setHasFinished(bool hasFinished) {
+        has_finished = hasFinished;
+    }
 };
 
 
