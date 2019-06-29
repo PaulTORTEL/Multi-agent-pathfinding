@@ -29,6 +29,8 @@ enum SquareType {
 struct MapSquare {
     int id = 0;
     SquareType type = NONE;
+    std::set<Direction> forbidden_exits;
+    std::set<Direction> forbidden_accesses;
 };
 
 /**
@@ -147,6 +149,10 @@ public:
     void removeItemToPickupForAgent(const int &agent_id);
 
     void setCurrentPositionForAgent(const int &agent_id, const Position &position);
+
+    void addForbiddenAccess(const int x, const int y, const char *direction);
+
+    void addForbiddenExit(const int x, const int y, const char *direction);
 };
 
 

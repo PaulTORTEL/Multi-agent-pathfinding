@@ -28,10 +28,10 @@ private:
 
     /**
      * Parse the "Topology" tag of a map XML and setup the squares of the world
-     * @param mapElement : the map tag (XMLElement)
+     * @param map_element : the map tag (XMLElement)
      * @param map : the Map reference
      */
-    static void parseTopology(tinyxml2::XMLElement *mapElement, Map &map);
+    static void parseTopology(tinyxml2::XMLElement *map_element, Map &map);
 
 public:
 
@@ -42,6 +42,8 @@ public:
      * @return the newly created map
      */
     static Map buildMapFromXml(const char *file, const char* name);
+
+    static void parseRules(tinyxml2::XMLElement *map_element, Map &map);
 };
 
 

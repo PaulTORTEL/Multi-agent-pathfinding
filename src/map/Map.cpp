@@ -119,3 +119,26 @@ void Map::removeItemToPickupForAgent(const int& agent_id) {
 void Map::setCurrentPositionForAgent(const int& agent_id, const Position& position) {
     _agents[agent_id].setCurrentPosition(position);
 }
+
+void Map::addForbiddenAccess(const int x, const int y, const char *direction) {
+    // We get an iterator on the value from the key
+    auto it = __key_Direction_map.find(direction);
+
+    // True if the type has not been found
+    if (it == __key_Direction_map.end()) {
+        return;
+    }
+    _grid[x][y].forbidden_accesses.insert(it->second);
+}
+
+void Map::addForbiddenExit(const int x, const int y, const char *direction) {
+    // We get an iterator on the value from the key
+    auto it = __key_Direction_map.find(direction);
+
+    // True if the type has not been found
+    if (it == __key_Direction_map.end()) {
+        return;
+    }
+
+    _grid[x][y].forbidden_exits.insert(it->second);
+}

@@ -192,6 +192,7 @@ Solver::canAgentAccessPosition(const Agent &agent, std::shared_ptr<SearchSquare>
                                Position &analyzed_pos) {
 
     const MapSquare& analyzed_map_square = map.getMapSquare(analyzed_pos);
+    const MapSquare& current_map_square = map.getMapSquare(current_agent_pos->position);
 
     // If the position is a non-walkable square
     switch (analyzed_map_square.type) {
@@ -200,6 +201,17 @@ Solver::canAgentAccessPosition(const Agent &agent, std::shared_ptr<SearchSquare>
             return false;
         case HUMAN_POINT:
             return false;
+    }
+
+    Direction direction_out = extractDirection(current_agent_pos->position, analyzed_pos);
+    Direction direction_in = extractDirection(analyzed_pos, current_agent_pos->position);
+
+    if (analyzed_map_square.forbidden_accesses.find(direction_in) != analyzed_map_square.forbidden_accesses.end()) {
+        return false;
+    }
+
+    if (current_map_square.forbidden_exits.find(direction_out) != current_map_square.forbidden_exits.end()) {
+        return false;
     }
 
     return true;

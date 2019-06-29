@@ -16,6 +16,7 @@ Map XmlParser::buildMapFromXml(const char *file, const char* name) {
 
     XmlParser::parseProperties(mapElement, map);
     XmlParser::parseTopology(mapElement, map);
+    XmlParser::parseRules(mapElement, map);
 
     return map;
 }
@@ -73,8 +74,8 @@ void XmlParser::parsePopulation(tinyxml2::XMLElement* properties, Map& map) {
     }
 }
 
-void XmlParser::parseTopology(tinyxml2::XMLElement* mapElement, Map& map) {
-    tinyxml2::XMLElement* topology = mapElement->FirstChildElement("topology");
+void XmlParser::parseTopology(tinyxml2::XMLElement *map_element, Map &map) {
+    tinyxml2::XMLElement* topology = map_element->FirstChildElement("topology");
     auto* square = topology->FirstChildElement("square");
 
     // While we have square tags to process
@@ -106,5 +107,37 @@ void XmlParser::parseTopology(tinyxml2::XMLElement* mapElement, Map& map) {
 
         // We move on to the next square tag (if doesn't exit, then square == nullptr)
         square = square->NextSiblingElement("square");
+    }
+}
+
+void XmlParser::parseRules(tinyxml2::XMLElement *map_element, Map &map) {
+    tinyxml2::XMLElement* rules = map_element->FirstChildElement("rules");
+    auto* rule = rules->FirstChildElement("rule");
+
+    // While we have square tags to process
+    while (rule != nullptr) {
+        auto* square = rule->FirstChildElement("square");
+        const int x = strtol(square->FindAttribute("x")->Value(), nullptr, 10);
+        const int y = strtol(square->FindAttribute("y")->Value(), nullptr, 10);
+
+        auto* accesses = rule->FirstChildElement("forbidden_accesses");
+        auto* access = accesses->FirstChildElement("access");
+
+        while (access != nullptr) {
+            const char* access_text = access->GetText();
+            map.addForbiddenAccess(x, y, access_text);
+            access = access->NextSiblingElement("access");
+        }
+
+        auto* exits = rule->FirstChildElement("forbidden_exits");
+        auto* exit = exits->FirstChildElement("exit");
+
+        while (exit != nullptr) {
+            const char* exit_text = exit->GetText();
+            map.addForbiddenExit(x, y, exit_text);
+            exit = exit->NextSiblingElement("exit");
+        }
+
+        rule = rule->NextSiblingElement("rule");
     }
 }

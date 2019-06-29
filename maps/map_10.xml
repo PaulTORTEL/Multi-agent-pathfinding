@@ -157,7 +157,7 @@
             <type>WALL</type>
         </square>
         <square>
-            <coordinates x="8" y="1"/>
+            <coordinates x="7" y="1"/>
             <type>WALL</type>
         </square>
         <square>
@@ -169,4 +169,32 @@
             <type>HUMAN_POINT</type>
         </square>
     </topology>
+    <rules>
+        <rule>
+            <square x="6" y="1"/>
+            <forbidden_accesses>
+                <access>SOUTH</access>
+                <access>EAST</access>
+                <access>WEST</access>
+            </forbidden_accesses>
+            <forbidden_exits>
+                <exit>NORTH</exit>
+                <exit>EAST</exit>
+                <exit>WEST</exit>
+            </forbidden_exits>
+        </rule>
+        <rule>
+            <square x="3" y="1"/>
+            <forbidden_accesses>
+                <access>SOUTH</access>
+                <access>EAST</access>
+                <access>WEST</access>
+            </forbidden_accesses>
+            <forbidden_exits>
+                <exit>NORTH</exit>
+                <exit>EAST</exit>
+                <exit>WEST</exit>
+            </forbidden_exits>
+        </rule>
+    </rules>
 </map>

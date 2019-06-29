@@ -6,14 +6,24 @@
 #include "../include/solver/SimpleSequentialSolver.h"
 #include "../include/solver/cbs/ConflictBasedSearch.h"
 
+void recordState(std::map<int, State>& final_solution, State& state) {
+
+    if (final_solution.empty()) {
+        final_solution[0] = state;
+    } else {
+        int next_index = final_solution.rbegin()->first + 1;
+        final_solution[next_index] = state;
+    }
+}
 
 //TODO: temp
-void scanSolution(Map& map, std::map<int, State>& solution, Solver& solver) {
+void scanSolution(Map& map, std::map<int, State>& solution, Solver& solver, std::map<int, State>& final_solution) {
 
     std::map<int, std::pair<Position, Position>> moves;
     bool stop = false;
 
     for (auto & state : solution) {
+        int num_agents_parked = 0;
 
         for (auto& agent : state.second.getSearchSquares()) {
 
@@ -28,16 +38,28 @@ void scanSolution(Map& map, std::map<int, State>& solution, Solver& solver) {
                 moves[agent.first].second = agent.second->position;
             }
 
-            if (moves[agent.first].first != moves[agent.first].second &&
-                        agent.second->position == solver.getAgentGoalPosition(map.getAgents().at(agent.first))) {
-                stop = true;
-                map.removeItemToPickupForAgent(agent.first);
+            const Agent &agent_ref = map.getAgents().at(agent.first);
+
+            if (agent.second->position == solver.getAgentGoalPosition(agent_ref)) {
+                if (agent.second->position == agent_ref.getParkingCoord()) {
+                    num_agents_parked++;
+                }
+                
+                if (moves[agent.first].first != moves[agent.first].second) {
+                    stop = true;
+                    map.removeItemToPickupForAgent(agent.first);
+                }
             }
         }
 
         if (stop) {
+            if (num_agents_parked == map.getAgents().size()) {
+                recordState(final_solution, state.second);
+            }
             return;
         }
+
+        recordState(final_solution, state.second);
     }
 }
 
@@ -56,6 +78,8 @@ int main() {
     std::cout << "Type the number of the map to load: ";
 
     std::cin >> map_no;
+
+    std::map<int, State> final_solution;
 
     while (map_no != 0) {
 
@@ -76,8 +100,18 @@ int main() {
             do {
                 ConflictBasedSearch cbsSolver(map, map.getAgents());
                 auto solution = cbsSolver.solve();
-                scanSolution(map, solution, cbsSolver);
+                scanSolution(map, solution, cbsSolver, final_solution);
             } while (shouldContinue(map));
+
+            std::cout << "FINAL SOLUTION: " << std::endl;
+            for (auto& it : final_solution) {
+                std::cout << "T" << it.first << ": ";
+
+                for (auto &it_search_square : it.second.getSearchSquares()) {
+                    std::cout << "A" << it_search_square.first << " = " << it_search_square.second->position << "; ";
+                }
+                std::cout << std::endl;
+            }
         }
 
         system("pause");
