@@ -10,16 +10,6 @@
 
 class Agent {
 
-public:
-
-    enum Status {
-        OK,
-        PICKING,
-        DROPPING,
-        ERROR,
-        BEING_FIXED
-    };
-
 private:
     int id;
     Position parking_coord;
@@ -33,9 +23,6 @@ private:
     bool has_finished = false;
 
     Position current_position;
-
-    Status current_status = OK;
-    int interacting_time_left = 0;
 
 public:
 
@@ -92,45 +79,6 @@ public:
 
     void setHasFinished(bool hasFinished) {
         has_finished = hasFinished;
-    }
-
-    Status getCurrentStatus() const {
-        return current_status;
-    }
-
-    /**
-     * Set the current agent state
-     * @param new_current_status : the new status of the agent
-     * @param point_of_interest : the pontential point of interest that explains the status changement
-     */
-    void setCurrentStatus(Status new_current_status, PointOfInterest point_of_interest) {
-        current_status = new_current_status;
-
-        switch (point_of_interest) {
-            case NA:
-                break;
-            case PRODUCT:
-                interacting_time_left = 1;
-                break;
-            case REPAIR_POINT:
-                interacting_time_left = 5;
-                break;
-            case DROP_OFF_POINT:
-                interacting_time_left = 2;
-                break;
-        }
-    }
-
-    int getInteractingTimeLeft() const {
-        return interacting_time_left;
-    }
-
-    void decreaseInteractingTimeLeft() {
-        if (interacting_time_left > 0) {
-            interacting_time_left--;
-        } else {
-            setCurrentStatus(OK, NA);
-        }
     }
 };
 

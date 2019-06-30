@@ -45,10 +45,12 @@ void scanSolution(Map& map, std::map<int, State>& solution, Solver& solver, std:
                     num_agents_parked++;
                 }
                 
-                if (moves[agent.first].first != moves[agent.first].second) {
-                    stop = true;
-                    map.removeItemToPickupForAgent(agent.first);
-                }
+               // if (moves[agent.first].first != moves[agent.first].second) {
+                    if (agent.second->agent_status == SearchSquare::AgentStatus::OK) {
+                        stop = true;
+                        map.removeItemToPickupForAgent(agent.first);
+                    }
+             //   }
             }
         }
 

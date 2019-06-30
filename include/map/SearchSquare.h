@@ -9,6 +9,15 @@
 #include <memory>
 
 struct SearchSquare {
+
+    enum AgentStatus {
+        OK,
+        PICKING,
+        DROPPING,
+        ERROR,
+        BEING_FIXED
+    };
+
     /**
      * The position related to the search square
      */
@@ -28,6 +37,10 @@ struct SearchSquare {
      * A shared pointer on the parent (which is a search square as well)
      */
     std::shared_ptr<SearchSquare> parent;
+
+    AgentStatus agent_status = OK;
+    int interacting_time_left = 0;
+
 
     explicit SearchSquare(Position position, std::shared_ptr<SearchSquare> parent = nullptr,
                           int cost_movement = 0, int cost_heuristic = 0) :
@@ -51,6 +64,38 @@ struct SearchSquare {
 
     int cost() const {
         return cost_movement + cost_heuristic;
+    }
+
+    /**
+     * Set the current agent state
+     * @param new_current_status : the new status of the agent
+     * @param point_of_interest : the pontential point of interest that explains the status changement
+     */
+    void setCurrentStatus(AgentStatus new_current_status, PointOfInterest point_of_interest) {
+        agent_status = new_current_status;
+
+        switch (point_of_interest) {
+            case NA:
+                interacting_time_left = 0;
+                break;
+            case PRODUCT:
+                interacting_time_left = 1;
+                break;
+            case REPAIR_POINT:
+                interacting_time_left = 5;
+                break;
+            case DROP_OFF_POINT:
+                interacting_time_left = 2;
+                break;
+        }
+    }
+
+    void setInteractingTimeLeft(const int time_left) {
+        if (time_left > 0) {
+            interacting_time_left = time_left;
+        } else {
+            setCurrentStatus(OK, NA);
+        }
     }
 };
 #endif //PATHFINDING_PROJECT_SEARCHSQUARE_H

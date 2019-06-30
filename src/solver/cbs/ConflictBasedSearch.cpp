@@ -73,6 +73,11 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
 
             new_node.constraints = current_node.constraints;
             const int& agent_id = i == 1 ? conflict->agent_id2 : conflict->agent_id1;
+
+            if (agent_id == -1) {
+                continue;
+            }
+
             // We construct the new constraint node by merging the constraints of the current node with a new constraint coming from the conflict detected
              new_node.constraints[agent_id].emplace_back(conflict->constructConstraint(i));
 
@@ -157,7 +162,7 @@ Solver::MultimapConstraintNode::iterator ConflictBasedSearch::getIteratorOnLessC
 
     for (auto it = it_low; it != it_up; ++it) {
 
-       it->second.scanSolution(num_of_conflicts, getAgentsGoal());
+        it->second.scanSolution(num_of_conflicts, getAgentsGoal());
         int new_num_of_conflicts = it->second.conflicts_detected;
 
         if (first_to_assign || new_num_of_conflicts < num_of_conflicts) {
@@ -238,31 +243,36 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
         }
 
         if (current_search_square->position == getAgentGoalPosition(agent)) {
-            if (agent.getCurrentStatus() == Agent::OK) {
-                PointOfInterest point_of_interest = map.getInterestOfPosition(current_search_square->position);
-                switch (point_of_interest) {
 
-                    case NA:break;
-                    case PRODUCT:
-                        agent.setCurrentStatus(Agent::PICKING, point_of_interest);
-                        break;
-                    case REPAIR_POINT:
-                        agent.setCurrentStatus(Agent::BEING_FIXED, point_of_interest);
-                        break;
-                    case DROP_OFF_POINT:
-                        agent.setCurrentStatus(Agent::DROPPING, point_of_interest);
-                        break;
-                }
+            PointOfInterest point_of_interest = map.getInterestOfPosition(current_search_square->position);
+            switch (point_of_interest) {
 
-            } else {
-                agent.decreaseInteractingTimeLeft();
+                case NA:break;
+                case PRODUCT:
+                    current_search_square->setCurrentStatus(SearchSquare::AgentStatus::PICKING, point_of_interest);
+                    break;
+                case REPAIR_POINT:
+                    current_search_square->setCurrentStatus(SearchSquare::AgentStatus::BEING_FIXED, point_of_interest);
+                    break;
+                case DROP_OFF_POINT:
+                    current_search_square->setCurrentStatus(SearchSquare::AgentStatus::DROPPING, point_of_interest);
+                    break;
             }
+            //TODO: corriger le vertex conflict quand un agent "disparait" au timestep suivant car on sait qu'il a bougé
+            while (current_search_square->interacting_time_left > 0) {
+                int new_interacting_time = current_search_square->interacting_time_left - 1;
+                SearchSquare::AgentStatus agent_status = current_search_square->agent_status;
+                current_search_square = std::make_shared<SearchSquare>(current_search_square->position, current_search_square,
+                        current_search_square->cost_movement, current_search_square->cost_heuristic);
+                current_search_square->agent_status = agent_status;
+                current_search_square->setInteractingTimeLeft(new_interacting_time);
+            }
+
         }
 
         // We loop while we didn't detect that there is no solution or that we didn't reach the goal position of the agent
     } while ((current_search_square->position != getAgentGoalPosition(agent) ||
-                constraint_node.doesAgentStillHaveFutureConstraints(agent_id, current_search_square->time_step) ||
-                agent.getCurrentStatus() != Agent::OK)
+                constraint_node.doesAgentStillHaveFutureConstraints(agent_id, current_search_square->time_step))
                 && _status == Status::OK);
 
     return current_search_square;
@@ -364,7 +374,7 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
     // We check that the position has not already been processed (i.e., not in the closed list)
     if (closed_list.find(pos_coord) != closed_list.end() && current_agent_position->position != analyzed_pos) {
 
-        //TODO: à analyser
+        //TODO: backtracking ?
         //int latest_time_step_constraint = constraint_node.getConstraintLatestTimeStepForAgent(agent.getId());
          //&& (time_step < latest_time_step_constraint || latest_time_step_constraint == -1)
 
@@ -372,7 +382,7 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
             return FAIL_CLOSED_LIST;
         }
 
-        closed_list.clear();
+       closed_list.clear();
        //return FAIL_CLOSED_LIST;
     }
 

@@ -63,6 +63,8 @@ State::detectVertexConflict(const int &time_step, const std::map<int, Position> 
                 if (agent_1_position == agents_goal.at(agent_1_id)) {
                     if (search_squares_it.second->time_step < time_step) {
                         continue;
+                    } else {
+                        return std::make_unique<VertexConflict>(-1, agent_2_id, time_step, agent_1_position);
                     }
                 }
 
