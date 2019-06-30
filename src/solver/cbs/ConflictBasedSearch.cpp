@@ -206,7 +206,7 @@ StateDictionary ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_n
     return state_dictionary;
 }
 
-std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(const Agent &agent,
+std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(Agent &agent,
                                                                                ConstraintNode &constraint_node) {
 
     const int& agent_id = agent.getId();
@@ -237,9 +237,32 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(c
             _status = NO_SOLUTION;
         }
 
+        if (current_search_square->position == getAgentGoalPosition(agent)) {
+            if (agent.getCurrentStatus() == Agent::OK) {
+                PointOfInterest point_of_interest = map.getInterestOfPosition(current_search_square->position);
+                switch (point_of_interest) {
+
+                    case NA:break;
+                    case PRODUCT:
+                        agent.setCurrentStatus(Agent::PICKING, point_of_interest);
+                        break;
+                    case REPAIR_POINT:
+                        agent.setCurrentStatus(Agent::BEING_FIXED, point_of_interest);
+                        break;
+                    case DROP_OFF_POINT:
+                        agent.setCurrentStatus(Agent::DROPPING, point_of_interest);
+                        break;
+                }
+
+            } else {
+                agent.decreaseInteractingTimeLeft();
+            }
+        }
+
         // We loop while we didn't detect that there is no solution or that we didn't reach the goal position of the agent
-    } while ((current_search_square->position != getAgentGoalPosition(agent)||
-                constraint_node.doesAgentStillHaveFutureConstraints(agent_id, current_search_square->time_step))
+    } while ((current_search_square->position != getAgentGoalPosition(agent) ||
+                constraint_node.doesAgentStillHaveFutureConstraints(agent_id, current_search_square->time_step) ||
+                agent.getCurrentStatus() != Agent::OK)
                 && _status == Status::OK);
 
     return current_search_square;

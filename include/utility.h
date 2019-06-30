@@ -136,4 +136,12 @@ const bool inline areMovementsEdgeColliding(const Position &start_pos1, const Po
     return false;
 }
 
+
+enum PointOfInterest {
+    NA,
+    PRODUCT,
+    REPAIR_POINT,
+    DROP_OFF_POINT
+};
+
 #endif //PATHFINDING_PROJECT_UTILITY_H

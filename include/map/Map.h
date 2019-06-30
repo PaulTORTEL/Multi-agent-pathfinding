@@ -153,6 +153,8 @@ public:
     void addForbiddenAccess(const int x, const int y, const char *direction);
 
     void addForbiddenExit(const int x, const int y, const char *direction);
+
+    PointOfInterest getInterestOfPosition(const Position& position) const;
 };
 
 

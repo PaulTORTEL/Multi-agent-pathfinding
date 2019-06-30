@@ -142,3 +142,28 @@ void Map::addForbiddenExit(const int x, const int y, const char *direction) {
 
     _grid[x][y].forbidden_exits.insert(it->second);
 }
+
+PointOfInterest Map::getInterestOfPosition(const Position &position) const {
+
+    for (auto& product : _products) {
+        if (product.second == position) {
+            return PRODUCT;
+        }
+    }
+
+    for (auto& drop_off_point : _drop_off_points) {
+        if (drop_off_point.second == position) {
+            return DROP_OFF_POINT;
+        }
+    }
+
+    for (auto& repair_point : _repair_points) {
+        if (repair_point.second == position) {
+            return REPAIR_POINT;
+        }
+    }
+
+    return NA;
+}
+
+
