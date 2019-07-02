@@ -245,29 +245,31 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
         if (current_search_square->position == getAgentGoalPosition(agent)) {
 
             PointOfInterest point_of_interest = map.getInterestOfPosition(current_search_square->position);
+            std::shared_ptr<SearchSquare> new_current_search_square = std::make_shared<SearchSquare>(current_search_square->position, current_search_square,
+                                                                                                   current_search_square->cost_movement, current_search_square->cost_heuristic);
             switch (point_of_interest) {
 
                 case NA:break;
                 case PRODUCT:
-                    current_search_square->setCurrentStatus(SearchSquare::AgentStatus::PICKING, point_of_interest);
+                    new_current_search_square->setCurrentStatus(SearchSquare::AgentStatus::PICKING, point_of_interest);
                     break;
                 case REPAIR_POINT:
-                    current_search_square->setCurrentStatus(SearchSquare::AgentStatus::BEING_FIXED, point_of_interest);
+                    new_current_search_square->setCurrentStatus(SearchSquare::AgentStatus::BEING_FIXED, point_of_interest);
                     break;
                 case DROP_OFF_POINT:
-                    current_search_square->setCurrentStatus(SearchSquare::AgentStatus::DROPPING, point_of_interest);
+                    new_current_search_square->setCurrentStatus(SearchSquare::AgentStatus::DROPPING, point_of_interest);
                     break;
             }
-            //TODO: corriger le vertex conflict quand un agent "disparait" au timestep suivant car on sait qu'il a bougé
-            while (current_search_square->interacting_time_left > 0) {
-                int new_interacting_time = current_search_square->interacting_time_left - 1;
-                SearchSquare::AgentStatus agent_status = current_search_square->agent_status;
-                current_search_square = std::make_shared<SearchSquare>(current_search_square->position, current_search_square,
-                        current_search_square->cost_movement, current_search_square->cost_heuristic);
-                current_search_square->agent_status = agent_status;
-                current_search_square->setInteractingTimeLeft(new_interacting_time);
-            }
 
+            while (new_current_search_square->interacting_time_left > 0) {
+                int new_interacting_time = new_current_search_square->interacting_time_left - 1;
+                SearchSquare::AgentStatus agent_status = new_current_search_square->agent_status;
+                new_current_search_square = std::make_shared<SearchSquare>(new_current_search_square->position, new_current_search_square,
+                                                                           new_current_search_square->cost_movement, new_current_search_square->cost_heuristic);
+                new_current_search_square->agent_status = agent_status;
+                new_current_search_square->setInteractingTimeLeft(new_interacting_time);
+            }
+            current_search_square = new_current_search_square;
         }
 
         // We loop while we didn't detect that there is no solution or that we didn't reach the goal position of the agent

@@ -84,6 +84,7 @@ int main() {
     std::map<int, State> final_solution;
 
     while (map_no != 0) {
+        final_solution.clear();
 
         std::string map_to_load = "../maps/map_" + std::to_string(map_no) + ".xml";
         std::string map_name = "map_" + std::to_string(map_no);

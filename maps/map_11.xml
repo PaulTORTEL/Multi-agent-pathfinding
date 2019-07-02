@@ -21,7 +21,6 @@
                     </start>
                     <pickup_list>
                         <product id="5"/>
-                        <product id="1"/>
                     </pickup_list>
                 </agent>
             </agents>
