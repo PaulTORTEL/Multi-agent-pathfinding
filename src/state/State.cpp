@@ -59,12 +59,30 @@ State::detectVertexConflict(const int &time_step, const std::map<int, Position> 
 
             // If the position of both agents are the same, it means we have a vertex conflict since they are both at the same time at the same place
             if (agent_1_position == agent_2_position) {
-                //TODO: corriger ça
-                if (search_squares_it.second->agent_status != SearchSquare::AgentStatus::OK &&
-                search_squares_it.second->interacting_time_left < search_squares_it2.second->interacting_time_left) {
+
+                if (search_squares_it.second->isAgentInteracting() && !search_squares_it2.second->isAgentInteracting()) {
+                    if (search_squares_it2.second->isAgentReady()) {
+                        return nullptr;
+                    }
                     return std::make_unique<VertexConflict>(-1, agent_2_id, time_step, agent_1_position);
-                } else if (search_squares_it2.second->agent_status != SearchSquare::AgentStatus::OK &&
-                           search_squares_it2.second->interacting_time_left < search_squares_it.second->interacting_time_left) {
+                } else if (!search_squares_it.second->isAgentInteracting() && search_squares_it2.second->isAgentInteracting()) {
+                    if (search_squares_it.second->isAgentReady()) {
+                        return nullptr;
+                    }
+                    return std::make_unique<VertexConflict>(agent_1_id, -1, time_step, agent_1_position);
+                }
+
+                if (search_squares_it.second->isAgentReady() && search_squares_it2.second->isAgentReady()) {
+                    return nullptr;
+                } else if (search_squares_it.second->agent_status == SearchSquare::AgentStatus::READY &&
+                        search_squares_it2.second->agent_status == SearchSquare::AgentStatus::MOVING) {
+                    return nullptr;
+                } else if (search_squares_it.second->agent_status == SearchSquare::AgentStatus::MOVING &&
+                        search_squares_it2.second->agent_status == SearchSquare::AgentStatus::READY) {
+                    return nullptr;
+                } else if (search_squares_it.second->agent_status == SearchSquare::AgentStatus::FINISHED) {
+                    return std::make_unique<VertexConflict>(-1, agent_2_id, time_step, agent_1_position);
+                } else if (search_squares_it2.second->agent_status == SearchSquare::AgentStatus::FINISHED) {
                     return std::make_unique<VertexConflict>(agent_1_id, -1, time_step, agent_1_position);
                 }
 

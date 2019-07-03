@@ -12,15 +12,15 @@
                         <coordinates x="0" y="7"/>
                     </start>
                     <pickup_list>
-                        <product id="1"/>
+                        <product id="4"/>
                     </pickup_list>
                 </agent>
                 <agent id="2">
                     <start>
-                        <coordinates x="0" y="5"/>
+                        <coordinates x="0" y="4"/>
                     </start>
                     <pickup_list>
-                        <product id="5"/>
+                        <product id="6"/>
                     </pickup_list>
                 </agent>
             </agents>

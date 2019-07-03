@@ -15,6 +15,10 @@ Solver::Solver(Map &map, const std::map<int, Agent>& agents) : map(map), agents(
 
         // We save the initial and goal positions of the agent
         auto init_state_search_square = std::make_unique<SearchSquare>(agent.second.getCurrentPosition(), nullptr);
+        init_state_search_square->interacting_time_left = agent.second.getInteractingTimeLeft();
+        if (init_state_search_square->interacting_time_left > 0) {
+            init_state_search_square->setCurrentStatus(agent.second.getAgentStatus());
+        }
         Position goal = getAgentGoalPosition(agent.second);
         auto goal_state_search_square = std::make_unique<SearchSquare>(goal, nullptr);
         agents_goal[agent.first] = goal;

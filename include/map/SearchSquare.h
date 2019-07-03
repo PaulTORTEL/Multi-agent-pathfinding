@@ -11,7 +11,9 @@
 struct SearchSquare {
 
     enum AgentStatus {
-        OK,
+        READY,
+        FINISHED,
+        MOVING,
         PICKING,
         DROPPING,
         ERROR,
@@ -38,7 +40,7 @@ struct SearchSquare {
      */
     std::shared_ptr<SearchSquare> parent;
 
-    AgentStatus agent_status = OK;
+    AgentStatus agent_status = READY;
     int interacting_time_left = 0;
 
 
@@ -66,13 +68,17 @@ struct SearchSquare {
         return cost_movement + cost_heuristic;
     }
 
+    void setCurrentStatus(AgentStatus new_current_status) {
+        agent_status = new_current_status;
+    }
+
     /**
      * Set the current agent state
      * @param new_current_status : the new status of the agent
      * @param point_of_interest : the pontential point of interest that explains the status changement
      */
     void setCurrentStatus(AgentStatus new_current_status, PointOfInterest point_of_interest) {
-        agent_status = new_current_status;
+        setCurrentStatus(new_current_status);
 
         switch (point_of_interest) {
             case NA:
@@ -94,8 +100,26 @@ struct SearchSquare {
         if (time_left > 0) {
             interacting_time_left = time_left;
         } else {
-            setCurrentStatus(OK, NA);
+            setCurrentStatus(READY, NA);
         }
+    }
+
+    bool isAgentInteracting() {
+        switch (agent_status) {
+
+            case READY: return false;
+            case MOVING: return false;
+            case PICKING: return true;
+            case DROPPING: return true;
+            case ERROR: return false;
+            case BEING_FIXED: return true;
+            case FINISHED: return false;
+        }
+        return false;
+    }
+
+    bool isAgentReady() {
+        return agent_status == READY;
     }
 };
 #endif //PATHFINDING_PROJECT_SEARCHSQUARE_H

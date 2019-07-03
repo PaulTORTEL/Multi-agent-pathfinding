@@ -155,6 +155,10 @@ public:
     void addForbiddenExit(const int x, const int y, const char *direction);
 
     PointOfInterest getInterestOfPosition(const Position& position) const;
+
+    void setAgentInteractingTime(const int& agent_id, const int time_left);
+
+    void setAgentStatus(const int& agent_id, const SearchSquare::AgentStatus agent_status);
 };
 
 

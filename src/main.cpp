@@ -29,6 +29,8 @@ void scanSolution(Map& map, std::map<int, State>& solution, Solver& solver, std:
 
             // set the current position of the agent bc we will recompute paths very soon
             map.setCurrentPositionForAgent(agent.first, agent.second->position);
+            map.setAgentInteractingTime(agent.first, agent.second->interacting_time_left);
+            map.setAgentStatus(agent.first, agent.second->agent_status);
 
             if (moves.find(agent.first) == moves.end()) {
                 moves[agent.first].second = agent.second->position;
@@ -46,7 +48,7 @@ void scanSolution(Map& map, std::map<int, State>& solution, Solver& solver, std:
                 }
                 
                // if (moves[agent.first].first != moves[agent.first].second) {
-                    if (agent.second->agent_status == SearchSquare::AgentStatus::OK) {
+                    if (agent.second->isAgentInteracting() && agent.second->interacting_time_left == 1) {
                         stop = true;
                         map.removeItemToPickupForAgent(agent.first);
                     }

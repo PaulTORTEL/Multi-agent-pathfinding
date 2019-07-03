@@ -245,20 +245,33 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
         if (current_search_square->position == getAgentGoalPosition(agent)) {
 
             PointOfInterest point_of_interest = map.getInterestOfPosition(current_search_square->position);
-            std::shared_ptr<SearchSquare> new_current_search_square = std::make_shared<SearchSquare>(current_search_square->position, current_search_square,
-                                                                                                   current_search_square->cost_movement, current_search_square->cost_heuristic);
-            switch (point_of_interest) {
+            std::shared_ptr<SearchSquare> new_current_search_square = current_search_square;
 
-                case NA:break;
-                case PRODUCT:
-                    new_current_search_square->setCurrentStatus(SearchSquare::AgentStatus::PICKING, point_of_interest);
-                    break;
-                case REPAIR_POINT:
-                    new_current_search_square->setCurrentStatus(SearchSquare::AgentStatus::BEING_FIXED, point_of_interest);
-                    break;
-                case DROP_OFF_POINT:
-                    new_current_search_square->setCurrentStatus(SearchSquare::AgentStatus::DROPPING, point_of_interest);
-                    break;
+            if (current_search_square->interacting_time_left == 0) {
+                new_current_search_square = std::make_shared<SearchSquare>(current_search_square->position,
+                                                                           current_search_square,
+                                                                           current_search_square->cost_movement,
+                                                                           current_search_square->cost_heuristic);
+                switch (point_of_interest) {
+
+                    case NA:
+                        new_current_search_square = current_search_square;
+                        current_search_square->setCurrentStatus(SearchSquare::AgentStatus::FINISHED,
+                                                                PointOfInterest::NA);
+                        break;
+                    case PRODUCT:
+                        new_current_search_square->setCurrentStatus(SearchSquare::AgentStatus::PICKING,
+                                                                    point_of_interest);
+                        break;
+                    case REPAIR_POINT:
+                        new_current_search_square->setCurrentStatus(SearchSquare::AgentStatus::BEING_FIXED,
+                                                                    point_of_interest);
+                        break;
+                    case DROP_OFF_POINT:
+                        new_current_search_square->setCurrentStatus(SearchSquare::AgentStatus::DROPPING,
+                                                                    point_of_interest);
+                        break;
+                }
             }
 
             while (new_current_search_square->interacting_time_left > 0) {
@@ -415,6 +428,7 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
         // This is a new position (not yet processed), we create a search square to represent it and we set its parent with the current search square
         // since we reach this new search square thanks to the current search square
         std::shared_ptr<SearchSquare> new_search_square = std::make_shared<SearchSquare>(analyzed_pos, current_agent_position, move_cost, heuristic);
+        new_search_square->setCurrentStatus(SearchSquare::AgentStatus::MOVING, NA);
         // We insert it in the open list
         open_list.emplace(cost, new_search_square);
     }
