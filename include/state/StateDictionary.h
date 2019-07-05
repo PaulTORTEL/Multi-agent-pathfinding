@@ -94,9 +94,11 @@ struct StateDictionary {
      * @param it_next_state : the next state
      * @return
      */
-    std::unique_ptr<EdgeConflict> detectFirstEdgeConflictFromTwoStates(const int& time_step, std::map<int, State>::iterator it_current_state,
-            std::map<int, State>::iterator it_next_state) {
+    std::vector<std::unique_ptr<EdgeConflict>> detectEdgeConflictsFromTwoStates(const int &time_step,
+                                                                                std::map<int, State>::iterator it_current_state,
+                                                                                std::map<int, State>::iterator it_next_state) {
 
+        std::vector<std::unique_ptr<EdgeConflict>> conflicts;
         for (auto& it_agent : it_current_state->second.getSearchSquares()) {
             Position& curr_pos = it_agent.second->position;
             Position& next_pos = it_next_state->second.getSearchSquares().at(it_agent.first)->position;
@@ -105,10 +107,10 @@ struct StateDictionary {
                     time_step, &it_current_state->second, it_agent.first);
 
             if (edge_conflict != nullptr) {
-                return edge_conflict;
+                conflicts.push_back(std::move(edge_conflict));
             }
         }
-        return nullptr;
+        return conflicts;
     }
 
     /**
