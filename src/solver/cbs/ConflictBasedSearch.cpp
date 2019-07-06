@@ -119,6 +119,7 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
 
     return root.solution.dictionary;
 }
+
 /*
 Solver::MultimapConstraintNode::iterator ConflictBasedSearch::getIteratorOnLessConflictNode(Solver::MultimapConstraintNode &open_list) {
 
@@ -144,6 +145,7 @@ Solver::MultimapConstraintNode::iterator ConflictBasedSearch::getIteratorOnLessC
         }
     }
 
+    it_optimized->second.scanSolution(0, getAgentsGoal());
     return it_optimized;
 }*/
 
@@ -394,11 +396,12 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
          //&& (time_step < latest_time_step_constraint || latest_time_step_constraint == -1)
 
         if (constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), time_step+1)) {
+            //return FAIL_CLOSED_LIST;
+            closed_list.clear();
+        } else {
+            //closed_list.clear();
             return FAIL_CLOSED_LIST;
         }
-
-       closed_list.clear();
-       //return FAIL_CLOSED_LIST;
     }
 
     // If the agent is not allowed to go to this position (constraints are used at this point)
@@ -416,7 +419,7 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
     // If we realize that the position is already in the open list
     if (it_analyzed_pos != open_list.end()) {
         // If the cost is cheaper with the current path (current search square and its parent)
-        if (it_analyzed_pos->second->cost() > cost) {
+        if (it_analyzed_pos->second->cost() > cost || (it_analyzed_pos->second->cost() == cost && it_analyzed_pos->second->time_step > time_step + 1)) {
             // We change only the movement cost since the heuristic cost can't change
             it_analyzed_pos->second->cost_movement = move_cost;
             // We change the parent

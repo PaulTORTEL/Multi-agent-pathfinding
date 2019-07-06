@@ -82,8 +82,8 @@ public:
      * @param time_step : the given time step
      * @return an unique pointer on a vertex conflict, null if no conflict detected
      */
-    std::unique_ptr<VertexConflict>
-    detectVertexConflict(const int &time_step, const std::map<int, Position> &agents_goal);
+    std::vector<std::unique_ptr<VertexConflict>>
+    detectVertexConflicts(const int &time_step, const std::map<int, Position> &agents_goal);
 
     /**
      * Set the search square for a given agent

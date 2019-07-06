@@ -62,14 +62,15 @@ struct ConstraintNode {
         // For each states in the solution
         for (auto it_state = solution.dictionary.begin(); it_state != solution.dictionary.end(); ++it_state) {
             // We try to detect a vertex collision in the given state
-            std::unique_ptr<VertexConflict> vertex_conflict = it_state->second.detectVertexConflict(it_state->first,
-                                                                                                    agents_goal);
+            std::vector<std::unique_ptr<VertexConflict>> vertex_conflicts = it_state->second.detectVertexConflicts(
+                    it_state->first,
+                    agents_goal);
 
-            if (vertex_conflict != nullptr) {
+            if (!vertex_conflicts.empty()) {
                 if (first_conflict == nullptr) {
-                    first_conflict = std::move(vertex_conflict);
+                    first_conflict = std::move(vertex_conflicts.front());
                 }
-                conflicts_detected++;
+                conflicts_detected += vertex_conflicts.size();
                 if (stop_value != 0 && conflicts_detected >= stop_value) {
                     return;
                 }
@@ -78,18 +79,19 @@ struct ConstraintNode {
             // We get the next state
             auto it_next_state = it_state;
             it_next_state++;
+            std::vector<std::unique_ptr<EdgeConflict>> edge_conflicts;
 
             // If the next state exists (it_state was not pointing the last state)
             if (it_next_state != solution.dictionary.end()) {
                 // We try to detect an edge collision between the two states
-                std::unique_ptr<EdgeConflict> edge_conflict = solution.detectFirstEdgeConflictFromTwoStates(
+                edge_conflicts = solution.detectEdgeConflictsFromTwoStates(
                         it_state->first, it_state, it_next_state);
 
-                if (edge_conflict != nullptr) {
+                if (!edge_conflicts.empty()) {
                     if (first_conflict == nullptr) {
-                        first_conflict = std::move(edge_conflict);
+                        first_conflict = std::move(edge_conflicts.front());
                     }
-                    conflicts_detected++;
+                    conflicts_detected += edge_conflicts.size();
                     if (stop_value != 0 && conflicts_detected >= stop_value) {
                         return;
                     }
