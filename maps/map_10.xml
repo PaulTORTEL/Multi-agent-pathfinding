@@ -62,18 +62,18 @@
                          <product id="1"/>
                      </pickup_list>
                  </agent>
-                 <agent id="6">
-                     <start>
-                         <coordinates x="0" y="2"/>
-                     </start>
-                     <pickup_list>
-                         <product id="3"/>
-                         <product id="2"/>
-                         <product id="1"/>
-                         <product id="5"/>
-                         <product id="8"/>
-                     </pickup_list>
-                 </agent><!---->
+                <agent id="6">
+                    <start>
+                        <coordinates x="0" y="2"/>
+                    </start>
+                    <pickup_list>
+                        <product id="3"/>
+                        <product id="2"/>
+                        <product id="1"/>
+                        <product id="5"/>
+                        <product id="8"/>
+                    </pickup_list>
+                </agent><!---->
             </agents>
         </population>
     </properties>

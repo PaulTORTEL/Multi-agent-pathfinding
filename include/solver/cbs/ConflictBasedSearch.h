@@ -102,6 +102,9 @@ public:
     ConflictBasedSearch(Map &map, const std::map<int, Agent>& agents);
 
     std::map<int, State> solve() override;
+
+    bool tryForceMovementForAgent(std::shared_ptr<SearchSquare> &current_agent_position, const Agent &agent,
+                                  ConstraintNode &constraint_node);
 };
 
 

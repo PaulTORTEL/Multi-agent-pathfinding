@@ -63,25 +63,22 @@ State::detectVertexConflicts(const int &time_step, const std::map<int, Position>
             if (agent_1_position == agent_2_position) {
 
                 if (search_squares_it.second->isAgentInteracting() && !search_squares_it2.second->isAgentInteracting()) {
-                    if (search_squares_it2.second->isAgentReady()) {
-                        continue;
-                    }
                     conflicts.emplace_back(std::make_unique<VertexConflict>(-1, agent_2_id, time_step, agent_1_position));
                 } else if (!search_squares_it.second->isAgentInteracting() && search_squares_it2.second->isAgentInteracting()) {
-                    if (search_squares_it.second->isAgentReady()) {
-                        continue;
-                    }
                     conflicts.emplace_back(std::make_unique<VertexConflict>(agent_1_id, -1, time_step, agent_1_position));
                 }
 
                 if (search_squares_it.second->isAgentReady() && search_squares_it2.second->isAgentReady()) {
-                    continue;
+                    conflicts.emplace_back(std::make_unique<VertexConflict>(agent_1_id, agent_2_id, time_step, agent_1_position));
+
                 } else if (search_squares_it.second->agent_status == SearchSquare::AgentStatus::READY &&
                         search_squares_it2.second->agent_status == SearchSquare::AgentStatus::MOVING) {
-                    continue;
+                    conflicts.emplace_back(std::make_unique<VertexConflict>(agent_1_id, agent_2_id, time_step, agent_1_position));
+
                 } else if (search_squares_it.second->agent_status == SearchSquare::AgentStatus::MOVING &&
                         search_squares_it2.second->agent_status == SearchSquare::AgentStatus::READY) {
-                    continue;
+                    conflicts.emplace_back(std::make_unique<VertexConflict>(agent_1_id, agent_2_id, time_step, agent_1_position));
+
                 } else if (search_squares_it.second->agent_status == SearchSquare::AgentStatus::FINISHED) {
                     conflicts.emplace_back(std::make_unique<VertexConflict>(-1, agent_2_id, time_step, agent_1_position));
                 } else if (search_squares_it2.second->agent_status == SearchSquare::AgentStatus::FINISHED) {

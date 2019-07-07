@@ -279,17 +279,35 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
             while (new_current_search_square->interacting_time_left > 0) {
                 int new_interacting_time = new_current_search_square->interacting_time_left - 1;
                 SearchSquare::AgentStatus agent_status = new_current_search_square->agent_status;
+
                 new_current_search_square = std::make_shared<SearchSquare>(new_current_search_square->position, new_current_search_square,
                                                                            new_current_search_square->cost_movement, new_current_search_square->cost_heuristic);
                 new_current_search_square->agent_status = agent_status;
                 new_current_search_square->setInteractingTimeLeft(new_interacting_time);
+
+
+                if (new_current_search_square->agent_status == SearchSquare::AgentStatus::READY &&
+                        constraint_node.doesAgentStillHaveFutureConstraints(agent_id, new_current_search_square->time_step - 1)) {
+
+                    // We try to force the agent to move
+                    while (constraint_node.doesAgentHaveFutureConstraintAtPosition(agent_id, new_current_search_square->time_step - 1, new_current_search_square->position)) {
+                        if (tryForceMovementForAgent(new_current_search_square, agent, constraint_node)) {
+                            new_current_search_square = std::make_shared<SearchSquare>(new_current_search_square->position, new_current_search_square,
+                                                                                      new_current_search_square->cost_movement, new_current_search_square->cost_heuristic);
+                        } else {
+                            _status = NO_SOLUTION;
+                            break;
+                        }
+                    }
+                }
+
             }
-            current_search_square = new_current_search_square;
+            return new_current_search_square;
         }
 
         // We loop while we didn't detect that there is no solution or that we didn't reach the goal position of the agent
     } while ((current_search_square->position != getAgentGoalPosition(agent) ||
-                constraint_node.doesAgentStillHaveFutureConstraints(agent_id, current_search_square->time_step))
+                constraint_node.doesAgentStillHaveFutureConstraints(agent_id, current_search_square->time_step - 1))
                 && _status == Status::OK);
 
     return current_search_square;
@@ -448,5 +466,62 @@ bool ConflictBasedSearch::isNodeAlreadyInOpenList(const Solver::MultimapConstrai
             return true;
         }
     }
+    return false;
+}
+
+bool ConflictBasedSearch::tryForceMovementForAgent(std::shared_ptr<SearchSquare>& current_agent_position, const Agent& agent, ConstraintNode& constraint_node) {
+
+    const int x = current_agent_position->position.x;
+    const int y = current_agent_position->position.y;
+
+    const int max_x = map.getGrid().size() - 1;
+    const int max_y = map.getGrid()[0].size() - 1;
+
+    // There is a position at the left
+    const bool left = x > 0;
+    // There is a position at the right
+    const bool right = x < max_x;
+    // There is a position at the top
+    const bool up = y < max_y;
+    // There is a position at the bottom
+    const bool down = y > 0;
+
+    if (left) {
+        Position left_pos = Position(x-1, y);
+        if (canAgentAccessPosition(agent, current_agent_position, left_pos) &&
+                !constraint_node.isPositionForbiddenForAgent(agent.getId(), left_pos, current_agent_position->time_step,
+                        extractDirection(left_pos, current_agent_position->position))) {
+            current_agent_position->position = left_pos;
+            return true;
+        }
+
+    } if (right) {
+        Position right_pos = Position(x+1, y);
+        if (canAgentAccessPosition(agent, current_agent_position, right_pos) &&
+            !constraint_node.isPositionForbiddenForAgent(agent.getId(), right_pos, current_agent_position->time_step,
+                                                         extractDirection(right_pos, current_agent_position->position))) {
+            current_agent_position->position = right_pos;
+            return true;
+        }
+
+    } if (down) {
+        Position down_pos = Position(x, y-1);
+        if (canAgentAccessPosition(agent, current_agent_position, down_pos) &&
+            !constraint_node.isPositionForbiddenForAgent(agent.getId(), down_pos, current_agent_position->time_step,
+                                                         extractDirection(down_pos, current_agent_position->position))) {
+            current_agent_position->position = down_pos;
+            return true;
+        }
+    } if (up) {
+        Position up_pos = Position(x, y+1);
+        if (canAgentAccessPosition(agent, current_agent_position, up_pos) &&
+            !constraint_node.isPositionForbiddenForAgent(agent.getId(), up_pos, current_agent_position->time_step,
+                                                         extractDirection(up_pos, current_agent_position->position))) {
+            current_agent_position->position = up_pos;
+            return true;
+        }
+
+    }
+
     return false;
 }

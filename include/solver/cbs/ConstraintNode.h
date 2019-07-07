@@ -185,6 +185,19 @@ struct ConstraintNode {
         }
         return latest;
     }
+
+    bool doesAgentHaveFutureConstraintAtPosition(const int& agent_id, const int& time_step, const Position& pos) {
+
+        for (auto& constraint : constraints[agent_id]) {
+            if (time_step < constraint.time_step) {
+                if (constraint.position == pos) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 };
 
 #endif //PATHFINDING_PROJECT_CONSTRAINTNODE_H
