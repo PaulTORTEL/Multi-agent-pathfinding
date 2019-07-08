@@ -438,12 +438,18 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
     if (it_analyzed_pos != open_list.end()) {
         // If the cost is cheaper with the current path (current search square and its parent)
         if (it_analyzed_pos->second->cost() > cost || (it_analyzed_pos->second->cost() == cost && it_analyzed_pos->second->time_step > time_step + 1)) {
+
+            auto modified_search_square = it_analyzed_pos->second;
+            open_list.erase(it_analyzed_pos);
+
             // We change only the movement cost since the heuristic cost can't change
-            it_analyzed_pos->second->cost_movement = move_cost;
+            modified_search_square->cost_movement = move_cost;
             // We change the parent
-            it_analyzed_pos->second->parent = current_agent_position;
+            modified_search_square->parent = current_agent_position;
             // We change its time step
-            it_analyzed_pos->second->time_step = current_agent_position->time_step + 1;
+            modified_search_square->time_step = current_agent_position->time_step + 1;
+
+            open_list.insert({cost, modified_search_square});
         }
     } else {
         // This is a new position (not yet processed), we create a search square to represent it and we set its parent with the current search square
