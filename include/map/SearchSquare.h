@@ -118,8 +118,5 @@ struct SearchSquare {
         return false;
     }
 
-    bool isAgentReady() {
-        return agent_status == READY;
-    }
 };
 #endif //PATHFINDING_PROJECT_SEARCHSQUARE_H

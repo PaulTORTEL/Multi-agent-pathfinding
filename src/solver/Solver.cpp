@@ -15,15 +15,7 @@ Solver::Solver(Map &map, const std::map<int, Agent>& agents) : map(map), agents(
 
         // We save the initial and goal positions of the agent
         auto init_state_search_square = std::make_unique<SearchSquare>(agent.second.getCurrentPosition(), nullptr);
-        init_state_search_square->interacting_time_left = agent.second.getInteractingTimeLeft();
-        if (init_state_search_square->interacting_time_left > 0) {
-            init_state_search_square->setCurrentStatus(agent.second.getAgentStatus());
-        }
-        Position goal = getAgentGoalPosition(agent.second);
-        auto goal_state_search_square = std::make_unique<SearchSquare>(goal, nullptr);
-        agents_goal[agent.first] = goal;
         init_state.setSearchSquareForAgent(agent.first, std::move(init_state_search_square));
-        goal_state.setSearchSquareForAgent(agent.first, std::move(goal_state_search_square));
     }
 
     bool validity = true;
@@ -127,6 +119,19 @@ void Solver::setStatus(Status status, const std::string& msg) {
 int Solver::heuristicCost(const Position &current, const Position &goal) {
     //return chebyshevDistance(current, goal);
     return manhattanDistance(current, goal);
+}
+
+int Solver::computeTotalHeuristicCost(Position current, Agent agent) {
+    int total_heuristic_cost = 0;
+    Position goal;
+    do {
+        goal = getAgentGoalPosition(agent);
+        agent.removeItemToPickup();
+        total_heuristic_cost += heuristicCost(current, goal);
+        current = goal;
+    } while (goal != agent.getParkingCoord());
+
+    return total_heuristic_cost;
 }
 
 float Solver::chebyshevDistance(const Position &p1, const Position &p2) {

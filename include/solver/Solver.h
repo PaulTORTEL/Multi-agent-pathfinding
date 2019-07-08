@@ -57,8 +57,6 @@ protected:
 
     State init_state;
 
-    State goal_state;
-
     StatsManager statsManager;
 
     std::map<int, Agent> agents;
@@ -148,6 +146,7 @@ public:
 
     const std::map<int, Position> & getAgentsGoal() const;
 
+    int computeTotalHeuristicCost(Position current, Agent agent);
 };
 
 

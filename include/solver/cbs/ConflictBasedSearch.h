@@ -42,7 +42,7 @@ private:
      * @param constraint_node : the current constraint node
      * @return a shared pointer on the final search square, having a link to its parents
      */
-    std::shared_ptr<SearchSquare> computeShortestPathPossible(Agent &agent,
+    std::shared_ptr<SearchSquare> computeShortestPathPossible(Agent agent,
                                                               ConstraintNode &constraint_node);
 
     /**

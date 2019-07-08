@@ -9,10 +9,10 @@
             <agents>
                 <agent id="1">
                     <start>
-                        <coordinates x="0" y="6"/>
+                        <coordinates x="0" y="7"/>
                     </start>
                     <pickup_list>
-                        <product id="5"/>
+                        <product id="1"/>
                     </pickup_list>
                 </agent>
                 <agent id="2">
