@@ -16,6 +16,8 @@
                         <product id="3"/>
                         <product id="2"/>
                         <product id="7"/>
+                        <product id="4"/>
+                        <product id="6"/>
                     </pickup_list>
                 </agent>
                 <agent id="2">
@@ -27,6 +29,8 @@
                         <product id="4"/>
                         <product id="1"/>
                         <product id="8"/>
+                        <product id="6"/>
+                        <product id="3"/>
                     </pickup_list>
                 </agent>
                  <agent id="3">
@@ -38,6 +42,8 @@
                          <product id="8"/>
                          <product id="3"/>
                          <product id="6"/>
+                         <product id="2"/>
+                         <product id="7"/>
                      </pickup_list>
                  </agent>
                 <agent id="4">
@@ -73,7 +79,34 @@
                         <product id="5"/>
                         <product id="8"/>
                     </pickup_list>
-                </agent><!---->
+                </agent>
+                <agent id="7">
+                <start>
+                    <coordinates x="0" y="1"/>
+                </start>
+                <pickup_list>
+                    <product id="8"/>
+                    <product id="4"/>
+                    <product id="5"/>
+                    <product id="7"/>
+                    <product id="2"/>
+                    <product id="1"/>
+                </pickup_list>
+            </agent>
+            <agent id="8">
+                <start>
+                    <coordinates x="0" y="0"/>
+                </start>
+                <pickup_list>
+                    <product id="6"/>
+                    <product id="1"/>
+                    <product id="2"/>
+                    <product id="4"/>
+                    <product id="8"/>
+                    <product id="7"/>
+                    <product id="5"/>
+                </pickup_list>
+            </agent><!---->
             </agents>
         </population>
     </properties>
