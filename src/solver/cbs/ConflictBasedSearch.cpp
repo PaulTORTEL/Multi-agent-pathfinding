@@ -58,7 +58,7 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
                 std::cout << "T" << it.first << ": ";
 
                 for (auto &it_search_square : it.second.getSearchSquares()) {
-                    std::cout << "A" << it_search_square.first << " = " << it_search_square.second->position << "; ";
+                    std::cout << "A" << it_search_square.first << " = " << it_search_square.second->position << "|" << it_search_square.second->interacting_time_left << "|" << it_search_square.second->agent_status << "; ";
                 }
                 std::cout << std::endl;
             }

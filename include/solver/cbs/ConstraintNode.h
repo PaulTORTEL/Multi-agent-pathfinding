@@ -97,7 +97,7 @@ struct ConstraintNode {
                 }
             }
 
-            if (it_state->second.isStateTerminalForAnyAgent(agents_goal) && vertex_conflicts.empty() && edge_conflicts.empty()) {
+            if (it_state->second.isStateTerminalForAnyAgent(agents_goal) /*&& vertex_conflicts.empty() && edge_conflicts.empty()*/) {
                 return;
             }
         }

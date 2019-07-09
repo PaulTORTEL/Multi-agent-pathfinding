@@ -119,9 +119,6 @@ bool State::isStateTerminalForAnyAgent(const std::map<int, Position>& agents_goa
             if (search_square.second->isAgentInteracting() && search_square.second->interacting_time_left == 1) {
                 return true;
             }
-            else if (search_square.second->agent_status == SearchSquare::AgentStatus::FINISHED) {
-                return true;
-            }
         }
     }
     return false;
