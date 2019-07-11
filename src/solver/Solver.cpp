@@ -16,9 +16,9 @@ Solver::Solver(Map &map, const std::map<int, Agent>& agents) : map(map), agents(
         // We save the initial and goal positions of the agent
         auto init_state_search_square = std::make_unique<SearchSquare>(agent.second.getCurrentPosition(), nullptr);
         init_state_search_square->interacting_time_left = agent.second.getInteractingTimeLeft();
-        if (init_state_search_square->interacting_time_left > 0) {
-            init_state_search_square->setCurrentStatus(agent.second.getAgentStatus());
-        }
+
+        init_state_search_square->setCurrentStatus(agent.second.getAgentStatus());
+
         Position goal = getAgentGoalPosition(agent.second);
         auto goal_state_search_square = std::make_unique<SearchSquare>(goal, nullptr);
         agents_goal[agent.first] = goal;
@@ -73,15 +73,18 @@ Position Solver::getAgentGoalPosition(const Agent& agent) {
     }
 
     const auto& drop_off_points = map.getDropOffPoints();
+    int drop_off_heuristic = -1;
+    Position drop_off_area;
 
-    const int& drop_off_1_heuristic = heuristicCost(agent.getCurrentPosition(), drop_off_points.at(1));
-    const int& drop_off_2_heuristic = heuristicCost(agent.getCurrentPosition(), drop_off_points.at(2));
-
-    if (drop_off_1_heuristic <= drop_off_2_heuristic) {
-        return drop_off_points.at(1);
-    } else {
-        return drop_off_points.at(2);
+    for (auto drop_off : drop_off_points) {
+        int new_drop_off_heuristic = heuristicCost(agent.getCurrentPosition(), drop_off.second);
+        if (drop_off_heuristic == -1 || drop_off_heuristic > new_drop_off_heuristic) {
+            drop_off_heuristic = new_drop_off_heuristic;
+            drop_off_area = drop_off.second;
+        }
     }
+
+    return drop_off_area;
 }
 
 bool Solver::checkStateValidity(const State &state, const std::vector<std::vector<MapSquare>> &grid) {
