@@ -7,6 +7,7 @@
 #include <memory>
 #include <utility>
 #include <ostream>
+#include <iostream>
 
 const std::map<int, std::shared_ptr<SearchSquare>>::iterator State::findAgentAtPosition(const Position &position) {
     for (auto it = search_squares.begin(); it != search_squares.end(); ++it) {

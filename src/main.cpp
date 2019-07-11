@@ -51,6 +51,10 @@ void scanSolution(Map& map, std::map<int, State>& solution, Solver& solver, std:
                     if (agent.second->isAgentInteracting() && agent.second->interacting_time_left == 1) {
                         stop = true;
                         map.removeItemToPickupForAgent(agent.first);
+
+                        if (agent.second->agent_status == SearchSquare::DROPPING) {
+                            std::cout << std::endl;
+                        }
                     }
              //   }
             }

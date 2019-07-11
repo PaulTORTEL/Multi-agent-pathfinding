@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- General case -->
+<!-- More walls -->
 
 <map>
     <properties>
@@ -194,6 +194,22 @@
         </square>
         <square>
             <coordinates x="7" y="1"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="5" y="4"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="6" y="4"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="2" y="4"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="2" y="5"/>
             <type>WALL</type>
         </square>
         <square>

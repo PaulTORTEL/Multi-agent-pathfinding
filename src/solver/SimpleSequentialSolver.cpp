@@ -78,7 +78,6 @@ std::map<int, State> SimpleSequentialSolver::solve() {
 }
 
 const std::shared_ptr<SearchSquare> SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
-    //TODO: wait action possible ??
 
     const int& agent_id = agent.getId();
     MultimapSearchSquare open_list;
