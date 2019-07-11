@@ -65,15 +65,18 @@ Position Solver::getAgentGoalPosition(const Agent& agent) {
     }
 
     const auto& drop_off_points = map.getDropOffPoints();
+    int drop_off_heuristic = -1;
+    Position drop_off_area;
 
-    const int& drop_off_1_heuristic = heuristicCost(agent.getCurrentPosition(), drop_off_points.at(1));
-    const int& drop_off_2_heuristic = heuristicCost(agent.getCurrentPosition(), drop_off_points.at(2));
-
-    if (drop_off_1_heuristic <= drop_off_2_heuristic) {
-        return drop_off_points.at(1);
-    } else {
-        return drop_off_points.at(2);
+    for (auto drop_off : drop_off_points) {
+        int new_drop_off_heuristic = heuristicCost(agent.getCurrentPosition(), drop_off.second);
+        if (drop_off_heuristic == -1 || drop_off_heuristic > new_drop_off_heuristic) {
+            drop_off_heuristic = new_drop_off_heuristic;
+            drop_off_area = drop_off.second;
+        }
     }
+
+    return drop_off_area;
 }
 
 bool Solver::checkStateValidity(const State &state, const std::vector<std::vector<MapSquare>> &grid) {
