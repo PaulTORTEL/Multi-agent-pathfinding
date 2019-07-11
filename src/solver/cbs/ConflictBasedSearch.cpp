@@ -91,13 +91,8 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
             new_node.solution = lowLevelSolver(new_node, agent_id);
 
             if (_status == NO_SOLUTION) {
-                // To avoid the infinite loop where the agent will wait for an immobile agent that cannot find another solution
-                if (new_node.getConstraintLatestTimeStepForAgent(agent_id) == conflict->time_step) {
-                    break;
-                } else {
-                    _status = Status::OK;
-                    continue;
-                }
+                _status = Status::OK;
+                continue;
             }
 
             new_node.computeSicHeuristic();

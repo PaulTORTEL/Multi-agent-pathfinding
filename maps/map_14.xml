@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Only 1 drop off area -->
+<!-- More walls -->
 
 <map>
     <properties>
@@ -162,6 +162,11 @@
             <type>DROP_OFF_POINT</type>
             <id>1</id>
         </square>
+        <square>
+            <coordinates x="6" y="1"/>
+            <type>DROP_OFF_POINT</type>
+            <id>2</id>
+        </square>
 
         <!-- REPAIR AREAS -->
         <square>
@@ -192,11 +197,44 @@
             <type>WALL</type>
         </square>
         <square>
+            <coordinates x="5" y="4"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="6" y="4"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="2" y="4"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="2" y="5"/>
+            <type>WALL</type>
+        </square>
+        <square>
             <coordinates x="4" y="1"/>
+            <type>HUMAN_POINT</type>
+        </square>
+        <square>
+            <coordinates x="5" y="1"/>
             <type>HUMAN_POINT</type>
         </square>
     </topology>
     <rules>
+        <rule>
+            <square x="6" y="1"/>
+            <forbidden_accesses>
+                <access>SOUTH</access>
+                <access>EAST</access>
+                <access>WEST</access>
+            </forbidden_accesses>
+            <forbidden_exits>
+                <exit>NORTH</exit>
+                <exit>EAST</exit>
+                <exit>WEST</exit>
+            </forbidden_exits>
+        </rule>
         <rule>
             <square x="3" y="1"/>
             <forbidden_accesses>
