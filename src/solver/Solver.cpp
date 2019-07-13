@@ -9,7 +9,7 @@
 #include <vector>
 #include <algorithm>
 
-Solver::Solver(Map &map, const std::map<int, Agent>& agents) : map(map), agents(agents) {
+Solver::Solver(Map &map, const std::map<int, Agent>& agents, StatsManager& manager) : map(map), agents(agents), statsManager(manager) {
 
     for (auto& agent : agents) {
 

@@ -92,12 +92,11 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
 
             if (_status == NO_SOLUTION) {
                 // To avoid the infinite loop where the agent will wait for an immobile agent that cannot find another solution
-                if (new_node.getConstraintLatestTimeStepForAgent(agent_id) == conflict->time_step) {
-                    break;
-                } else {
+                //TODO: to remove ?
+
                     _status = Status::OK;
                     continue;
-                }
+
             }
 
             new_node.computeSicHeuristic();
@@ -181,7 +180,8 @@ Solver::MultimapConstraintNode::iterator ConflictBasedSearch::getIteratorOnLessC
     return it_optimized;
 }
 
-ConflictBasedSearch::ConflictBasedSearch(Map &map, const std::map<int, Agent>& agents) : Solver(map, agents) {}
+ConflictBasedSearch::ConflictBasedSearch(Map &map, const std::map<int, Agent> &agents, StatsManager &statsManager)
+        : Solver(map, agents, statsManager) {}
 
 StateDictionary ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_node,
                                                     int agent_id) {

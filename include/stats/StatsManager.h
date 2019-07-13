@@ -31,6 +31,10 @@ public:
     void startMeasuringDuration(AnalysisLevel analysisLevel);
 
     void stopMeasuringDuration(AnalysisLevel analysisLevel);
+
+    void recordStatsOnTxt(const std::string& map_name);
+
+    std::string createDirectory(const std::string &map_name);
 };
 
 

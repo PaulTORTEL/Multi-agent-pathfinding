@@ -97,16 +97,20 @@ int main() {
         std::cout << "Type the number of the technique to use: ";
         int technique_no = 1;
         std::cin >> technique_no;
+        StatsManager statsManager;
 
         if (technique_no == 1) {
-            SimpleSequentialSolver solver(map, map.getAgents());
+            SimpleSequentialSolver solver(map, map.getAgents(), statsManager);
             solver.solve();
         } else if (technique_no == 2) {
+
             do {
-                ConflictBasedSearch cbsSolver(map, map.getAgents());
+                ConflictBasedSearch cbsSolver(map, map.getAgents(), statsManager);
                 auto solution = cbsSolver.solve();
                 scanSolution(map, solution, cbsSolver, final_solution);
             } while (shouldContinue(map));
+
+            statsManager.recordStatsOnTxt(map_name);
 
             std::cout << "FINAL SOLUTION: " << std::endl;
             for (auto& it : final_solution) {

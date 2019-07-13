@@ -99,12 +99,14 @@ private:
 
 public:
 
-    ConflictBasedSearch(Map &map, const std::map<int, Agent>& agents);
+    ConflictBasedSearch(Map &map, const std::map<int, Agent> &agents, StatsManager &statsManager);
 
     std::map<int, State> solve() override;
 
     bool tryForceMovementForAgent(std::shared_ptr<SearchSquare> &current_agent_position, const Agent &agent,
                                   ConstraintNode &constraint_node);
+
+    void setStatsManager(StatsManager &manager);
 };
 
 

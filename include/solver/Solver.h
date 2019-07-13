@@ -59,7 +59,7 @@ protected:
 
     State goal_state;
 
-    StatsManager statsManager;
+    StatsManager& statsManager;
 
     std::map<int, Agent> agents;
     std::map<int, Position> agents_goal;
@@ -119,7 +119,7 @@ protected:
 
 public:
 
-    Solver(Map &map, const std::map<int, Agent>& agents);
+    Solver(Map &map, const std::map<int, Agent>& agents, StatsManager& manager);
 
     /**
      * Checks if a state is valid or not
