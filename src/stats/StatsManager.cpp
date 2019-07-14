@@ -82,7 +82,7 @@ std::string StatsManager::createDirectory(const std::string &map_name) {
     return result;
 }
 
-void StatsManager::recordStatsOnTxt(const std::string& map_name) {
+void StatsManager::recordStatsOnTxt(const std::string &map_name, const int num_time_step) {
 
     std::string directory = createDirectory(map_name);
 
@@ -98,6 +98,7 @@ void StatsManager::recordStatsOnTxt(const std::string& map_name) {
     unsigned int constraint_nodes_total = report.constraint_nodes_created;
     double duration_total = report.avg_high_level_duration;
 
+    outfile << "Time steps: " << num_time_step << std::endl;
     outfile << "Duration: " << duration_total << std::endl;
     outfile << "High level calls: " << high_level_calls_total << std::endl;
     outfile << "Constraint nodes: " << constraint_nodes_total << std::endl;
