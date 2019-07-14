@@ -9,7 +9,8 @@
 #include "../../include/solver/SimpleSequentialSolver.h"
 #include "../../include/solver/Solver.h"
 
-SimpleSequentialSolver::SimpleSequentialSolver(Map &map, const std::map<int, Agent>& agents) : Solver(map, agents) {}
+SimpleSequentialSolver::SimpleSequentialSolver(Map &map, const std::map<int, Agent> &agents, StatsManager &manager)
+        : Solver(map, agents, manager) {}
 
 std::map<int, State> SimpleSequentialSolver::solve() {
 

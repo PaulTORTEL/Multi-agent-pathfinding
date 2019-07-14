@@ -176,7 +176,8 @@ Solver::MultimapConstraintNode::iterator ConflictBasedSearch::getIteratorOnLessC
     return it_optimized;
 }
 
-ConflictBasedSearch::ConflictBasedSearch(Map &map, const std::map<int, Agent>& agents) : Solver(map, agents) {}
+ConflictBasedSearch::ConflictBasedSearch(Map &map, const std::map<int, Agent> &agents, StatsManager &manager)
+        : Solver(map, agents, manager) {}
 
 StateDictionary ConflictBasedSearch::lowLevelSolver(ConstraintNode &constraint_node,
                                                     int agent_id) {

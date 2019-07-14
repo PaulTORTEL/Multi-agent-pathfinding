@@ -99,9 +99,11 @@ private:
 
 public:
 
-    ConflictBasedSearch(Map &map, const std::map<int, Agent>& agents);
+    ConflictBasedSearch(Map &map, const std::map<int, Agent> &agents, StatsManager &manager);
 
     std::map<int, State> solve() override;
+
+    void setStatsManager(StatsManager &manager);
 };
 
 
