@@ -87,8 +87,9 @@ void StatsManager::recordStatsOnTxt(const std::string& map_name) {
 
     std::string directory = createDirectory(map_name);
 
-    std::ofstream outfile (directory + "/general.txt");
+    std::ofstream outfile (directory + "/general_v2.txt");
 
+    outfile << "Version 2" << std::endl;
     outfile << "Map name: " << map_name << std::endl;
 
     unsigned int low_level_calls_total = 0;
