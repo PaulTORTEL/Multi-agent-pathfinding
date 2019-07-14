@@ -85,6 +85,8 @@ public:
         __key_Direction_map["SE"] = Direction::SE;
     }
 
+    const std::string &getName() const;
+
     int getWidth() const;
 
     void setWidth(int width);

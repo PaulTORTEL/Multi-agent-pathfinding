@@ -174,4 +174,8 @@ void Map::setAgentStatus(const int &agent_id, const SearchSquare::AgentStatus ag
     _agents[agent_id].setAgentStatus(agent_status);
 }
 
+const std::string &Map::getName() const {
+    return _name;
+}
+
 
