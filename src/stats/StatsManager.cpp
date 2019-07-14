@@ -83,7 +83,7 @@ std::string StatsManager::createDirectory(const std::string &map_name) {
     return result;
 }
 
-void StatsManager::recordStatsOnTxt(const std::string& map_name) {
+void StatsManager::recordStatsOnTxt(const std::string &map_name, const int num_time_step) {
 
     std::string directory = createDirectory(map_name);
 
@@ -91,6 +91,7 @@ void StatsManager::recordStatsOnTxt(const std::string& map_name) {
 
     outfile << "Version 2" << std::endl;
     outfile << "Map name: " << map_name << std::endl;
+
 
     unsigned int low_level_calls_total = 0;
     unsigned int high_level_calls_total = 0;
@@ -117,6 +118,7 @@ void StatsManager::recordStatsOnTxt(const std::string& map_name) {
     double standard_dev_const_node = sqrt((1./reports.size()) * sd_sum_const_node);
     double standard_dev_low_level_calls = sqrt((1./reports.size()) * sd_sum_low_level_calls);
 
+    outfile << "Time steps: " << num_time_step << std::endl;
     outfile << "Duration: " << duration_total << std::endl;
     outfile << "High level calls: " << high_level_calls_total << std::endl;
     outfile << "Constraint nodes: " << constraint_nodes_total << " / avg: " << constraint_nodes_avg << " / SD: " << standard_dev_const_node << std::endl;

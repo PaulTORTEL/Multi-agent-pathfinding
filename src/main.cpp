@@ -110,7 +110,7 @@ int main() {
                 scanSolution(map, solution, cbsSolver, final_solution);
             } while (shouldContinue(map));
 
-            statsManager.recordStatsOnTxt(map_name);
+            statsManager.recordStatsOnTxt(map_name, final_solution.rbegin()->first);
 
             std::cout << "FINAL SOLUTION: " << std::endl;
             for (auto& it : final_solution) {

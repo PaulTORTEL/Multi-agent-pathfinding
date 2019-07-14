@@ -32,7 +32,7 @@ public:
 
     void stopMeasuringDuration(AnalysisLevel analysisLevel);
 
-    void recordStatsOnTxt(const std::string& map_name);
+    void recordStatsOnTxt(const std::string &map_name, const int num_time_step);
 
     std::string createDirectory(const std::string &map_name);
 };
