@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 10 agents -->
+
+<map>
+    <properties>
+        <size>
+            <width>3</width>
+            <height>3</height>
+        </size>
+        <population>
+            <agents>
+                <agent id="1">
+                    <start>
+                        <coordinates x="0" y="2"/>
+                    </start>
+                    <pickup_list>
+                        <product id="1"/>
+                    </pickup_list>
+                </agent>
+                <agent id="2">
+                    <start>
+                        <coordinates x="0" y="1"/>
+                    </start>
+                    <pickup_list>
+                        <product id="2"/>
+                    </pickup_list>
+                </agent>
+
+            </agents>
+        </population>
+    </properties>
+    <topology>
+        <!-- PRODUCTS -->
+        <square>
+            <coordinates x="1" y="1"/>
+            <type>PRODUCT</type>
+            <id>1</id>
+        </square>
+        <square>
+            <coordinates x="2" y="1"/>
+            <type>PRODUCT</type>
+            <id>2</id>
+        </square>
+
+        <!-- DROP OFF POINTS -->
+        <square>
+            <coordinates x="2" y="0"/>
+            <type>DROP_OFF_POINT</type>
+            <id>1</id>
+        </square>
+
+
+        <!-- REPAIR AREAS -->
+
+
+        <!-- NON WALKABLE AREAS -->
+
+    </topology>
+    <rules>
+
+    </rules>
+</map>
