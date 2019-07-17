@@ -77,7 +77,7 @@ std::map<int, State> SimpleSequentialSolver::solve() {
     return std::map<int, State>();
 }
 
-const std::shared_ptr<SearchSquare> SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
+std::shared_ptr<SearchSquare> SimpleSequentialSolver::computeShortestPathPossible(const Agent &agent) {
     //TODO: wait action possible ??
 
     const int& agent_id = agent.getId();
@@ -99,6 +99,7 @@ const std::shared_ptr<SearchSquare> SimpleSequentialSolver::computeShortestPathP
 
         // We remove the search square from the open list
         open_list.erase(it_open_list);
+
 
         // We populate the open list with the surroundings of the current search square
         populateOpenList(open_list, closed_list, agent, current_search_square);

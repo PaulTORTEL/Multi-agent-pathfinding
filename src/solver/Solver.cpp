@@ -68,8 +68,10 @@ Position Solver::getAgentGoalPosition(const Agent& agent) {
     int drop_off_heuristic = -1;
     Position drop_off_area;
 
+    Position last_product_pos = map.getProducts().at( *(agent.getPickupList().rbegin()));
+
     for (auto drop_off : drop_off_points) {
-        int new_drop_off_heuristic = heuristicCost(agent.getCurrentPosition(), drop_off.second);
+        int new_drop_off_heuristic = heuristicCost(last_product_pos, drop_off.second);
         if (drop_off_heuristic == -1 || drop_off_heuristic > new_drop_off_heuristic) {
             drop_off_heuristic = new_drop_off_heuristic;
             drop_off_area = drop_off.second;

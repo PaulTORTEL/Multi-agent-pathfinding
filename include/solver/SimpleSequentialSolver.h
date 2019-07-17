@@ -15,7 +15,7 @@ private:
      * Compute the shortest path possible for a given agent
      * @param agent : the agent
      */
-    const std::shared_ptr<SearchSquare> computeShortestPathPossible(const Agent &agent);
+    std::shared_ptr<SearchSquare> computeShortestPathPossible(const Agent &agent);
 
     /**
      * Populate the open list

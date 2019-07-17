@@ -67,13 +67,13 @@ State::detectVertexConflicts(const int &time_step, const std::map<int, Position>
                 } else if (!search_squares_it.second->isAgentInteracting() && search_squares_it2.second->isAgentInteracting()) {
                     conflicts.emplace_back(std::make_unique<VertexConflict>(agent_1_id, -1, time_step, agent_1_position));
                 }
-
+/*
                 if (search_squares_it.second->agent_status == SearchSquare::AgentStatus::FINISHED) {
                     conflicts.emplace_back(std::make_unique<VertexConflict>(-1, agent_2_id, time_step, agent_1_position));
                 } else if (search_squares_it2.second->agent_status == SearchSquare::AgentStatus::FINISHED) {
                     conflicts.emplace_back(std::make_unique<VertexConflict>(agent_1_id, -1, time_step, agent_1_position));
                 }
-
+*/
                 /*if (agent_1_position == agents_goal.at(agent_1_id)) {
 
                     if (search_squares_it.second->time_step < time_step) {

@@ -164,7 +164,7 @@ struct ConstraintNode {
      */
     bool doesAgentStillHaveFutureConstraints(const int& agent_id, const int& time_step) {
         for (auto& constraint : constraints[agent_id]) {
-            if (constraint.time_step > time_step) {
+            if (constraint.edge == NO_DIRECTION && constraint.time_step > time_step) {
                 return true;
             }
         }

@@ -239,8 +239,11 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
         // We remove the search square from the open list
         open_list.erase(it_open_list);
 
+        agent.setCurrentPosition(current_search_square->position);
+
         // We populate the open list with the surroundings of the current search square
         populateOpenList(open_list, closed_list, agent, current_search_square, constraint_node);
+
 
         if (open_list.empty() && current_search_square->position != getAgentGoalPosition(agent)) {
             _status = NO_SOLUTION;
@@ -252,14 +255,17 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
             std::shared_ptr<SearchSquare> new_current_search_square = current_search_square;
 
             if (current_search_square->interacting_time_left == 0) {
-                new_current_search_square = std::make_shared<SearchSquare>(current_search_square->position,
-                                                                           current_search_square,
-                                                                           current_search_square->cost_movement,
-                                                                           current_search_square->cost_heuristic);
+
+                if (point_of_interest != NA) {
+                    new_current_search_square = std::make_shared<SearchSquare>(current_search_square->position,
+                                                                               current_search_square,
+                                                                               current_search_square->cost_movement,
+                                                                               current_search_square->cost_heuristic);
+                }
+
                 switch (point_of_interest) {
 
                     case NA:
-                        new_current_search_square = current_search_square;
                         current_search_square->setCurrentStatus(SearchSquare::AgentStatus::FINISHED,
                                                                 PointOfInterest::NA);
                         break;
@@ -287,12 +293,15 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
                 new_current_search_square->agent_status = agent_status;
                 new_current_search_square->setInteractingTimeLeft(new_interacting_time);
             }
-            current_search_square = new_current_search_square;
             agent.removeItemToPickup();
-            current_search_square->cost_movement = 0;
-            open_list.clear();
-            closed_list.clear();
-            open_list.insert({current_search_square->cost(), current_search_square});
+
+            if (new_current_search_square->agent_status != SearchSquare::AgentStatus::FINISHED) {
+                current_search_square = new_current_search_square;
+                current_search_square->cost_movement = 0;
+                open_list.clear();
+                open_list.insert({current_search_square->cost(), current_search_square});
+                closed_list.clear();
+            }
         }
 
         //TODO:  constraint_node.doesAgentStillHaveFutureConstraints(agent_id, current_search_square->time_step - 1)
@@ -378,7 +387,7 @@ ConflictBasedSearch::populateOpenList(MultimapSearchSquare &open_list, std::set<
     }
 
     // No constraint in the future, the agent is not allowed to wait
-    if (!constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), current_agent_position->time_step)) {
+    if (!constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), current_agent_position->time_step-1)) {
         return;
     }
 
