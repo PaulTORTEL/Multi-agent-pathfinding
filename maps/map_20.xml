@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 10 agents -->
-
 <map>
     <properties>
         <size>
@@ -33,12 +31,12 @@
     <topology>
         <!-- PRODUCTS -->
         <square>
-            <coordinates x="1" y="1"/>
+            <coordinates x="2" y="1"/>
             <type>PRODUCT</type>
             <id>1</id>
         </square>
         <square>
-            <coordinates x="2" y="1"/>
+            <coordinates x="1" y="1"/>
             <type>PRODUCT</type>
             <id>2</id>
         </square>
@@ -49,13 +47,25 @@
             <type>DROP_OFF_POINT</type>
             <id>1</id>
         </square>
+        <square>
+            <coordinates x="1" y="0"/>
+            <type>DROP_OFF_POINT</type>
+            <id>2</id>
+        </square>
 
 
         <!-- REPAIR AREAS -->
 
 
         <!-- NON WALKABLE AREAS -->
-
+        <square>
+            <coordinates x="1" y="2"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="2" y="2"/>
+            <type>WALL</type>
+        </square>
     </topology>
     <rules>
 

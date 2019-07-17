@@ -293,7 +293,7 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
 
         // We loop while we didn't detect that there is no solution or that we didn't reach the goal position of the agent
     } while ((current_search_square->position != getAgentGoalPosition(agent) ||
-                constraint_node.doesAgentStillHaveFutureConstraints(agent_id, current_search_square->time_step))
+                constraint_node.doesAgentStillHaveFutureConstraints(agent_id, current_search_square->time_step - 1))
                 && _status == Status::OK);
 
     return current_search_square;
@@ -370,7 +370,7 @@ ConflictBasedSearch::populateOpenList(MultimapSearchSquare &open_list, std::set<
     }
 
     // No constraint in the future, the agent is not allowed to wait
-    if (!constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), current_agent_position->time_step)) {
+    if (!constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), current_agent_position->time_step - 1)) {
         return;
     }
 
@@ -399,7 +399,7 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
         //int latest_time_step_constraint = constraint_node.getConstraintLatestTimeStepForAgent(agent.getId());
          //&& (time_step < latest_time_step_constraint || latest_time_step_constraint == -1)
 
-        if (constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), time_step+1)) {
+        if (constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), time_step-1)) {
             //return FAIL_CLOSED_LIST;
             closed_list.clear();
         } else {
