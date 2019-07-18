@@ -52,6 +52,13 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
         ConstraintNode current_node = it_open_list->second;
         open_list.erase(it_open_list);
 
+        if (!current_node.solution.dictionary.empty()
+            && current_node.solution.dictionary[6].getSearchSquares().at(1)->position == Position(4,6)
+            && current_node.solution.dictionary[6].getSearchSquares().at(3)->position == Position(5,6)
+            && current_node.solution.dictionary[6].getSearchSquares().at(2)->position == Position(5,7)) {
+            std::cout << "hello";
+        }
+
         std::shared_ptr<Conflict> conflict = current_node.first_conflict;
 
         // If there is no conflict, we have found a valid and admissible solution
@@ -68,6 +75,9 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
             return current_node.solution.dictionary;
         }
 
+        if (conflict->constructConstraint(2).edge == WEST && conflict->constructConstraint(2).time_step == 7 && conflict->agent_id1 == 1) {
+            std::cout << "hello" << std::endl;
+        }
         // There is a conflict between two agents, therefore we will add 2 news constraint nodes
         for (int i = 1; i <= 2; i++) {
             ConstraintNode new_node;
@@ -82,6 +92,27 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
 
             // We construct the new constraint node by merging the constraints of the current node with a new constraint coming from the conflict detected
              new_node.constraints[agent_id].emplace_back(conflict->constructConstraint(i));
+
+            if (auto *e = dynamic_cast<EdgeConflict*>(conflict.get())) {
+                auto newly_added_constraint = conflict->constructConstraint(i);
+                for (auto& agent_constraints : new_node.constraints) {
+                    if (agent_constraints.first == newly_added_constraint.agent_id) {
+                        continue;
+                    } else {
+                        std::vector<std::vector<Constraint>::iterator> constraints_to_erase;
+                        for (auto it_constraint = agent_constraints.second.begin(); it_constraint < agent_constraints.second.end(); ++it_constraint) {
+                            if (newly_added_constraint.agent_id == it_constraint->agent_causing_constraint && newly_added_constraint.time_step == it_constraint->time_step
+                                && newly_added_constraint.position == it_constraint->position) {
+                                constraints_to_erase.push_back(it_constraint);
+                            }
+                        }
+
+                        for (auto& it : constraints_to_erase) {
+                            agent_constraints.second.erase(it);
+                        }
+                    }
+                }
+            }
 
             // We check if the new node is not already inside the open list to avoid redundant nodes
             if (isNodeAlreadyInOpenList(open_list, new_node)) {

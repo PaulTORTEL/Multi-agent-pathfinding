@@ -33,20 +33,21 @@
                         <product id="3"/>
                     </pickup_list>
                 </agent>
-                 <agent id="3">
-                     <start>
-                         <coordinates x="0" y="5"/>
-                     </start>
-                     <pickup_list>
-                         <product id="1"/>
-                         <product id="8"/>
-                         <product id="3"/>
-                         <product id="6"/>
-                         <product id="2"/>
-                         <product id="7"/>
-                     </pickup_list>
-                 </agent>
-                <agent id="4">
+                <agent id="3">
+                    <start>
+                        <coordinates x="0" y="5"/>
+                    </start>
+                    <pickup_list>
+                        <product id="1"/>
+                        <product id="8"/>
+                        <product id="3"/>
+                        <product id="6"/>
+                        <product id="2"/>
+                        <product id="7"/>
+                    </pickup_list>
+                </agent>
+                <!--<agent id="4">
+
                     <start>
                         <coordinates x="0" y="4"/>
                     </start>
@@ -106,7 +107,7 @@
                     <product id="7"/>
                     <product id="5"/>
                 </pickup_list>
-            </agent><!---->
+            </agent>-->
             </agents>
         </population>
     </properties>

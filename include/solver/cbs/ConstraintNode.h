@@ -61,6 +61,42 @@ struct ConstraintNode {
    void scanSolution(const int &stop_value, const std::map<int, Position>& agents_goal) {
         // For each states in the solution
         for (auto it_state = solution.dictionary.begin(); it_state != solution.dictionary.end(); ++it_state) {
+
+            // We get the next state
+            auto it_next_state = it_state;
+            it_next_state++;
+            std::vector<std::unique_ptr<EdgeConflict>> edge_conflicts;
+
+            // If the next state exists (it_state was not pointing the last state)
+            if (it_next_state != solution.dictionary.end()) {
+                // We try to detect an edge collision between the two states
+                edge_conflicts = solution.detectEdgeConflictsFromTwoStates(
+                        it_state->first, it_state, it_next_state);
+
+                if (!edge_conflicts.empty()) {
+                    int redundant_conflicts = 0;
+
+                    for (int i = 0; i < edge_conflicts.size(); i++) {
+                        for (int j = i + 1; j < edge_conflicts.size(); j++) {
+                            if (edge_conflicts[i]->isTheSameThan(edge_conflicts[j].get())) {
+                                redundant_conflicts++;
+                            }
+                        }
+                    }
+
+                    if (first_conflict == nullptr) {
+                        first_conflict = std::move(edge_conflicts.front());
+                        if (first_conflict->agent_id1 == 1 && first_conflict->agent_id2 == 3) {
+                            std::cout << "hello" << std::endl;
+                        }
+                    }
+                    conflicts_detected += (edge_conflicts.size() - redundant_conflicts);
+                    if (stop_value != 0 && conflicts_detected >= stop_value) {
+                        return;
+                    }
+                }
+            }
+
             // We try to detect a vertex collision in the given state
             std::vector<std::unique_ptr<VertexConflict>> vertex_conflicts = it_state->second.detectVertexConflicts(
                     it_state->first,
@@ -76,27 +112,6 @@ struct ConstraintNode {
                 }
             }
 
-            // We get the next state
-            auto it_next_state = it_state;
-            it_next_state++;
-            std::vector<std::unique_ptr<EdgeConflict>> edge_conflicts;
-
-            // If the next state exists (it_state was not pointing the last state)
-            if (it_next_state != solution.dictionary.end()) {
-                // We try to detect an edge collision between the two states
-                edge_conflicts = solution.detectEdgeConflictsFromTwoStates(
-                        it_state->first, it_state, it_next_state);
-
-                if (!edge_conflicts.empty()) {
-                    if (first_conflict == nullptr) {
-                        first_conflict = std::move(edge_conflicts.front());
-                    }
-                    conflicts_detected += edge_conflicts.size();
-                    if (stop_value != 0 && conflicts_detected >= stop_value) {
-                        return;
-                    }
-                }
-            }
         }
     }
 
