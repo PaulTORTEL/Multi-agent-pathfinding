@@ -46,7 +46,7 @@
                         <product id="7"/>
                     </pickup_list>
                 </agent>
-                <!--<agent id="4">
+                <agent id="4">
 
                     <start>
                         <coordinates x="0" y="4"/>
@@ -107,7 +107,7 @@
                     <product id="7"/>
                     <product id="5"/>
                 </pickup_list>
-            </agent>-->
+            </agent><!---->
             </agents>
         </population>
     </properties>

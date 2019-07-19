@@ -52,13 +52,6 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
         ConstraintNode current_node = it_open_list->second;
         open_list.erase(it_open_list);
 
-        if (!current_node.solution.dictionary.empty()
-            && current_node.solution.dictionary[6].getSearchSquares().at(1)->position == Position(4,6)
-            && current_node.solution.dictionary[6].getSearchSquares().at(3)->position == Position(5,6)
-            && current_node.solution.dictionary[6].getSearchSquares().at(2)->position == Position(5,7)) {
-            std::cout << "hello";
-        }
-
         std::shared_ptr<Conflict> conflict = current_node.first_conflict;
 
         // If there is no conflict, we have found a valid and admissible solution
@@ -75,9 +68,6 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
             return current_node.solution.dictionary;
         }
 
-        if (conflict->constructConstraint(2).edge == WEST && conflict->constructConstraint(2).time_step == 7 && conflict->agent_id1 == 1) {
-            std::cout << "hello" << std::endl;
-        }
         // There is a conflict between two agents, therefore we will add 2 news constraint nodes
         for (int i = 1; i <= 2; i++) {
             ConstraintNode new_node;

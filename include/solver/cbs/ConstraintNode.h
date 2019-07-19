@@ -86,9 +86,6 @@ struct ConstraintNode {
 
                     if (first_conflict == nullptr) {
                         first_conflict = std::move(edge_conflicts.front());
-                        if (first_conflict->agent_id1 == 1 && first_conflict->agent_id2 == 3) {
-                            std::cout << "hello" << std::endl;
-                        }
                     }
                     conflicts_detected += (edge_conflicts.size() - redundant_conflicts);
                     if (stop_value != 0 && conflicts_detected >= stop_value) {
@@ -98,9 +95,7 @@ struct ConstraintNode {
             }
 
             // We try to detect a vertex collision in the given state
-            std::vector<std::unique_ptr<VertexConflict>> vertex_conflicts = it_state->second.detectVertexConflicts(
-                    it_state->first,
-                    agents_goal);
+            std::vector<std::unique_ptr<VertexConflict>> vertex_conflicts = it_state->second.detectVertexConflicts(it_state->first, agents_goal);
 
             if (!vertex_conflicts.empty()) {
                 if (first_conflict == nullptr) {
