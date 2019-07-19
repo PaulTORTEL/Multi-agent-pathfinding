@@ -81,6 +81,27 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
             // We construct the new constraint node by merging the constraints of the current node with a new constraint coming from the conflict detected
              new_node.constraints[agent_id].emplace_back(conflict->constructConstraint(i));
 
+            if (auto *e = dynamic_cast<EdgeConflict*>(conflict.get())) {
+                auto newly_added_constraint = conflict->constructConstraint(i);
+                for (auto& agent_constraints : new_node.constraints) {
+                    if (agent_constraints.first == newly_added_constraint.agent_id) {
+                        continue;
+                    } else {
+                        std::vector<std::vector<Constraint>::iterator> constraints_to_erase;
+                        for (auto it_constraint = agent_constraints.second.begin(); it_constraint < agent_constraints.second.end(); ++it_constraint) {
+                            if (newly_added_constraint.agent_id == it_constraint->agent_causing_constraint && newly_added_constraint.time_step == it_constraint->time_step
+                                && newly_added_constraint.position == it_constraint->position) {
+                                constraints_to_erase.push_back(it_constraint);
+                            }
+                        }
+
+                        for (auto& it : constraints_to_erase) {
+                            agent_constraints.second.erase(it);
+                        }
+                    }
+                }
+            }
+
             // We check if the new node is not already inside the open list to avoid redundant nodes
             if (isNodeAlreadyInOpenList(open_list, new_node)) {
                 continue;
