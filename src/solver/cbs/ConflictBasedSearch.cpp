@@ -68,6 +68,10 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
             return current_node.solution.dictionary;
         }
 
+        if (conflict->time_step == 7 && conflict->agent_id1 == 1 && conflict->agent_id2 == 2 && conflict->constructConstraint(1).position == Position(5,6)) {
+            std::cout << "" << std::endl;
+        }
+
         // There is a conflict between two agents, therefore we will add 2 news constraint nodes
         for (int i = 1; i <= 2; i++) {
             ConstraintNode new_node;
@@ -81,7 +85,9 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
             }
 
             // We construct the new constraint node by merging the constraints of the current node with a new constraint coming from the conflict detected
-             new_node.constraints[agent_id].emplace_back(conflict->constructConstraint(i));
+            new_node.constraints[agent_id].emplace_back(conflict->constructConstraint(i));
+
+            new_node.solution = current_node.solution;
 
             if (auto *e = dynamic_cast<EdgeConflict*>(conflict.get())) {
                 auto newly_added_constraint = conflict->constructConstraint(i);
@@ -100,6 +106,15 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
                         for (auto& it : constraints_to_erase) {
                             agent_constraints.second.erase(it);
                         }
+
+                        //TODO: à analyser
+                        if (!constraints_to_erase.empty()) {
+                            // We compute the new solution for the agent having at least one constraint removed
+                            new_node.solution = lowLevelSolver(new_node, agent_constraints.first);
+                            //TODO: trouver un cas qui bug avec 2 agents, où 1 agent wait alos qu'il pourrait passer, car il a une contrainte qui est obsolète dû au fait que
+                            // l'autre agent a changé de chemin
+                            //tODO: Pour débug: virer les constraints d'une position si l'agent qui l'a causé n'est finalement pas calculé à cet endroit
+                        }
                     }
                 }
             }
@@ -109,9 +124,15 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
                 continue;
             }
 
-            new_node.solution = current_node.solution;
+
             // We compute the new solution for one of the agent conflicting, with the new node (and new constraints)
             new_node.solution = lowLevelSolver(new_node, agent_id);
+
+            if (new_node.solution.dictionary[7].getSearchSquares().at(2)->position == Position(5,7) &&
+                    new_node.solution.dictionary[7].getSearchSquares().at(2)->parent->position == Position(5,7) &&
+                    new_node.solution.dictionary[7].getSearchSquares().at(1)->position == Position(4,7)) {
+                std::cout << "" << std::endl;
+            }
 
             if (_status == NO_SOLUTION) {
                 // To avoid the infinite loop where the agent will wait for an immobile agent that cannot find another solution
