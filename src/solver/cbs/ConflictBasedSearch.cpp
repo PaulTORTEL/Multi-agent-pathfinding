@@ -79,24 +79,51 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
             }
 
             // We construct the new constraint node by merging the constraints of the current node with a new constraint coming from the conflict detected
-             new_node.constraints[agent_id].emplace_back(conflict->constructConstraint(i));
+            new_node.constraints[agent_id].emplace_back(conflict->constructConstraint(i));
+            new_node.solution = current_node.solution;
+
+            if (dynamic_cast<EdgeConflict*>(conflict.get())) {
+                auto newly_added_constraint = conflict->constructConstraint(i);
+                for (auto& agent_constraints : new_node.constraints) {
+                    if (agent_constraints.first == newly_added_constraint.agent_id) {
+                        continue;
+                    } else {
+                        std::vector<std::vector<Constraint>::iterator> constraints_to_erase;
+                        for (auto it_constraint = agent_constraints.second.begin(); it_constraint < agent_constraints.second.end(); ++it_constraint) {
+                            if (newly_added_constraint.agent_id == it_constraint->agent_causing_constraint && newly_added_constraint.time_step == it_constraint->time_step
+                                && newly_added_constraint.position == it_constraint->position) {
+                                constraints_to_erase.push_back(it_constraint);
+                            }
+                        }
+
+                        for (auto& it : constraints_to_erase) {
+                            agent_constraints.second.erase(it);
+                        }
+
+                        if (!constraints_to_erase.empty()) {
+                            // We compute the new solution for the agent having at least one constraint removed
+                            new_node.solution = lowLevelSolver(new_node, agent_constraints.first);
+                        }
+                    }
+                }
+            }
 
             // We check if the new node is not already inside the open list to avoid redundant nodes
             if (isNodeAlreadyInOpenList(open_list, new_node)) {
                 continue;
             }
 
-            new_node.solution = current_node.solution;
             // We compute the new solution for one of the agent conflicting, with the new node (and new constraints)
             new_node.solution = lowLevelSolver(new_node, agent_id);
 
             if (_status == NO_SOLUTION) {
                 // To avoid the infinite loop where the agent will wait for an immobile agent that cannot find another solution
-                //TODO: to remove ?
-
+                if (new_node.getConstraintLatestTimeStepForAgent(agent_id) == conflict->time_step) {
+                    break;
+                } else {
                     _status = Status::OK;
                     continue;
-
+                }
             }
 
             new_node.computeSicHeuristic();
@@ -384,7 +411,7 @@ ConflictBasedSearch::populateOpenList(MultimapSearchSquare &open_list, std::set<
     }
 
     // No constraint in the future, the agent is not allowed to wait
-    if (!constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), current_agent_position->time_step)) {
+    if (!constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), current_agent_position->time_step - 1)) {
         return;
     }
 
@@ -413,9 +440,9 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
         //int latest_time_step_constraint = constraint_node.getConstraintLatestTimeStepForAgent(agent.getId());
          //&& (time_step < latest_time_step_constraint || latest_time_step_constraint == -1)
 
-        if (constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), time_step+1)) {
+        if (constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), time_step-1)) {
             //return FAIL_CLOSED_LIST;
-            closed_list.clear();
+            closed_list.erase(pos_coord);
         } else {
             //closed_list.clear();
             return FAIL_CLOSED_LIST;
@@ -448,6 +475,7 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
             modified_search_square->parent = current_agent_position;
             // We change its time step
             modified_search_square->time_step = current_agent_position->time_step + 1;
+            modified_search_square->agent_status = current_agent_position->agent_status;
 
             open_list.insert({cost, modified_search_square});
         }

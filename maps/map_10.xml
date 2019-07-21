@@ -106,7 +106,7 @@
                         <product id="7"/>
                         <product id="5"/>
                     </pickup_list>
-                </agent><!---->
+                </agent>
             </agents>
         </population>
     </properties>
