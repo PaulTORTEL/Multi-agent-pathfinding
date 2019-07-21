@@ -68,10 +68,6 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
             return current_node.solution.dictionary;
         }
 
-        if (conflict->time_step == 7 && conflict->agent_id1 == 1 && conflict->agent_id2 == 2 && conflict->constructConstraint(1).position == Position(5,6)) {
-            std::cout << "" << std::endl;
-        }
-
         // There is a conflict between two agents, therefore we will add 2 news constraint nodes
         for (int i = 1; i <= 2; i++) {
             ConstraintNode new_node;
@@ -107,7 +103,6 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
                             agent_constraints.second.erase(it);
                         }
 
-                        //TODO: à analyser
                         if (!constraints_to_erase.empty()) {
                             // We compute the new solution for the agent having at least one constraint removed
                             new_node.solution = lowLevelSolver(new_node, agent_constraints.first);
@@ -121,15 +116,8 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
                 continue;
             }
 
-
             // We compute the new solution for one of the agent conflicting, with the new node (and new constraints)
             new_node.solution = lowLevelSolver(new_node, agent_id);
-
-            if (new_node.solution.dictionary[7].getSearchSquares().at(2)->position == Position(5,7) &&
-                    new_node.solution.dictionary[7].getSearchSquares().at(2)->parent->position == Position(5,7) &&
-                    new_node.solution.dictionary[7].getSearchSquares().at(1)->position == Position(4,7)) {
-                std::cout << "" << std::endl;
-            }
 
             if (_status == NO_SOLUTION) {
                 // To avoid the infinite loop where the agent will wait for an immobile agent that cannot find another solution
