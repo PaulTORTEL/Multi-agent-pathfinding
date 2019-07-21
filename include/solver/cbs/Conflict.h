@@ -35,7 +35,7 @@ struct VertexConflict : Conflict {
 
 
     Constraint constructConstraint(const int &agent_no) override {
-        return Constraint(agent_no == 1 ? agent_id2 : agent_id1, position, time_step);
+        return Constraint(agent_no == 1 ? agent_id2 : agent_id1, position, time_step, agent_no == 1 ? agent_id1 : agent_id2);
     }
 };
 
@@ -50,10 +50,30 @@ struct EdgeConflict : Conflict {
 
     Constraint constructConstraint(const int &agent_no) override {
         if (agent_no == 1) {
-            return Constraint(agent_id2, next_pos_agent2, time_step, extractDirection(next_pos_agent2, init_pos_agent2));
+            return Constraint(agent_id2, next_pos_agent2, time_step, agent_id1, extractDirection(next_pos_agent2, init_pos_agent2));
         } else {
-            return Constraint(agent_id1, next_pos_agent1, time_step, extractDirection(next_pos_agent1, init_pos_agent1));
+            return Constraint(agent_id1, next_pos_agent1, time_step, agent_id2, extractDirection(next_pos_agent1, init_pos_agent1));
         }
+    }
+
+    bool isTheSameThan(EdgeConflict* edge_conflict) {
+        if (this->agent_id1 != edge_conflict->agent_id2) {
+            return false;
+        }
+
+        if (this->agent_id2 != edge_conflict->agent_id1) {
+            return false;
+        }
+
+        if (this->time_step != edge_conflict->time_step) {
+            return false;
+        }
+
+        return this->init_pos_agent1 == edge_conflict->init_pos_agent2 &&
+               this->init_pos_agent2 == edge_conflict->init_pos_agent1 &&
+               this->next_pos_agent1 == edge_conflict->next_pos_agent2 &&
+               this->next_pos_agent2 == edge_conflict->next_pos_agent1;
+
     }
 };
 

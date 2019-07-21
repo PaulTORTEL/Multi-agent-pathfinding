@@ -10,13 +10,14 @@
 #include "../../map/Agent.h"
 
 struct Constraint {
-    const int agent_id;
-    const Position position;
-    const int time_step;
-    const Direction edge;
+    int agent_id;
+    Position position;
+    int time_step;
+    Direction edge;
+    int agent_causing_constraint;
 
-    Constraint(const int& agent_id, const Position &position, const int timeStep, const Direction edge = NO_DIRECTION) : agent_id(agent_id), position(position),
-                                                                                           time_step(timeStep), edge(edge) {}
+    Constraint(const int& agent_id, const Position &position, const int timeStep, const int agent_causing_constraint = -1, const Direction edge = NO_DIRECTION) :
+            agent_id(agent_id), position(position), time_step(timeStep), agent_causing_constraint(agent_causing_constraint), edge(edge) {}
 
     friend std::ostream &operator<<(std::ostream &os, const Constraint &constraint) {
         os << "Constraint = A:" << constraint.agent_id << " " << constraint.position << " T:"

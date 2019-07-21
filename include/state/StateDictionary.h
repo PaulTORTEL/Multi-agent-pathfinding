@@ -106,7 +106,7 @@ struct StateDictionary {
             std::unique_ptr<EdgeConflict> edge_conflict = getEdgeConflictWithOtherAgents(curr_pos, next_pos, extractDirection(curr_pos, next_pos),
                     time_step, &it_current_state->second, it_agent.first);
 
-            if (edge_conflict != nullptr) {
+            if (edge_conflict.get()  != nullptr) {
                 conflicts.push_back(std::move(edge_conflict));
             }
         }
