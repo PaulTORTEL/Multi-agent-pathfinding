@@ -18,7 +18,7 @@ private:
         FAIL_ENVIRONMENT,
         FAIL_CONSTRAINT,
         FAIL_CLOSED_LIST,
-        OK
+        SUCCESS
     };
 
 

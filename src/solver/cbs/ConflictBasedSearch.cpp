@@ -89,7 +89,7 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
 
             new_node.solution = current_node.solution;
 
-            if (auto *e = dynamic_cast<EdgeConflict*>(conflict.get())) {
+            if (dynamic_cast<EdgeConflict*>(conflict.get())) {
                 auto newly_added_constraint = conflict->constructConstraint(i);
                 for (auto& agent_constraints : new_node.constraints) {
                     if (agent_constraints.first == newly_added_constraint.agent_id) {
@@ -111,9 +111,6 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
                         if (!constraints_to_erase.empty()) {
                             // We compute the new solution for the agent having at least one constraint removed
                             new_node.solution = lowLevelSolver(new_node, agent_constraints.first);
-                            //TODO: trouver un cas qui bug avec 2 agents, où 1 agent wait alos qu'il pourrait passer, car il a une contrainte qui est obsolète dû au fait que
-                            // l'autre agent a changé de chemin
-                            //tODO: Pour débug: virer les constraints d'une position si l'agent qui l'a causé n'est finalement pas calculé à cet endroit
                         }
                     }
                 }
@@ -298,7 +295,7 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
 
             if (current_search_square->interacting_time_left == 0) {
 
-                if (point_of_interest != NA) {
+                if (point_of_interest != NA || current_search_square->agent_status == SearchSquare::AgentStatus::FINISHED) {
                     new_current_search_square = std::make_shared<SearchSquare>(current_search_square->position,
                                                                                current_search_square,
                                                                                current_search_square->cost_movement,
@@ -308,7 +305,7 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
                 switch (point_of_interest) {
 
                     case NA:
-                        current_search_square->setCurrentStatus(SearchSquare::AgentStatus::FINISHED,
+                        new_current_search_square->setCurrentStatus(SearchSquare::AgentStatus::FINISHED,
                                                                 PointOfInterest::NA);
                         break;
                     case PRODUCT:
@@ -337,10 +334,9 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
             }
             agent.removeItemToPickup();
 
+            current_search_square = new_current_search_square;
             if (new_current_search_square->agent_status != SearchSquare::AgentStatus::FINISHED) {
-                current_search_square = new_current_search_square;
                 current_search_square->cost_movement = 0;
-                open_list.clear();
                 open_list.insert({current_search_square->cost(), current_search_square});
                 closed_list.clear();
             }
@@ -407,30 +403,33 @@ ConflictBasedSearch::populateOpenList(MultimapSearchSquare &open_list, std::set<
     const bool up = y < max_y;
     // There is a position at the bottom
     const bool down = y > 0;
+    InsertionOpenListResult res_left = SUCCESS, res_right = SUCCESS, res_up = SUCCESS, res_down = SUCCESS;
 
     if (left) {
         Position left_pos = Position(x-1, y);
         // We insert in the open list left_pos only if its coordinates are not in the closed list
         // or it is not already in the open list with a cheapest cost
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, left_pos, constraint_node);
+        res_left = tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, left_pos, constraint_node);
 
     } if (right) {
         Position right_pos = Position(x+1, y);
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, right_pos, constraint_node);
+        res_right = tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, right_pos, constraint_node);
 
     } if (up) {
         Position up_pos = Position(x, y+1);
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, up_pos, constraint_node);
+        res_up = tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, up_pos, constraint_node);
 
     } if (down) {
         Position down_pos = Position(x, y-1);
-        tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, down_pos, constraint_node);
-
+        res_down = tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, down_pos, constraint_node);
     }
 
+    bool success_insertion = res_left == SUCCESS ? true : res_right == SUCCESS ? true : res_down == SUCCESS ? true :
+                                                                                             res_up == SUCCESS;
+
     // No constraint in the future, the agent is not allowed to wait
-    if (!constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), current_agent_position->time_step-1)) {
-        return;
+    if (!constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), current_agent_position->time_step-1) /*|| !success_insertion*/) {
+       return;
     }
 
     tryInsertInOpenList(open_list, closed_list, agent, current_agent_position, current_agent_position->position, constraint_node);
@@ -460,7 +459,7 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
 
         if (constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), time_step+1)) {
             //return FAIL_CLOSED_LIST;
-            closed_list.clear();
+            closed_list.erase(pos_coord);
         } else {
             //closed_list.clear();
             return FAIL_CLOSED_LIST;
@@ -504,7 +503,7 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
         open_list.emplace(cost, new_search_square);
     }
 
-    return OK;
+    return SUCCESS;
 }
 
 bool ConflictBasedSearch::isNodeAlreadyInOpenList(const Solver::MultimapConstraintNode &open_list,
