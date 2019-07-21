@@ -88,7 +88,6 @@ struct ConstraintNode {
                     if (first_conflict == nullptr) {
                         first_conflict = std::move(edge_conflicts.front());
                     }
-                    conflicts_detected += edge_conflicts.size();
                     conflicts_detected += (edge_conflicts.size() - redundant_conflicts);
                     if (stop_value != 0 && conflicts_detected >= stop_value) {
                         return;
