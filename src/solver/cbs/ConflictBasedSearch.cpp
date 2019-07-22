@@ -261,6 +261,10 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
                 + ";" ;//+ std::to_string(current_search_square->time_step);
         closed_list.emplace(pos_coord);
 
+        if (pos_coord == "0;1;" && agent_id == 1) {
+            std::cout << "";
+        }
+
         // We remove the search square from the open list
         open_list.erase(it_open_list);
 
@@ -275,6 +279,8 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
 
             PointOfInterest point_of_interest = map.getInterestOfPosition(current_search_square->position);
             std::shared_ptr<SearchSquare> new_current_search_square = current_search_square;
+
+            bool was_forced_to_move = false;
 
             if (current_search_square->interacting_time_left == 0) {
                 new_current_search_square = std::make_shared<SearchSquare>(current_search_square->position,
@@ -319,17 +325,26 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
                     // We try to force the agent to move
                     while (constraint_node.doesAgentHaveFutureConstraintAtPosition(agent_id, new_current_search_square->time_step - 1, new_current_search_square->position)) {
                         if (tryForceMovementForAgent(new_current_search_square, agent, constraint_node)) {
-                            new_current_search_square = std::make_shared<SearchSquare>(new_current_search_square->position, new_current_search_square,
-                                                                                      new_current_search_square->cost_movement, new_current_search_square->cost_heuristic);
+                            was_forced_to_move = true;
+                            if (constraint_node.doesAgentHaveFutureConstraintAtPosition(agent_id, new_current_search_square->time_step, new_current_search_square->position)) {
+                                new_current_search_square = std::make_shared<SearchSquare>(
+                                        new_current_search_square->position, new_current_search_square,
+                                        new_current_search_square->cost_movement,
+                                        new_current_search_square->cost_heuristic);
+                            }
                         } else {
                             _status = NO_SOLUTION;
                             break;
                         }
                     }
                 }
-
             }
-            return new_current_search_square;
+
+            if (was_forced_to_move) {
+                return new_current_search_square;
+            } else {
+                current_search_square = new_current_search_square;
+            }
         }
 
         // We loop while we didn't detect that there is no solution or that we didn't reach the goal position of the agent
