@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<map>
+    <properties>
+        <size>
+            <width>5</width>
+            <height>4</height>
+        </size>
+        <population>
+            <agents>
+                <agent id="1">
+                    <start>
+                        <coordinates x="0" y="2"/>
+                    </start>
+                    <pickup_list>
+                        <product id="1"/>
+                    </pickup_list>
+                </agent>
+                <agent id="2">
+                    <start>
+                        <coordinates x="3" y="3"/>
+                    </start>
+                    <pickup_list>
+                        <product id="2"/>
+                    </pickup_list>
+                </agent>
+                <agent id="3">
+                    <start>
+                        <coordinates x="2" y="1"/>
+                    </start>
+                    <pickup_list>
+                        <product id="3"/>
+                    </pickup_list>
+                </agent>
+            </agents>
+        </population>
+    </properties>
+    <topology>
+        <!-- PRODUCTS -->
+        <square>
+            <coordinates x="4" y="2"/>
+            <type>PRODUCT</type>
+            <id>1</id>
+        </square>
+        <square>
+            <coordinates x="2" y="2"/>
+            <type>PRODUCT</type>
+            <id>2</id>
+        </square>
+        <square>
+            <coordinates x="1" y="2"/>
+            <type>PRODUCT</type>
+            <id>3</id>
+        </square>
+
+        <!-- DROP OFF POINTS -->
+        <square>
+            <coordinates x="3" y="0"/>
+            <type>DROP_OFF_POINT</type>
+            <id>1</id>
+        </square>
+        <square>
+            <coordinates x="4" y="0"/>
+            <type>DROP_OFF_POINT</type>
+            <id>2</id>
+        </square>
+
+
+        <!-- REPAIR AREAS -->
+
+
+        <!-- NON WALKABLE AREAS -->
+        <square>
+            <coordinates x="3" y="2"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="0" y="3"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="1" y="1"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="1" y="0"/>
+            <type>WALL</type>
+        </square>
+    </topology>
+    <rules>
+        <rule>
+            <square x="1" y="3"/>
+            <forbidden_accesses>
+                <access>EAST</access>
+            </forbidden_accesses>
+            <forbidden_exits>
+            </forbidden_exits>
+        </rule>
+    </rules>
+</map>
