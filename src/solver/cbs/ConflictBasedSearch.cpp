@@ -121,12 +121,12 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
 
             if (_status == NO_SOLUTION) {
                 // To avoid the infinite loop where the agent will wait for an immobile agent that cannot find another solution
-                if (new_node.getConstraintLatestTimeStepForAgent(agent_id) == conflict->time_step) {
+                /*if (new_node.getConstraintLatestTimeStepForAgent(agent_id) == conflict->time_step) {
                     break;
-                } else {
+                } else {*/
                     _status = Status::OK;
                     continue;
-                }
+              //  }
             }
 
             new_node.computeSicHeuristic();
@@ -445,7 +445,7 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
         //int latest_time_step_constraint = constraint_node.getConstraintLatestTimeStepForAgent(agent.getId());
          //&& (time_step < latest_time_step_constraint || latest_time_step_constraint == -1)
 
-        if (constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), time_step+1)) {
+        if (constraint_node.doesAgentStillHaveFutureConstraints(agent.getId(), time_step-1)) {
             //return FAIL_CLOSED_LIST;
             closed_list.erase(pos_coord);
         } else {
@@ -479,6 +479,7 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
             modified_search_square->parent = current_agent_position;
             // We change its time step
             modified_search_square->time_step = current_agent_position->time_step + 1;
+            modified_search_square->setCurrentStatus(SearchSquare::AgentStatus::MOVING, NA);
 
             open_list.insert({cost, modified_search_square});
         }
