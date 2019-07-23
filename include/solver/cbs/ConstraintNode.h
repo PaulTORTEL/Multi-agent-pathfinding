@@ -199,7 +199,7 @@ struct ConstraintNode {
 
         for (auto& constraint : constraints[agent_id]) {
             if (time_step < constraint.time_step) {
-                if (constraint.position == pos) {
+                if (constraint.position == pos && constraint.edge == NO_DIRECTION) {
                     return true;
                 }
             }

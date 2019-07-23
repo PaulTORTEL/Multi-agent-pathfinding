@@ -42,7 +42,9 @@ private:
 
     static int manhattanDistance(const Position &p1, const Position &p2);
 
-protected:
+
+public:
+
 
     /**
      * Possible status of a solver
@@ -53,8 +55,10 @@ protected:
         NO_SOLUTION
     };
 
-    Status _status = OK;
+    Status getStatus() const;
 
+protected:
+    Status _status = OK;
     State init_state;
 
     State goal_state;

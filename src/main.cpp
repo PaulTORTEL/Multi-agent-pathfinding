@@ -67,7 +67,11 @@ void scanSolution(Map& map, std::map<int, State>& solution, Solver& solver, std:
     }
 }
 
-bool shouldContinue(Map& map) {
+bool shouldContinue(Map &map, Solver::Status &status) {
+
+    if (status == Solver::NO_SOLUTION) {
+        return false;
+    }
 
     for (auto& agent : map.getAgents()) {
         if (agent.second.getCurrentPosition() != agent.second.getParkingCoord()) {
@@ -103,23 +107,27 @@ int main() {
             SimpleSequentialSolver solver(map, map.getAgents(), statsManager);
             solver.solve();
         } else if (technique_no == 2) {
-
+            ConflictBasedSearch::Status status = Solver::OK;
             do {
                 ConflictBasedSearch cbsSolver(map, map.getAgents(), statsManager);
                 auto solution = cbsSolver.solve();
+                status = cbsSolver.getStatus();
                 scanSolution(map, solution, cbsSolver, final_solution);
-            } while (shouldContinue(map));
+            } while (shouldContinue(map, status));
 
-            statsManager.recordStatsOnTxt(map_name, final_solution.rbegin()->first);
+            if (status != Solver::NO_SOLUTION) {
 
-            std::cout << "FINAL SOLUTION: " << std::endl;
-            for (auto& it : final_solution) {
-                std::cout << "T" << it.first << ": ";
+                statsManager.recordStatsOnTxt(map_name, final_solution.rbegin()->first);
 
-                for (auto &it_search_square : it.second.getSearchSquares()) {
-                    std::cout << "A" << it_search_square.first << " = " << it_search_square.second->position << "; ";
+                std::cout << "FINAL SOLUTION: " << std::endl;
+                for (auto& it : final_solution) {
+                    std::cout << "T" << it.first << ": ";
+
+                    for (auto &it_search_square : it.second.getSearchSquares()) {
+                        std::cout << "A" << it_search_square.first << " = " << it_search_square.second->position << "; ";
+                    }
+                    std::cout << std::endl;
                 }
-                std::cout << std::endl;
             }
         }
 

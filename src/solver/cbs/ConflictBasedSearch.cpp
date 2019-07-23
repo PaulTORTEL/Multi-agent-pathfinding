@@ -118,12 +118,12 @@ std::map<int, State> ConflictBasedSearch::highLevelSolver() {
 
             if (_status == NO_SOLUTION) {
                 // To avoid the infinite loop where the agent will wait for an immobile agent that cannot find another solution
-                if (new_node.getConstraintLatestTimeStepForAgent(agent_id) == conflict->time_step) {
+             /*   if (new_node.getConstraintLatestTimeStepForAgent(agent_id) == conflict->time_step) {
                     break;
-                } else {
+                } else {*/
                     _status = Status::OK;
                     continue;
-                }
+              //  }
             }
 
             new_node.computeSicHeuristic();
@@ -260,10 +260,6 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
         std::string pos_coord = std::to_string(current_search_square->position.x) + ";" + std::to_string(current_search_square->position.y)
                 + ";" ;//+ std::to_string(current_search_square->time_step);
         closed_list.emplace(pos_coord);
-
-        if (pos_coord == "0;1;" && agent_id == 1) {
-            std::cout << "";
-        }
 
         // We remove the search square from the open list
         open_list.erase(it_open_list);
@@ -569,7 +565,6 @@ bool ConflictBasedSearch::tryForceMovementForAgent(std::shared_ptr<SearchSquare>
             current_agent_position->position = up_pos;
             return true;
         }
-
     }
 
     return false;

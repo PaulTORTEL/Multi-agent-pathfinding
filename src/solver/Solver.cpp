@@ -229,5 +229,9 @@ const std::map<int, Position> & Solver::getAgentsGoal() const {
     return agents_goal;
 }
 
+Solver::Status Solver::getStatus() const {
+    return _status;
+}
+
 
 
