@@ -486,7 +486,7 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
             modified_search_square->parent = current_agent_position;
             // We change its time step
             modified_search_square->time_step = current_agent_position->time_step + 1;
-            modified_search_square->agent_status = current_agent_position->agent_status;
+            modified_search_square->setCurrentStatus(SearchSquare::AgentStatus::MOVING, NA);
 
             open_list.insert({cost, modified_search_square});
         }
