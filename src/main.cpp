@@ -9,6 +9,7 @@
 
 int main() {
     int map_no = 1;
+    std::cout << "VERSION 3" << std::endl;
     std::cout << "Type the number of the map to load: ";
 
     std::cin >> map_no;

@@ -6,7 +6,9 @@
 #define PATHFINDING_PROJECT_STATSMANAGER_H
 
 #include "AnalysisReport.h"
+#include "../state/State.h"
 #include <ctime>
+#include <map>
 
 class StatsManager {
 private:
@@ -33,7 +35,7 @@ public:
     void stopMeasuringDuration(AnalysisLevel analysisLevel);
 
 
-    void recordStatsOnTxt(const std::string &map_name, const int num_time_step);
+    void recordStatsOnTxt(const std::string &map_name, const std::map<int, State> &solution);
 
     std::string createDirectory(const std::string &map_name);
 };

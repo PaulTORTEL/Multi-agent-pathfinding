@@ -20,7 +20,7 @@ std::map<int, State> ConflictBasedSearch::solve() {
 
     statsManager.stopAnalysis();
 
-    statsManager.recordStatsOnTxt(map.getName(), solution.rbegin()->first);
+    statsManager.recordStatsOnTxt(map.getName(), solution);
 
     return solution;
 }

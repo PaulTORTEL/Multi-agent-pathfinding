@@ -82,7 +82,7 @@ std::string StatsManager::createDirectory(const std::string &map_name) {
     return result;
 }
 
-void StatsManager::recordStatsOnTxt(const std::string &map_name, const int num_time_step) {
+void StatsManager::recordStatsOnTxt(const std::string &map_name, const std::map<int, State> &solution) {
 
     std::string directory = createDirectory(map_name);
 
@@ -98,11 +98,23 @@ void StatsManager::recordStatsOnTxt(const std::string &map_name, const int num_t
     unsigned int constraint_nodes_total = report.constraint_nodes_created;
     double duration_total = report.avg_high_level_duration;
 
-    outfile << "Time steps: " << num_time_step << std::endl;
+    outfile << "Time steps: " << solution.rbegin()->first << std::endl;
     outfile << "Duration: " << duration_total << std::endl;
     outfile << "High level calls: " << high_level_calls_total << std::endl;
     outfile << "Constraint nodes: " << constraint_nodes_total << std::endl;
     outfile << "Low level calls: " << low_level_calls_total << std::endl;
+
+    outfile << std::endl << std::endl;
+    outfile << "Solution found:" << std::endl;
+
+    for (auto& it : solution) {
+        outfile << "T" << it.first << ": ";
+
+        for (auto &it_search_square : it.second.getSearchSquares()) {
+            outfile << "A" << it_search_square.first << " = " << it_search_square.second->position << "; ";
+        }
+        outfile << std::endl;
+    }
 
     outfile.close();
 }
