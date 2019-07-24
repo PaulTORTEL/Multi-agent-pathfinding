@@ -79,6 +79,7 @@ bool shouldContinue(Map& map) {
 
 int main() {
     int map_no = 1;
+    std::cout << "VERSION 1" << std::endl;
     std::cout << "Type the number of the map to load: ";
 
     std::cin >> map_no;
@@ -109,7 +110,7 @@ int main() {
                 scanSolution(map, solution, cbsSolver, final_solution);
             } while (shouldContinue(map));
 
-            statsManager.recordStatsOnTxt(map_name, final_solution.rbegin()->first);
+            statsManager.recordStatsOnTxt(map_name, final_solution);
 
             std::cout << "FINAL SOLUTION: " << std::endl;
             for (auto& it : final_solution) {
