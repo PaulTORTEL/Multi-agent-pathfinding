@@ -5,11 +5,11 @@
 #include <vector>
 #include <iostream>
 #include <stdio.h>
+#include "../../include/stats/StatsManager.h"
 #include <windows.h>
 #include <fstream>
-#include <math.h>
 
-#include "../../include/stats/StatsManager.h"
+#include <math.h>
 
 void StatsManager::startClock(std::clock_t &clock) {
     clock = std::clock();
@@ -83,7 +83,7 @@ std::string StatsManager::createDirectory(const std::string &map_name) {
     return result;
 }
 
-void StatsManager::recordStatsOnTxt(const std::string &map_name, const int num_time_step) {
+void StatsManager::recordStatsOnTxt(const std::string &map_name, const std::map<int, State> &solution) {
 
     std::string directory = createDirectory(map_name);
 
@@ -118,11 +118,23 @@ void StatsManager::recordStatsOnTxt(const std::string &map_name, const int num_t
     double standard_dev_const_node = sqrt((1./reports.size()) * sd_sum_const_node);
     double standard_dev_low_level_calls = sqrt((1./reports.size()) * sd_sum_low_level_calls);
 
-    outfile << "Time steps: " << num_time_step << std::endl;
+    outfile << "Time steps: " << solution.rbegin()->first << std::endl;
     outfile << "Duration: " << duration_total << std::endl;
     outfile << "High level calls: " << high_level_calls_total << std::endl;
     outfile << "Constraint nodes: " << constraint_nodes_total << " / avg: " << constraint_nodes_avg << " / SD: " << standard_dev_const_node << std::endl;
     outfile << "Low level calls: " << low_level_calls_total << " / avg: " << low_level_calls_avg << " / SD: " << standard_dev_low_level_calls << std::endl;
+
+    outfile << std::endl << std::endl;
+    outfile << "Solution found:" << std::endl;
+
+    for (auto& it : solution) {
+        outfile << "T" << it.first << ": ";
+
+        for (auto &it_search_square : it.second.getSearchSquares()) {
+            outfile << "A" << it_search_square.first << " = " << it_search_square.second->position << "; ";
+        }
+        outfile << std::endl;
+    }
 
     outfile.close();
 }

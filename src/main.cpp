@@ -83,6 +83,7 @@ bool shouldContinue(Map &map, Solver::Status &status) {
 
 int main() {
     int map_no = 1;
+    std::cout << "VERSION 2" << std::endl;
     std::cout << "Type the number of the map to load: ";
 
     std::cin >> map_no;
@@ -117,7 +118,7 @@ int main() {
 
             if (status != Solver::NO_SOLUTION) {
 
-                statsManager.recordStatsOnTxt(map_name, final_solution.rbegin()->first);
+                statsManager.recordStatsOnTxt(map_name, final_solution);
 
                 std::cout << "FINAL SOLUTION: " << std::endl;
                 for (auto& it : final_solution) {
