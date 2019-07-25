@@ -122,6 +122,18 @@ void StatsManager::recordStatsOnTxt(const std::string &map_name, const std::map<
     outfile << "Constraint nodes: " << constraint_nodes_total << " / avg: " << constraint_nodes_avg << " / SD: " << standard_dev_const_node << std::endl;
     outfile << "Low level calls: " << low_level_calls_total << " / avg: " << low_level_calls_avg << " / SD: " << standard_dev_low_level_calls << std::endl;
 
+    outfile << std::endl << std::endl;
+    outfile << "Solution found:" << std::endl;
+
+    for (auto& it : solution) {
+        outfile << "T" << it.first << ": ";
+
+        for (auto &it_search_square : it.second.getSearchSquares()) {
+            outfile << "A" << it_search_square.first << " = " << it_search_square.second->position << "; ";
+        }
+        outfile << std::endl;
+    }
+
     outfile.close();
 }
 
