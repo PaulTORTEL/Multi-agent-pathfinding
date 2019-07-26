@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Agents have ordered list -->
+<!-- 10 agents -->
 
 <map>
     <properties>
         <size>
             <width>9</width>
-            <height>8</height>
+            <height>9</height>
         </size>
         <population>
             <agents>
@@ -16,11 +16,11 @@
                     </start>
                     <pickup_list>
                         <product id="1"/>
-                        <product id="2"/>
                         <product id="3"/>
+                        <product id="2"/>
+                        <product id="7"/>
                         <product id="4"/>
                         <product id="6"/>
-                        <product id="7"/>
                     </pickup_list>
                 </agent>
                 <agent id="2">
@@ -28,36 +28,36 @@
                         <coordinates x="0" y="6"/>
                     </start>
                     <pickup_list>
-                        <product id="1"/>
                         <product id="2"/>
-                        <product id="3"/>
                         <product id="4"/>
-                        <product id="6"/>
-                        <product id="8"/>
-                    </pickup_list>
-                </agent>
-                <agent id="3">
-                    <start>
-                        <coordinates x="0" y="5"/>
-                    </start>
-                    <pickup_list>
                         <product id="1"/>
-                        <product id="2"/>
-                        <product id="3"/>
-                        <product id="6"/>
-                        <product id="7"/>
                         <product id="8"/>
+                        <product id="6"/>
+                        <product id="3"/>
                     </pickup_list>
                 </agent>
+                 <agent id="3">
+                     <start>
+                         <coordinates x="0" y="5"/>
+                     </start>
+                     <pickup_list>
+                         <product id="1"/>
+                         <product id="8"/>
+                         <product id="3"/>
+                         <product id="6"/>
+                         <product id="2"/>
+                         <product id="7"/>
+                     </pickup_list>
+                 </agent>
                 <agent id="4">
                     <start>
                         <coordinates x="0" y="4"/>
                     </start>
                     <pickup_list>
-                        <product id="2"/>
-                        <product id="3"/>
-                        <product id="5"/>
                         <product id="8"/>
+                        <product id="2"/>
+                        <product id="5"/>
+                        <product id="3"/>
                     </pickup_list>
                 </agent>
                 <agent id="5">
@@ -65,10 +65,10 @@
                          <coordinates x="0" y="3"/>
                      </start>
                      <pickup_list>
-                         <product id="1"/>
                          <product id="4"/>
                          <product id="7"/>
                          <product id="8"/>
+                         <product id="1"/>
                      </pickup_list>
                  </agent>
                 <agent id="6">
@@ -76,9 +76,9 @@
                         <coordinates x="0" y="2"/>
                     </start>
                     <pickup_list>
-                        <product id="1"/>
-                        <product id="2"/>
                         <product id="3"/>
+                        <product id="2"/>
+                        <product id="1"/>
                         <product id="5"/>
                         <product id="8"/>
                     </pickup_list>
@@ -88,12 +88,12 @@
                         <coordinates x="0" y="1"/>
                     </start>
                     <pickup_list>
-                        <product id="1"/>
-                        <product id="2"/>
+                        <product id="8"/>
                         <product id="4"/>
                         <product id="5"/>
                         <product id="7"/>
-                        <product id="8"/>
+                        <product id="2"/>
+                        <product id="1"/>
                     </pickup_list>
                 </agent>
                 <agent id="8">
@@ -101,15 +101,40 @@
                         <coordinates x="0" y="0"/>
                     </start>
                     <pickup_list>
+                        <product id="6"/>
                         <product id="1"/>
                         <product id="2"/>
                         <product id="4"/>
-                        <product id="5"/>
-                        <product id="6"/>
-                        <product id="7"/>
                         <product id="8"/>
+                        <product id="7"/>
+                        <product id="5"/>
                     </pickup_list>
-                </agent><!---->
+                </agent>
+                <agent id="9">
+                    <start>
+                        <coordinates x="1" y="8"/>
+                    </start>
+                    <pickup_list>
+                        <product id="8"/>
+                        <product id="4"/>
+                        <product id="1"/>
+                        <product id="3"/>
+                        <product id="7"/>
+                        <product id="6"/>
+                        <product id="5"/>
+                    </pickup_list>
+                </agent>
+                <agent id="10">
+                    <start>
+                        <coordinates x="2" y="8"/>
+                    </start>
+                    <pickup_list>
+                        <product id="4"/>
+                        <product id="5"/>
+                        <product id="7"/>
+                        <product id="2"/>
+                    </pickup_list>
+                </agent>
             </agents>
         </population>
     </properties>
@@ -200,6 +225,10 @@
             <coordinates x="4" y="1"/>
             <type>HUMAN_POINT</type>
         </square>
+        <square>
+            <coordinates x="5" y="1"/>
+            <type>HUMAN_POINT</type>
+        </square>
     </topology>
     <rules>
         <rule>
@@ -226,90 +255,6 @@
                 <exit>NORTH</exit>
                 <exit>EAST</exit>
                 <exit>WEST</exit>
-            </forbidden_exits>
-        </rule>
-        <rule>
-            <square x="8" y="0"/>
-            <forbidden_accesses>
-                <access>SOUTH</access>
-                <access>EAST</access>
-                <access>WEST</access>
-            </forbidden_accesses>
-            <forbidden_exits>
-                <exit>NORTH</exit>
-                <exit>EAST</exit>
-                <exit>SOUTH</exit>
-            </forbidden_exits>
-        </rule>
-
-        <rule>
-            <square x="1" y="0"/>
-            <forbidden_accesses />
-            <forbidden_exits>
-                <exit>EAST</exit>
-                <exit>SOUTH</exit>
-            </forbidden_exits>
-        </rule>
-        <rule>
-            <square x="1" y="1"/>
-            <forbidden_accesses />
-            <forbidden_exits>
-                <exit>EAST</exit>
-                <exit>SOUTH</exit>
-            </forbidden_exits>
-        </rule>
-        <rule>
-            <square x="1" y="2"/>
-            <forbidden_accesses />
-            <forbidden_exits>
-                <exit>EAST</exit>
-                <exit>SOUTH</exit>
-            </forbidden_exits>
-        </rule>
-        <rule>
-            <square x="1" y="3"/>
-            <forbidden_accesses />
-            <forbidden_exits>
-                <exit>EAST</exit>
-                <exit>SOUTH</exit>
-            </forbidden_exits>
-        </rule>
-        <rule>
-            <square x="1" y="4"/>
-            <forbidden_accesses />
-            <forbidden_exits>
-                <exit>EAST</exit>
-                <exit>SOUTH</exit>
-            </forbidden_exits>
-        </rule>
-        <rule>
-            <square x="1" y="5"/>
-            <forbidden_accesses />
-            <forbidden_exits>
-                <exit>EAST</exit>
-                <exit>SOUTH</exit>
-            </forbidden_exits>
-        </rule>
-        <rule>
-            <square x="1" y="6"/>
-            <forbidden_accesses />
-            <forbidden_exits>
-                <exit>EAST</exit>
-                <exit>SOUTH</exit>
-            </forbidden_exits>
-        </rule>
-        <rule>
-            <square x="1" y="7"/>
-            <forbidden_accesses />
-            <forbidden_exits>
-                <exit>SOUTH</exit>
-            </forbidden_exits>
-        </rule>
-        <rule>
-            <square x="2" y="7"/>
-            <forbidden_accesses />
-            <forbidden_exits>
-                <exit>SOUTH</exit>
             </forbidden_exits>
         </rule>
     </rules>
