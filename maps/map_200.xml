@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 1 agent + list sorted depending on the location and traffic rules -->
+
+<map>
+    <properties>
+        <size>
+            <width>9</width>
+            <height>8</height>
+        </size>
+        <population>
+            <agents>
+                <agent id="1">
+                    <start>
+                        <coordinates x="0" y="7"/>
+                    </start>
+                    <pickup_list>
+                        <product id="6"/>
+                        <product id="1"/>
+                        <product id="2"/>
+                        <product id="3"/>
+                        <product id="4"/>
+                        <product id="7"/>
+                    </pickup_list>
+                </agent>
+            </agents>
+        </population>
+    </properties>
+    <topology>
+        <!-- PRODUCTS -->
+        <square>
+            <coordinates x="4" y="6"/>
+            <type>PRODUCT</type>
+            <id>1</id>
+        </square>
+        <square>
+            <coordinates x="5" y="6"/>
+            <type>PRODUCT</type>
+            <id>2</id>
+        </square>
+        <square>
+            <coordinates x="7" y="6"/>
+            <type>PRODUCT</type>
+            <id>3</id>
+        </square>
+        <square>
+            <coordinates x="8" y="6"/>
+            <type>PRODUCT</type>
+            <id>4</id>
+        </square>
+        <square>
+            <coordinates x="3" y="5"/>
+            <type>PRODUCT</type>
+            <id>5</id>
+        </square>
+        <square>
+            <coordinates x="3" y="4"/>
+            <type>PRODUCT</type>
+            <id>6</id>
+        </square>
+        <square>
+            <coordinates x="7" y="3"/>
+            <type>PRODUCT</type>
+            <id>7</id>
+        </square>
+        <square>
+            <coordinates x="8" y="3"/>
+            <type>PRODUCT</type>
+            <id>8</id>
+        </square>
+
+        <!-- DROP OFF POINTS -->
+        <square>
+            <coordinates x="3" y="1"/>
+            <type>DROP_OFF_POINT</type>
+            <id>1</id>
+        </square>
+        <square>
+            <coordinates x="6" y="1"/>
+            <type>DROP_OFF_POINT</type>
+            <id>2</id>
+        </square>
+
+        <!-- REPAIR AREAS -->
+        <square>
+            <coordinates x="8" y="0"/>
+            <type>REPAIR_POINT</type>
+            <id>1</id>
+        </square>
+
+        <!-- NON WALKABLE AREAS -->
+        <square>
+            <coordinates x="3" y="3"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="3" y="6"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="6" y="6"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="6" y="3"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="7" y="1"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="4" y="1"/>
+            <type>HUMAN_POINT</type>
+        </square>
+        <square>
+            <coordinates x="5" y="1"/>
+            <type>HUMAN_POINT</type>
+        </square>
+    </topology>
+    <rules>
+        <rule>
+            <square x="6" y="1"/>
+            <forbidden_accesses>
+                <access>SOUTH</access>
+                <access>EAST</access>
+                <access>WEST</access>
+            </forbidden_accesses>
+            <forbidden_exits>
+                <exit>NORTH</exit>
+                <exit>EAST</exit>
+                <exit>WEST</exit>
+            </forbidden_exits>
+        </rule>
+        <rule>
+            <square x="3" y="1"/>
+            <forbidden_accesses>
+                <access>SOUTH</access>
+                <access>EAST</access>
+                <access>WEST</access>
+            </forbidden_accesses>
+            <forbidden_exits>
+                <exit>NORTH</exit>
+                <exit>EAST</exit>
+                <exit>WEST</exit>
+            </forbidden_exits>
+        </rule>
+
+        <rule>
+            <square x="3" y="4"/>
+            <forbidden_accesses>
+                <access>NORTH</access>
+                <access>SOUTH</access>
+                <access>EAST</access>
+            </forbidden_accesses>
+            <forbidden_exits>
+                <exit>NORTH</exit>
+                <exit>SOUTH</exit>
+                <exit>WEST</exit>
+            </forbidden_exits>
+        </rule>
+        <rule>
+            <square x="3" y="5"/>
+            <forbidden_accesses>
+                <access>NORTH</access>
+                <access>SOUTH</access>
+                <access>EAST</access>
+            </forbidden_accesses>
+            <forbidden_exits>
+                <exit>NORTH</exit>
+                <exit>SOUTH</exit>
+                <exit>WEST</exit>
+            </forbidden_exits>
+        </rule>
+
+        <rule>
+            <square x="4" y="6"/>
+            <forbidden_accesses>
+                <access>NORTH</access>
+                <access>WEST</access>
+                <access>EAST</access>
+            </forbidden_accesses>
+            <forbidden_exits>
+                <exit>SOUTH</exit>
+                <exit>EAST</exit>
+                <exit>WEST</exit>
+            </forbidden_exits>
+        </rule>
+        <rule>
+            <square x="5" y="6"/>
+            <forbidden_accesses>
+                <access>NORTH</access>
+                <access>WEST</access>
+                <access>EAST</access>
+            </forbidden_accesses>
+            <forbidden_exits>
+                <exit>SOUTH</exit>
+                <exit>EAST</exit>
+                <exit>WEST</exit>
+            </forbidden_exits>
+        </rule>
+
+        <rule>
+            <square x="7" y="6"/>
+            <forbidden_accesses>
+                <access>SOUTH</access>
+                <access>WEST</access>
+                <access>EAST</access>
+            </forbidden_accesses>
+            <forbidden_exits>
+                <exit>NORTH</exit>
+                <exit>EAST</exit>
+                <exit>WEST</exit>
+            </forbidden_exits>
+        </rule>
+        <rule>
+            <square x="8" y="6"/>
+            <forbidden_accesses>
+                <access>SOUTH</access>
+                <access>WEST</access>
+                <access>EAST</access>
+            </forbidden_accesses>
+            <forbidden_exits>
+                <exit>NORTH</exit>
+                <exit>EAST</exit>
+                <exit>WEST</exit>
+            </forbidden_exits>
+        </rule>
+
+        <rule>
+            <square x="7" y="3"/>
+            <forbidden_accesses>
+                <access>SOUTH</access>
+                <access>WEST</access>
+                <access>EAST</access>
+            </forbidden_accesses>
+            <forbidden_exits>
+                <exit>NORTH</exit>
+                <exit>EAST</exit>
+                <exit>WEST</exit>
+            </forbidden_exits>
+        </rule>
+        <rule>
+            <square x="8" y="3"/>
+            <forbidden_accesses>
+                <access>SOUTH</access>
+                <access>WEST</access>
+                <access>EAST</access>
+            </forbidden_accesses>
+            <forbidden_exits>
+                <exit>NORTH</exit>
+                <exit>EAST</exit>
+                <exit>WEST</exit>
+            </forbidden_exits>
+        </rule>
+
+
+        <rule>
+            <square x="1" y="0"/>
+            <forbidden_accesses/>
+            <forbidden_exits>
+                <exit>SOUTH</exit>
+                <exit>EAST</exit>
+            </forbidden_exits>
+        </rule>
+        <rule>
+            <square x="1" y="1"/>
+            <forbidden_accesses/>
+            <forbidden_exits>
+                <exit>SOUTH</exit>
+                <exit>EAST</exit>
+            </forbidden_exits>
+        </rule>
+        <rule>
+            <square x="1" y="2"/>
+            <forbidden_accesses/>
+            <forbidden_exits>
+                <exit>SOUTH</exit>
+                <exit>EAST</exit>
+            </forbidden_exits>
+        </rule>
+        <rule>
+            <square x="1" y="3"/>
+            <forbidden_accesses/>
+            <forbidden_exits>
+                <exit>SOUTH</exit>
+                <exit>EAST</exit>
+            </forbidden_exits>
+        </rule>
+        <rule>
+            <square x="1" y="4"/>
+            <forbidden_accesses/>
+            <forbidden_exits>
+                <exit>SOUTH</exit>
+                <exit>EAST</exit>
+            </forbidden_exits>
+        </rule>
+        <rule>
+            <square x="1" y="5"/>
+            <forbidden_accesses/>
+            <forbidden_exits>
+                <exit>SOUTH</exit>
+                <exit>EAST</exit>
+            </forbidden_exits>
+        </rule>
+        <rule>
+            <square x="1" y="6"/>
+            <forbidden_accesses/>
+            <forbidden_exits>
+                <exit>SOUTH</exit>
+                <exit>EAST</exit>
+            </forbidden_exits>
+        </rule>
+        <rule>
+            <square x="1" y="7"/>
+            <forbidden_accesses/>
+            <forbidden_exits>
+                <exit>SOUTH</exit>
+            </forbidden_exits>
+        </rule>
+    </rules>
+</map>

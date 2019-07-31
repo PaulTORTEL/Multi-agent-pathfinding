@@ -6,7 +6,6 @@
 #define PATHFINDING_PROJECT_AGENT_H
 
 #include "../utility.h"
-#include "SearchSquare.h"
 #include <vector>
 
 class Agent {
@@ -25,7 +24,6 @@ private:
 
     Position current_position;
     int interacting_time_left = 0;
-    SearchSquare::AgentStatus agent_status = SearchSquare::AgentStatus::READY;
 
 public:
 
@@ -90,14 +88,6 @@ public:
 
     int getInteractingTimeLeft() const {
         return interacting_time_left;
-    }
-
-    void setAgentStatus(const SearchSquare::AgentStatus new_agent_status) {
-        agent_status = new_agent_status;
-    }
-
-    SearchSquare::AgentStatus getAgentStatus() const {
-        return agent_status;
     }
 };
 

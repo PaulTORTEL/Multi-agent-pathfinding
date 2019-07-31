@@ -170,10 +170,6 @@ void Map::setAgentInteractingTime(const int &agent_id, const int time_left) {
     _agents[agent_id].setInteractingTimeLeft(time_left);
 }
 
-void Map::setAgentStatus(const int &agent_id, const SearchSquare::AgentStatus agent_status) {
-    _agents[agent_id].setAgentStatus(agent_status);
-}
-
 const std::string &Map::getName() const {
     return _name;
 }

@@ -6,6 +6,7 @@
 #define PATHFINDING_PROJECT_SEARCHSQUARE_H
 
 #include "../utility.h"
+#include "Agent.h"
 #include <memory>
 
 struct SearchSquare {
@@ -42,6 +43,8 @@ struct SearchSquare {
 
     AgentStatus agent_status = READY;
     int interacting_time_left = 0;
+
+    Agent agent;
 
 
     explicit SearchSquare(Position position, std::shared_ptr<SearchSquare> parent = nullptr,
@@ -118,5 +121,12 @@ struct SearchSquare {
         return false;
     }
 
+    Agent &getAgent() {
+        return agent;
+    }
+
+    void setAgent(const Agent &_agent) {
+        this->agent = _agent;
+    }
 };
 #endif //PATHFINDING_PROJECT_SEARCHSQUARE_H

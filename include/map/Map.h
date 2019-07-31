@@ -160,7 +160,6 @@ public:
 
     void setAgentInteractingTime(const int& agent_id, const int time_left);
 
-    void setAgentStatus(const int& agent_id, const SearchSquare::AgentStatus agent_status);
 };
 
 
