@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 12 agents -->
+<!-- 11 agents + more square in the grid (wider space between products and drop-off areas) -->
 
 <map>
     <properties>
         <size>
-            <width>9</width>
-            <height>9</height>
+            <width>11</width>
+            <height>11</height>
         </size>
         <population>
             <agents>
@@ -36,19 +36,19 @@
                         <product id="3"/>
                     </pickup_list>
                 </agent>
-                 <agent id="3">
-                     <start>
-                         <coordinates x="0" y="5"/>
-                     </start>
-                     <pickup_list>
-                         <product id="1"/>
-                         <product id="8"/>
-                         <product id="3"/>
-                         <product id="6"/>
-                         <product id="2"/>
-                         <product id="7"/>
-                     </pickup_list>
-                 </agent>
+                <agent id="3">
+                    <start>
+                        <coordinates x="0" y="5"/>
+                    </start>
+                    <pickup_list>
+                        <product id="1"/>
+                        <product id="8"/>
+                        <product id="3"/>
+                        <product id="6"/>
+                        <product id="2"/>
+                        <product id="7"/>
+                    </pickup_list>
+                </agent>
                 <agent id="4">
                     <start>
                         <coordinates x="0" y="4"/>
@@ -61,16 +61,16 @@
                     </pickup_list>
                 </agent>
                 <agent id="5">
-                     <start>
-                         <coordinates x="0" y="3"/>
-                     </start>
-                     <pickup_list>
-                         <product id="4"/>
-                         <product id="7"/>
-                         <product id="8"/>
-                         <product id="1"/>
-                     </pickup_list>
-                 </agent>
+                    <start>
+                        <coordinates x="0" y="3"/>
+                    </start>
+                    <pickup_list>
+                        <product id="4"/>
+                        <product id="7"/>
+                        <product id="8"/>
+                        <product id="1"/>
+                    </pickup_list>
+                </agent>
                 <agent id="6">
                     <start>
                         <coordinates x="0" y="2"/>
@@ -112,7 +112,7 @@
                 </agent>
                 <agent id="9">
                     <start>
-                        <coordinates x="1" y="8"/>
+                        <coordinates x="1" y="10"/>
                     </start>
                     <pickup_list>
                         <product id="8"/>
@@ -126,7 +126,7 @@
                 </agent>
                 <agent id="10">
                     <start>
-                        <coordinates x="2" y="8"/>
+                        <coordinates x="2" y="10"/>
                     </start>
                     <pickup_list>
                         <product id="4"/>
@@ -135,29 +135,16 @@
                         <product id="2"/>
                     </pickup_list>
                 </agent>
-				<agent id="11">
+                <agent id="11">
                     <start>
-                        <coordinates x="3" y="8"/>
+                        <coordinates x="3" y="10"/>
                     </start>
                     <pickup_list>
                         <product id="7"/>
                         <product id="4"/>
                         <product id="3"/>
                         <product id="2"/>
-						<product id="1"/>
-                    </pickup_list>
-                </agent>
-				<agent id="12">
-                    <start>
-                        <coordinates x="4" y="8"/>
-                    </start>
-                    <pickup_list>
-                        <product id="2"/>
-                        <product id="6"/>
-                        <product id="8"/>
-                        <product id="7"/>
-						<product id="1"/>
-						<product id="4"/>
+                        <product id="1"/>
                     </pickup_list>
                 </agent>
             </agents>
@@ -166,42 +153,42 @@
     <topology>
         <!-- PRODUCTS -->
         <square>
-            <coordinates x="4" y="6"/>
+            <coordinates x="4" y="8"/>
             <type>PRODUCT</type>
             <id>1</id>
         </square>
         <square>
-            <coordinates x="5" y="6"/>
+            <coordinates x="6" y="8"/>
             <type>PRODUCT</type>
             <id>2</id>
         </square>
         <square>
-            <coordinates x="7" y="6"/>
+            <coordinates x="8" y="8"/>
             <type>PRODUCT</type>
             <id>3</id>
         </square>
         <square>
-            <coordinates x="8" y="6"/>
+            <coordinates x="10" y="8"/>
             <type>PRODUCT</type>
             <id>4</id>
         </square>
         <square>
-            <coordinates x="3" y="5"/>
+            <coordinates x="3" y="7"/>
             <type>PRODUCT</type>
             <id>5</id>
         </square>
         <square>
-            <coordinates x="3" y="4"/>
+            <coordinates x="3" y="5"/>
             <type>PRODUCT</type>
             <id>6</id>
         </square>
         <square>
-            <coordinates x="7" y="3"/>
+            <coordinates x="8" y="4"/>
             <type>PRODUCT</type>
             <id>7</id>
         </square>
         <square>
-            <coordinates x="8" y="3"/>
+            <coordinates x="10" y="4"/>
             <type>PRODUCT</type>
             <id>8</id>
         </square>
@@ -213,37 +200,37 @@
             <id>1</id>
         </square>
         <square>
-            <coordinates x="6" y="1"/>
+            <coordinates x="7" y="1"/>
             <type>DROP_OFF_POINT</type>
             <id>2</id>
         </square>
 
         <!-- REPAIR AREAS -->
         <square>
-            <coordinates x="8" y="0"/>
+            <coordinates x="9" y="0"/>
             <type>REPAIR_POINT</type>
             <id>1</id>
         </square>
 
         <!-- NON WALKABLE AREAS -->
         <square>
-            <coordinates x="3" y="3"/>
+            <coordinates x="3" y="4"/>
             <type>WALL</type>
         </square>
         <square>
-            <coordinates x="3" y="6"/>
+            <coordinates x="3" y="8"/>
             <type>WALL</type>
         </square>
         <square>
-            <coordinates x="6" y="6"/>
+            <coordinates x="7" y="8"/>
             <type>WALL</type>
         </square>
         <square>
-            <coordinates x="6" y="3"/>
+            <coordinates x="7" y="4"/>
             <type>WALL</type>
         </square>
         <square>
-            <coordinates x="7" y="1"/>
+            <coordinates x="8" y="1"/>
             <type>WALL</type>
         </square>
         <square>
@@ -251,13 +238,13 @@
             <type>HUMAN_POINT</type>
         </square>
         <square>
-            <coordinates x="5" y="1"/>
+            <coordinates x="6" y="1"/>
             <type>HUMAN_POINT</type>
         </square>
     </topology>
     <rules>
         <rule>
-            <square x="6" y="1"/>
+            <square x="7" y="1"/>
             <forbidden_accesses>
                 <access>SOUTH</access>
                 <access>EAST</access>

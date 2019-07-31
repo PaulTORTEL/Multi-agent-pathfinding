@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 12 agents -->
+<!-- 11 agents + corridors wider (-2 obstacles, P5 P6 + 1 wall shifted) -->
 
 <map>
     <properties>
@@ -147,19 +147,6 @@
 						<product id="1"/>
                     </pickup_list>
                 </agent>
-				<agent id="12">
-                    <start>
-                        <coordinates x="4" y="8"/>
-                    </start>
-                    <pickup_list>
-                        <product id="2"/>
-                        <product id="6"/>
-                        <product id="8"/>
-                        <product id="7"/>
-						<product id="1"/>
-						<product id="4"/>
-                    </pickup_list>
-                </agent>
             </agents>
         </population>
     </properties>
@@ -186,12 +173,12 @@
             <id>4</id>
         </square>
         <square>
-            <coordinates x="3" y="5"/>
+            <coordinates x="2" y="5"/>
             <type>PRODUCT</type>
             <id>5</id>
         </square>
         <square>
-            <coordinates x="3" y="4"/>
+            <coordinates x="2" y="4"/>
             <type>PRODUCT</type>
             <id>6</id>
         </square>
@@ -227,19 +214,11 @@
 
         <!-- NON WALKABLE AREAS -->
         <square>
-            <coordinates x="3" y="3"/>
-            <type>WALL</type>
-        </square>
-        <square>
-            <coordinates x="3" y="6"/>
+            <coordinates x="2" y="6"/>
             <type>WALL</type>
         </square>
         <square>
             <coordinates x="6" y="6"/>
-            <type>WALL</type>
-        </square>
-        <square>
-            <coordinates x="6" y="3"/>
             <type>WALL</type>
         </square>
         <square>
