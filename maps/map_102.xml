@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 7 agents -->
+<!-- 3 agents -->
 
 <map>
     <properties>
@@ -36,7 +36,7 @@
                         <product id="3"/>
                     </pickup_list>
                 </agent>
-                 <agent id="3">
+                <agent id="3">
                      <start>
                          <coordinates x="0" y="5"/>
                      </start>
@@ -48,54 +48,7 @@
                          <product id="2"/>
                          <product id="7"/>
                      </pickup_list>
-                 </agent>
-                <agent id="4">
-                    <start>
-                        <coordinates x="0" y="4"/>
-                    </start>
-                    <pickup_list>
-                        <product id="8"/>
-                        <product id="2"/>
-                        <product id="5"/>
-                        <product id="3"/>
-                    </pickup_list>
                 </agent>
-                <agent id="5">
-                     <start>
-                         <coordinates x="0" y="3"/>
-                     </start>
-                     <pickup_list>
-                         <product id="4"/>
-                         <product id="7"/>
-                         <product id="8"/>
-                         <product id="1"/>
-                     </pickup_list>
-				</agent>
-				<agent id="6">
-					<start>
-						<coordinates x="0" y="2"/>
-					</start>
-					<pickup_list>
-						<product id="3"/>
-						<product id="2"/>
-						<product id="1"/>
-						<product id="5"/>
-						<product id="8"/>
-					</pickup_list>
-					</agent>
-				<agent id="7">
-					<start>
-						<coordinates x="0" y="1"/>
-					</start>
-					<pickup_list>
-						<product id="8"/>
-						<product id="4"/>
-						<product id="5"/>
-						<product id="7"/>
-						<product id="2"/>
-						<product id="1"/>
-					</pickup_list>
-				</agent>
             </agents>
         </population>
     </properties>
