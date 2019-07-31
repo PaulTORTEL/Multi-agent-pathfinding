@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 12 agents -->
+<!-- 11 agents + 4 more obstacles -->
 
 <map>
     <properties>
@@ -147,19 +147,6 @@
 						<product id="1"/>
                     </pickup_list>
                 </agent>
-				<agent id="12">
-                    <start>
-                        <coordinates x="4" y="8"/>
-                    </start>
-                    <pickup_list>
-                        <product id="2"/>
-                        <product id="6"/>
-                        <product id="8"/>
-                        <product id="7"/>
-						<product id="1"/>
-						<product id="4"/>
-                    </pickup_list>
-                </agent>
             </agents>
         </population>
     </properties>
@@ -253,6 +240,22 @@
         <square>
             <coordinates x="5" y="1"/>
             <type>HUMAN_POINT</type>
+        </square>
+        <square>
+            <coordinates x="7" y="2"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="6" y="4"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="4" y="5"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="2" y="3"/>
+            <type>WALL</type>
         </square>
     </topology>
     <rules>

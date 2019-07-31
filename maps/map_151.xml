@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 12 agents -->
+<!-- 12 agents + 4 more obstacles -->
 
 <map>
     <properties>
@@ -253,6 +253,22 @@
         <square>
             <coordinates x="5" y="1"/>
             <type>HUMAN_POINT</type>
+        </square>
+        <square>
+            <coordinates x="7" y="2"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="6" y="4"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="4" y="5"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="2" y="3"/>
+            <type>WALL</type>
         </square>
     </topology>
     <rules>

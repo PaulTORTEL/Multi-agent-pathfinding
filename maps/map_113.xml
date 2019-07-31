@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 12 agents -->
+<!-- 14 agents -->
 
 <map>
     <properties>
@@ -70,18 +70,18 @@
                          <product id="8"/>
                          <product id="1"/>
                      </pickup_list>
-                 </agent>
-                <agent id="6">
-                    <start>
-                        <coordinates x="0" y="2"/>
-                    </start>
-                    <pickup_list>
-                        <product id="3"/>
-                        <product id="2"/>
-                        <product id="1"/>
-                        <product id="5"/>
-                        <product id="8"/>
-                    </pickup_list>
+				</agent>
+				<agent id="6">
+					<start>
+						<coordinates x="0" y="2"/>
+					</start>
+					<pickup_list>
+						<product id="3"/>
+						<product id="2"/>
+						<product id="1"/>
+						<product id="5"/>
+						<product id="8"/>
+					</pickup_list>
                 </agent>
                 <agent id="7">
                     <start>
@@ -135,7 +135,7 @@
                         <product id="2"/>
                     </pickup_list>
                 </agent>
-				<agent id="11">
+                <agent id="11">
                     <start>
                         <coordinates x="3" y="8"/>
                     </start>
@@ -144,10 +144,10 @@
                         <product id="4"/>
                         <product id="3"/>
                         <product id="2"/>
-						<product id="1"/>
+                        <product id="1"/>
                     </pickup_list>
                 </agent>
-				<agent id="12">
+                <agent id="12">
                     <start>
                         <coordinates x="4" y="8"/>
                     </start>
@@ -156,8 +156,31 @@
                         <product id="6"/>
                         <product id="8"/>
                         <product id="7"/>
-						<product id="1"/>
-						<product id="4"/>
+                        <product id="1"/>
+                        <product id="4"/>
+                    </pickup_list>
+                </agent>
+                <agent id="13">
+                    <start>
+                        <coordinates x="5" y="8"/>
+                    </start>
+                    <pickup_list>
+                        <product id="3"/>
+                        <product id="7"/>
+                        <product id="8"/>
+                        <product id="2"/>
+                    </pickup_list>
+                </agent>
+                <agent id="14">
+                    <start>
+                        <coordinates x="6" y="8"/>
+                    </start>
+                    <pickup_list>
+                        <product id="3"/>
+                        <product id="1"/>
+                        <product id="5"/>
+                        <product id="4"/>
+                        <product id="7"/>
                     </pickup_list>
                 </agent>
             </agents>

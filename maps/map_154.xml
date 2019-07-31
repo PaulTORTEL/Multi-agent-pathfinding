@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 12 agents -->
+<!-- 15 agents + 4 more obstacles -->
 
 <map>
     <properties>
@@ -70,94 +70,52 @@
                          <product id="8"/>
                          <product id="1"/>
                      </pickup_list>
-                 </agent>
-                <agent id="6">
-                    <start>
-                        <coordinates x="0" y="2"/>
-                    </start>
-                    <pickup_list>
-                        <product id="3"/>
-                        <product id="2"/>
-                        <product id="1"/>
-                        <product id="5"/>
-                        <product id="8"/>
-                    </pickup_list>
-                </agent>
-                <agent id="7">
-                    <start>
-                        <coordinates x="0" y="1"/>
-                    </start>
-                    <pickup_list>
-                        <product id="8"/>
-                        <product id="4"/>
-                        <product id="5"/>
-                        <product id="7"/>
-                        <product id="2"/>
-                        <product id="1"/>
-                    </pickup_list>
-                </agent>
-                <agent id="8">
-                    <start>
-                        <coordinates x="0" y="0"/>
-                    </start>
-                    <pickup_list>
-                        <product id="6"/>
-                        <product id="1"/>
-                        <product id="2"/>
-                        <product id="4"/>
-                        <product id="8"/>
-                        <product id="7"/>
-                        <product id="5"/>
-                    </pickup_list>
-                </agent>
-                <agent id="9">
-                    <start>
-                        <coordinates x="1" y="8"/>
-                    </start>
-                    <pickup_list>
-                        <product id="8"/>
-                        <product id="4"/>
-                        <product id="1"/>
-                        <product id="3"/>
-                        <product id="7"/>
-                        <product id="6"/>
-                        <product id="5"/>
-                    </pickup_list>
-                </agent>
-                <agent id="10">
-                    <start>
-                        <coordinates x="2" y="8"/>
-                    </start>
-                    <pickup_list>
-                        <product id="4"/>
-                        <product id="5"/>
-                        <product id="7"/>
-                        <product id="2"/>
-                    </pickup_list>
-                </agent>
-				<agent id="11">
-                    <start>
-                        <coordinates x="3" y="8"/>
-                    </start>
-                    <pickup_list>
-                        <product id="7"/>
-                        <product id="4"/>
-                        <product id="3"/>
-                        <product id="2"/>
+				</agent>
+				<agent id="6">
+					<start>
+						<coordinates x="0" y="2"/>
+					</start>
+					<pickup_list>
+						<product id="3"/>
+						<product id="2"/>
 						<product id="1"/>
+						<product id="5"/>
+						<product id="8"/>
+					</pickup_list>
+                </agent>
+                <agent id="13">
+                    <start>
+                        <coordinates x="5" y="8"/>
+                    </start>
+                    <pickup_list>
+                        <product id="3"/>
+                        <product id="7"/>
+                        <product id="8"/>
+                        <product id="2"/>
                     </pickup_list>
                 </agent>
-				<agent id="12">
+                <agent id="14">
                     <start>
-                        <coordinates x="4" y="8"/>
+                        <coordinates x="6" y="8"/>
+                    </start>
+                    <pickup_list>
+                        <product id="3"/>
+                        <product id="1"/>
+                        <product id="5"/>
+                        <product id="4"/>
+                        <product id="7"/>
+                    </pickup_list>
+                </agent>
+                <agent id="15">
+                    <start>
+                        <coordinates x="7" y="8"/>
                     </start>
                     <pickup_list>
                         <product id="2"/>
-                        <product id="6"/>
+                        <product id="4"/>
+                        <product id="5"/>
                         <product id="8"/>
                         <product id="7"/>
-						<product id="1"/>
-						<product id="4"/>
                     </pickup_list>
                 </agent>
             </agents>
@@ -253,6 +211,22 @@
         <square>
             <coordinates x="5" y="1"/>
             <type>HUMAN_POINT</type>
+        </square>
+        <square>
+            <coordinates x="7" y="2"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="6" y="4"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="4" y="5"/>
+            <type>WALL</type>
+        </square>
+        <square>
+            <coordinates x="2" y="3"/>
+            <type>WALL</type>
         </square>
     </topology>
     <rules>
