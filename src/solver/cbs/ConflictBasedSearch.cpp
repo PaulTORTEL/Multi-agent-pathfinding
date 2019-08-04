@@ -260,7 +260,7 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
 
         // We insert the coordinates in the closed list, so we won't deal with the position ever again
         std::string pos_coord = std::to_string(current_search_square->position.x) + ";" + std::to_string(current_search_square->position.y)
-                + ";" ;//+ std::to_string(current_search_square->time_step);
+                + ";" + std::to_string(current_search_square->getAgent().getItemsToPickup()) + ";" + std::to_string(current_search_square->getAgent().hasFinished());
         closed_list.emplace(pos_coord);
 
         // We remove the search square from the open list
@@ -309,6 +309,10 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
                 }
             }
 
+            if (current_search_square->getAgent().getItemsToPickup() == 0) {
+                std::cout << "";
+            }
+
             while (new_current_search_square->interacting_time_left > 1) {
                 int new_interacting_time = new_current_search_square->interacting_time_left - 1;
                 SearchSquare::AgentStatus agent_status = new_current_search_square->agent_status;
@@ -325,10 +329,10 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
             if (new_current_search_square->agent_status != SearchSquare::AgentStatus::FINISHED) {
                 current_search_square = new_current_search_square;
                 //agent.removeItemToPickup();
-               // current_search_square->cost_movement = 0;
+                //current_search_square->cost_movement = 0;
                 open_list.clear();
                 open_list.insert({current_search_square->cost(), current_search_square});
-                closed_list.clear();
+                //closed_list.clear();
             }
         }
 
@@ -352,6 +356,8 @@ Solver::MultimapSearchSquare::iterator ConflictBasedSearch::getIteratorOnStateWi
 
     bool first_to_assign = true;
     int smallest_num_conflicts = 0;
+
+    it_optimized = it_low;
 
     for (auto it = it_low; it != it_up; ++it) {
 
@@ -439,7 +445,9 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
         return FAIL_ENVIRONMENT;
     }
 
-    std::string pos_coord = std::to_string(analyzed_pos.x) + ";" + std::to_string(analyzed_pos.y) + ";";// + std::to_string(time_step);
+    std::string pos_coord = std::to_string(analyzed_pos.x) + ";" + std::to_string(analyzed_pos.y) + ";" +
+            std::to_string(current_agent_position->getAgent().getItemsToPickup()) + ";" + std::to_string(current_agent_position->getAgent().hasFinished());
+
     // We check that the position has not already been processed (i.e., not in the closed list)
     if (closed_list.find(pos_coord) != closed_list.end() && current_agent_position->position != analyzed_pos) {
 
@@ -451,7 +459,7 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
             //return FAIL_CLOSED_LIST;
             closed_list.erase(pos_coord);
         } else {
-            //closed_list.clear();
+            //closed_list.erase(pos_coord);
             return FAIL_CLOSED_LIST;
         }
     }
@@ -469,14 +477,16 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
     const auto& it_analyzed_pos = findPositionInOpenList(analyzed_pos, open_list);
 
     // If we realize that the position is already in the open list
-    if (it_analyzed_pos != open_list.end()) {
+    if (it_analyzed_pos != open_list.end() && it_analyzed_pos->second->getAgent().getItemsToPickup() == current_agent_position->getAgent().getItemsToPickup() &&
+        it_analyzed_pos->second->getAgent().hasFinished() == current_agent_position->getAgent().hasFinished()) {
+
         // If the cost is cheaper with the current path (current search square and its parent)
-        if (it_analyzed_pos->second->cost() > cost || (it_analyzed_pos->second->cost() == cost && it_analyzed_pos->second->time_step > time_step + 1)) {
+        if (it_analyzed_pos->second->cost() > cost || (it_analyzed_pos->second->cost() == cost && it_analyzed_pos->second->time_step > (time_step + 1))) {
             auto modified_search_square = it_analyzed_pos->second;
             open_list.erase(it_analyzed_pos);
 
-            // We change only the movement cost since the heuristic cost can't change
             modified_search_square->cost_movement = move_cost;
+            modified_search_square->cost_heuristic = heuristic;
             // We change the parent
             modified_search_square->parent = current_agent_position;
             // We change its time step
@@ -487,6 +497,7 @@ ConflictBasedSearch::tryInsertInOpenList(MultimapSearchSquare &open_list, std::s
 
             open_list.insert({cost, modified_search_square});
         }
+
     } else {
         // This is a new position (not yet processed), we create a search square to represent it and we set its parent with the current search square
         // since we reach this new search square thanks to the current search square

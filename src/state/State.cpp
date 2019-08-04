@@ -82,8 +82,9 @@ State::detectVertexConflicts(const int &time_step, const std::map<int, Position>
                         return std::make_unique<VertexConflict>(-1, agent_2_id, time_step, agent_1_position);
                     }
                 }*/
-
-                conflicts.emplace_back(std::make_unique<VertexConflict>(agent_1_id, agent_2_id, time_step, agent_1_position));
+                else {
+                    conflicts.emplace_back(std::make_unique<VertexConflict>(agent_1_id, agent_2_id, time_step, agent_1_position));
+                }
             }
         }
     }

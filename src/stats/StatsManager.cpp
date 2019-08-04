@@ -98,7 +98,12 @@ void StatsManager::recordStatsOnTxt(const std::string &map_name, const std::map<
     unsigned int constraint_nodes_total = report.constraint_nodes_created;
     double duration_total = report.avg_high_level_duration;
 
-    outfile << "Time steps: " << solution.rbegin()->first << std::endl;
+    if (solution.empty()) {
+        outfile << "Time steps: " << 0 << std::endl;
+    } else {
+        outfile << "Time steps: " << solution.rbegin()->first << std::endl;
+    }
+
     outfile << "Duration: " << duration_total << std::endl;
     outfile << "High level calls: " << high_level_calls_total << std::endl;
     outfile << "Constraint nodes: " << constraint_nodes_total << std::endl;
