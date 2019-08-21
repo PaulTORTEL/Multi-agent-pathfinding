@@ -317,6 +317,7 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
                 new_current_search_square->setInteractingTimeLeft(new_interacting_time);
             }
             current_search_square = new_current_search_square;
+            break;
         }
 
         // We loop while we didn't detect that there is no solution or that we didn't reach the goal position of the agent
