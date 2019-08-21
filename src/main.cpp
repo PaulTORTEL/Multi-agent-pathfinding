@@ -43,14 +43,19 @@ void scanSolution(Map& map, std::map<int, State>& solution, Solver& solver, std:
             const Agent &agent_ref = map.getAgents().at(agent.first);
 
             if (agent.second->position == solver.getAgentGoalPosition(agent_ref)) {
-                if (agent.second->position == agent_ref.getParkingCoord()) {
+                //TODO: to remove
+                num_agents_parked++;
+
+                //TODO: to remove
+               /* if (agent.second->position == agent_ref.getParkingCoord()) {
                     num_agents_parked++;
-                }
+                }*/
                 
                // if (moves[agent.first].first != moves[agent.first].second) {
                     if (agent.second->isAgentInteracting() && agent.second->interacting_time_left == 1) {
                         stop = true;
-                        map.removeItemToPickupForAgent(agent.first);
+                       //TODO: to remove
+                       // map.removeItemToPickupForAgent(agent.first);
                     }
              //   }
             }
@@ -67,10 +72,11 @@ void scanSolution(Map& map, std::map<int, State>& solution, Solver& solver, std:
     }
 }
 
-bool shouldContinue(Map& map) {
+bool shouldContinue(Map &map, Solver &solver) {
 
     for (auto& agent : map.getAgents()) {
-        if (agent.second.getCurrentPosition() != agent.second.getParkingCoord()) {
+        //TODO: remove
+        if (agent.second.getCurrentPosition() != solver.getAgentGoalPosition(agent.second)  /*agent.second.getParkingCoord()*/) {
             return true;
         }
     }
@@ -104,11 +110,13 @@ int main() {
             SimpleSequentialSolver solver(map, map.getAgents(), statsManager);
             solver.solve();
         } else if (technique_no == 2) {
+            //TODO: remove
+            ConflictBasedSearch cbsSolver(map, map.getAgents(), statsManager);
             do {
                 ConflictBasedSearch cbsSolver(map, map.getAgents(), statsManager);
                 auto solution = cbsSolver.solve();
                 scanSolution(map, solution, cbsSolver, final_solution);
-            } while (shouldContinue(map));
+            } while (shouldContinue(map, cbsSolver));
 
             statsManager.recordStatsOnTxt(map_name, final_solution);
 
