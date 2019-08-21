@@ -314,6 +314,7 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
                 new_current_search_square->agent_status = agent_status;
                 new_current_search_square->setInteractingTimeLeft(new_interacting_time);
 
+                break;
 
                 if (new_current_search_square->agent_status == SearchSquare::AgentStatus::READY &&
                         constraint_node.doesAgentStillHaveFutureConstraints(agent_id, new_current_search_square->time_step - 1)) {
