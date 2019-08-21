@@ -325,6 +325,9 @@ std::shared_ptr<SearchSquare> ConflictBasedSearch::computeShortestPathPossible(A
                 new_current_search_square->setInteractingTimeLeft(new_interacting_time);
             }
 
+            current_search_square = new_current_search_square;
+            break;
+
             new_current_search_square->getAgent().removeItemToPickup();
             if (new_current_search_square->agent_status != SearchSquare::AgentStatus::FINISHED) {
                 current_search_square = new_current_search_square;
